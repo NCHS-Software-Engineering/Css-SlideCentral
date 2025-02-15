@@ -1,0 +1,77 @@
+body {
+   /* Light gray background */
+  background: radial-gradient(circle, #ffffff, #c3c2c2);
+}
+.page-title{
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 8rem;
+}
+.all-containers{
+  
+  display: flex;           /* Enables flex layout */
+  flex-wrap: wrap;         /* Allows items to wrap to the next line if needed */
+  gap: 160px;               /* Space between items (modern approach) */
+  justify-content: center; /* Centers items horizontally in the container */
+  margin: 20px auto;   
+}
+.widgets-container {
+  border-radius: 10px;
+  background-color:   #c1c1c1;
+  background: radial-gradient(circle, #c1c1c1, #868686);
+  box-shadow: none;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;
+    position: relative;    
+    justify-content: center; /* Center widgets horizontally */
+    gap: 20px; /* Space between widgets */
+    min-width: 500px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease; 
+  }
+  .widgets-container:hover {
+    box-shadow: 0 20px 20px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+      position: relative;    
+      justify-content: center; /* Center widgets horizontally */
+      gap: 20px; /* Space between widgets */
+      min-width: 500px;
+      transform: scale(1.05);
+    }
+.widgetCard{
+  min-height: 300px;
+  position: relative;               /* So we can absolutely position .time-box */
+  background-color: #ffffff;        /* White card background */
+  border-radius: 8px;               /* Slightly rounded corners */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Soft drop shadow for layering effect */
+  width: 300px;                     /* Adjust as needed */
+  margin: 20px auto;                /* Center horizontally and add vertical space */
+  padding: 30px ;          /* Extra top padding to accommodate time-box */
+  text-align: center;
+}
+.widget-title{
+    font-family: 'Montserrat', sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.widgetDesc{
+  font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+.widgetDim{
+    font-size: 1rem;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+.more-widgets{
+  font-size: 2rem;   /* Or 24px, 36px, etc. */
+  font-weight: bold; /* or numeric value like 700 */
+}
+.activity-image{
+  margin-top: 20px;
+}
