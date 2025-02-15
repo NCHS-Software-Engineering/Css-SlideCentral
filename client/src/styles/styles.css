@@ -1,11 +1,14 @@
 body {
    /* Light gray background */
   background: radial-gradient(circle, #ffffff, #c3c2c2);
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 .page-title{
-  font-size: 5rem;
+  font-size: 7rem;
   font-weight: bold;
-  margin-bottom: 8rem;
+  margin-bottom: 7rem;
 }
 
 /* Widget Page */
@@ -86,4 +89,25 @@ body {
 /* Simple fix for activityWidget.png */
 .activity-image{
   margin-top: 20px;
+}
+
+/* FAQ Page */
+.questions{
+  text-align: left;
+  margin-left: 40px;
+}
+
+h3{
+  font-family: 'Montserrat', sans-serif;
+font-size: 3.5rem;
+font-weight: bold;
+margin-bottom: 0.5rem;
+}
+
+ul {
+  
+  margin: 0;
+  padding-left: 2em; 
+  list-style-position: inside;
+  padding: 0 0 0 20px; /* Indent the bullets if you like */
 }

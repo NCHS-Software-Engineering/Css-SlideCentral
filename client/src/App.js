@@ -1,6 +1,6 @@
 
 import './App.css';
-import WidgetPage from './pages/WidgetPage';
+import WidgetPage from './pages/faq';
 
 function App() {
   return (
