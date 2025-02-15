@@ -7,14 +7,19 @@ body {
   font-weight: bold;
   margin-bottom: 8rem;
 }
+
+/* Widget Page */
+
+/* Groups all containers to line them up horizontally */
 .all-containers{
-  
-  display: flex;           /* Enables flex layout */
-  flex-wrap: wrap;         /* Allows items to wrap to the next line if needed */
-  gap: 160px;               /* Space between items (modern approach) */
-  justify-content: center; /* Centers items horizontally in the container */
+  display: flex;          
+  flex-wrap: wrap;         
+  gap: 160px;               /* Space between items  */
+  justify-content: center; 
   margin: 20px auto;   
 }
+
+/* Each individual container */
 .widgets-container {
   border-radius: 10px;
   background-color:   #c1c1c1;
@@ -29,6 +34,7 @@ body {
     min-width: 500px;
     transition: box-shadow 0.3s ease, transform 0.3s ease; 
   }
+  /* Containers when hovered over */
   .widgets-container:hover {
     box-shadow: 0 20px 20px rgba(0,0,0,0.2);
     display: flex;
@@ -40,17 +46,19 @@ body {
       min-width: 500px;
       transform: scale(1.05);
     }
+
+    /* Description and dimensions of each widget (white square) */
 .widgetCard{
   min-height: 300px;
-  position: relative;               /* So we can absolutely position .time-box */
-  background-color: #ffffff;        /* White card background */
-  border-radius: 8px;               /* Slightly rounded corners */
+  position: relative;               
+  background-color: #ffffff;       
   box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Soft drop shadow for layering effect */
-  width: 300px;                     /* Adjust as needed */
+  width: 300px;                     
   margin: 20px auto;                /* Center horizontally and add vertical space */
-  padding: 30px ;          /* Extra top padding to accommodate time-box */
+  padding: 30px ;          
   text-align: center;
 }
+/* Card Text */
 .widget-title{
     font-family: 'Montserrat', sans-serif;
   font-size: 3rem;
@@ -68,10 +76,14 @@ body {
   line-height: 1.4;
   margin-top: 0.5rem;
 }
+
+/* Misc text */
 .more-widgets{
   font-size: 2rem;   /* Or 24px, 36px, etc. */
   font-weight: bold; /* or numeric value like 700 */
 }
+
+/* Simple fix for activityWidget.png */
 .activity-image{
   margin-top: 20px;
 }
