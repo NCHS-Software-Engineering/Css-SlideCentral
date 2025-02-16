@@ -2,7 +2,7 @@
 import '../styles/styles.css';
 
 // specific details need to be changed once CSS is fixed
-function WidgetPage() {
+function faq() {
     return (
         <>
          <link
@@ -71,4 +71,4 @@ function WidgetPage() {
             </>
     );
 }
-export default WidgetPage;
+export default faq;
