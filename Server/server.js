@@ -17,3 +17,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
 });
+
+app.get('/Learn more about widgets', (req, res) => {
+    window.open('/widgetPage.js', '_blank');
+});
