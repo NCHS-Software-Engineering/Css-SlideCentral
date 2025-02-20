@@ -2,8 +2,7 @@
 import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 import { keyframes } from '@emotion/react';
-import { Link } from 'react-router-dom';
-import WidgetPage from './WidgetPage';
+import Logo from '../images/homePageLogo.png'
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -57,14 +56,7 @@ const Home = () => {
 
             {/* Center: Ellipse */}
             <Grid item xs={4} container justifyContent="center">
-              <Box
-                sx={{
-                  width: 80,
-                  height: 40,
-                  backgroundColor: 'black',
-                  borderRadius: '50%',
-                }}
-              />
+              <img src={Logo} width="300" height="300" alt=""/>
             </Grid>
 
             {/* Right Side: Login and Additional Buttons */}
