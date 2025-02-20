@@ -134,6 +134,7 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
+                onClick={() => window.open('/faq', '_blank')}
               >
                 FAQ
               </Button>
