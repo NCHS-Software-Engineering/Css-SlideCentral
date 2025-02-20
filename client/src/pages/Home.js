@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
-
+import WidgetPage from './WidgetPage';
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -114,7 +114,6 @@ const Home = () => {
           {/* Right Side White Buttons */}
           <Grid item xs={12} md={4}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
-            <Link to="/WidgetPage">
               <Button
                 variant="contained"
                 sx={{
@@ -122,11 +121,11 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
-                onclick="window.open('/WidgetPage', '_blank')"
+                onClick={() => window.open('/WidgetPage', '_blank')}
               >
                 Learn more about Widgets
               </Button>
-              </Link>
+              
 
               <Button
                 variant="contained"

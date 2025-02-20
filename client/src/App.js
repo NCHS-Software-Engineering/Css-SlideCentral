@@ -18,7 +18,7 @@ function App() {
 
       <Route path="/faq" element={<FAQ />} />  {/* route to FAQ page */}
 
-  <Route exact path="/widgets" element={<WidgetPage />} /> {/* route to widget page */}
+  <Route exact path="/WidgetPage" element={<WidgetPage />} /> {/* route to widget page */}
 <Route path="/" element={<Home />} />
         {/* Add more routes here */}
       </Routes>
