@@ -5,8 +5,9 @@
   background: #f1f1f1;
   padding: 50px;
   border-radius: 10px;
-  width: 100vw; /* Set width to the full viewport width */
-  max-width: 100%; /* Prevent overflow */
+  height: 90.34vh; 
+  width: 100%; 
+  max-width: 94.73%;  
 }
 
 .month-header {
@@ -53,9 +54,9 @@
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
   width: 100%; /* Ensure it takes full width */
   max-width: 1200px; /* Optional: Prevent excessive stretching on big screens */
+  gap: 0px; 
 }
 
 .day-name {
@@ -63,21 +64,33 @@
   text-align: center;
   padding: 5px;
   background: #ddd;
+  border: 5px solid black;
   border-radius: 5px;
 }
 
 .day-square {
   width: 100%; /* Make day squares fill the grid */
-  max-width: 150px; /* Optional: Set a reasonable max width */
+  max-width: 170px; /* Optional: Set a reasonable max width */
   height: 120px;
-  border: 1px solid #ccc;
+  border: 5px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
   font-size: 1.2rem;
+  padding : 4px; 
+  margin: 0; 
+  box-sizing: border-box;
   background: white;
+}
+
+.day-number {
+  position : absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .empty {

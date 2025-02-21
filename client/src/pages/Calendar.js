@@ -4,8 +4,8 @@ import '../styles/calendarStyles.css';
  function Calendar() {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const month = 'February';
-    const numDays = 31; // Example for February
-    const firstDayOffset = 5; 
+    const numDays = 28; // Example for February
+    const firstDayOffset = 2; 
 
     const events = {
         6: { label: 'Tennis Practice', color: 'green' },
