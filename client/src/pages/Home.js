@@ -30,7 +30,7 @@ const overlayStyle = { // for darkening when tutorial button is clicked
   left: 0,
   width: '100%',
   height: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  backgroundColor: 'rgba(0, 0, 0, 0.9)',
   opacity: 0,
   visibility: 'hidden',
   transition: 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out',
@@ -55,12 +55,14 @@ const Home = () => {
         minHeight: '100vh',
         backgroundColor: '#f0f0f0',
         animation: `${fadeIn} 0.7s ease-in-out`,
+        
       }}
     >
       {/* Dark Overlay */}
       <Box
-        sx={{ ...overlayStyle, ...(isDarkened ? activeOverlayStyle : {}) }}
-        onClick={toggleOverlay}
+        sx={{ ...overlayStyle, ...(isDarkened ? activeOverlayStyle : {}), zIndex: 9999,}}
+        onClick={(e) => e.stopPropagation()}
+        
       >
         <Box
           sx={{
@@ -76,12 +78,16 @@ const Home = () => {
           <Typography variant="h4" 
           style={{
             position: 'absolute',
-            top: '200px',          // 50px from the top
-            left: '0px',        // 100px from the left
+            top: '200px',          
+            left: '0px',        
           }}
           > Focused Content Here</Typography>
           
-          <Button variant="contained" onClick={toggleOverlay} sx={{ mt: 2 }}>
+          <Button variant="contained"  onClick={() => { toggleOverlay();}}
+          sx={{ mt: 2, position: 'absolute',
+          top: 550,
+          left: 800, }} 
+          >
             Close
           </Button>
         </Box>
