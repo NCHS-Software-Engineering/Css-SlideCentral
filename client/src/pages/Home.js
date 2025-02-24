@@ -1,8 +1,7 @@
 // src/pages/Home.js
 import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
-import { keyframes } from '@emotion/react';
-import { useState } from 'react';
+import { keyframes } from '@emotion/react'
 import Logo from '../images/homePageLogo.png'
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
@@ -24,30 +23,12 @@ const redButtonStyle = {
   },
 };
 
-const overlayStyle = { // for darkening when tutorial button is clicked
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.9)',
-  opacity: 0,
-  visibility: 'hidden',
-  transition: 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out',
-};
 
-// Active state for the overlay
-const activeOverlayStyle = {
-  opacity: 1,
-  visibility: 'visible',
-};
+
+
 
 const Home = () => {
-  let [isDarkened, setIsDarkened] = useState(false);
-
-  const toggleOverlay = () => {
-    setIsDarkened(!isDarkened);
-  };
+  
 
   return (
     <Box
@@ -58,40 +39,7 @@ const Home = () => {
         
       }}
     >
-      {/* Dark Overlay */}
-      <Box
-        sx={{ ...overlayStyle, ...(isDarkened ? activeOverlayStyle : {}), zIndex: 9999,}}
-        onClick={(e) => e.stopPropagation()}
-        
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: 'white',
-            fontSize: '24px',
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="h4" 
-          style={{
-            position: 'absolute',
-            top: '200px',          
-            left: '0px',        
-          }}
-          > Focused Content Here</Typography>
-          
-          <Button variant="contained"  onClick={() => { toggleOverlay();}}
-          sx={{ mt: 2, position: 'absolute',
-          top: 550,
-          left: 800, }} 
-          >
-            Close
-          </Button>
-        </Box>
-      </Box>
+      
 
       {/* TOP BAR */}
       <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 1 }}>
@@ -198,7 +146,7 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
-                onClick={toggleOverlay}
+                onClick={() => window.open('/files/Tutorial.pdf', '_blank')}
               >
                 Tutorial
               </Button>
