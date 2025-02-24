@@ -138,7 +138,7 @@ function ActivitiesForm() {
           <textarea
             value={activityDesc}
             onChange={(e) => setActivityDesc(e.target.value)}
-            style={{ ...styles.input, height: '60px' }}
+            style={{ ...styles.input, height: '80px' }}
             placeholder="Describe the activity..."
           />
         </div>
@@ -173,12 +173,12 @@ function ActivitiesForm() {
   );
 }
 
-// Inline styles (optional; you can move them to a CSS file if you prefer)
+// Inline styles
 const styles = {
   container: {
-    maxWidth: '600px',
-    margin: '40px auto',
-    padding: '20px',
+    maxWidth: '800px',        // <-- Increased width
+    margin: '50px auto',      // <-- Adjust margin to suit your needs
+    padding: '30px',          // <-- Increased padding for a bigger feel
     border: '1px solid #ccc',
     borderRadius: '6px',
     backgroundColor: '#f9f9f9',
@@ -187,24 +187,27 @@ const styles = {
   header: {
     marginBottom: '20px',
     textAlign: 'center',
+    fontSize: '1.8rem',       // <-- Larger font for the heading
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '15px',
+    gap: '20px',              // <-- Increase the gap for spacing
   },
   fieldGroup: {
     display: 'flex',
     flexDirection: 'column',
   },
   label: {
-    marginBottom: '5px',
+    marginBottom: '8px',
     fontWeight: 'bold',
+    fontSize: '1rem',         // <-- Increase label font size
   },
   input: {
-    padding: '8px',
+    padding: '10px',
     borderRadius: '4px',
     border: '1px solid #ccc',
+    fontSize: '1rem',         // <-- Increase input font size
   },
   radioGroup: {
     display: 'flex',
@@ -214,14 +217,16 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '5px',
+    fontSize: '1rem',         // <-- Increase radio label font size
   },
   uploadButton: {
-    padding: '8px 12px',
+    padding: '10px 15px',
     backgroundColor: '#4CAF50',
     color: '#fff',
     borderRadius: '4px',
     cursor: 'pointer',
     textAlign: 'center',
+    fontSize: '1rem',         // <-- Increase button font size
   },
   buttonContainer: {
     display: 'flex',
@@ -231,17 +236,19 @@ const styles = {
     backgroundColor: '#ccc',
     color: '#000',
     border: 'none',
-    padding: '10px 15px',
+    padding: '12px 18px',
     borderRadius: '4px',
     cursor: 'pointer',
+    fontSize: '1rem',
   },
   submitButton: {
     backgroundColor: '#f44336',
     color: '#fff',
     border: 'none',
-    padding: '10px 15px',
+    padding: '12px 18px',
     borderRadius: '4px',
     cursor: 'pointer',
+    fontSize: '1rem',
   },
 };
 
