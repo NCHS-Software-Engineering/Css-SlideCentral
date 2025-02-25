@@ -1,7 +1,7 @@
 // src/pages/Home.js
 import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
-import { keyframes } from '@emotion/react';
+import { keyframes } from '@emotion/react'
 import Logo from '../images/homePageLogo.png'
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
@@ -23,15 +23,24 @@ const redButtonStyle = {
   },
 };
 
+
+
+
+
 const Home = () => {
+  
+
   return (
     <Box
       sx={{
         minHeight: '100vh',
         backgroundColor: '#f0f0f0',
         animation: `${fadeIn} 0.7s ease-in-out`,
+        
       }}
     >
+      
+
       {/* TOP BAR */}
       <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 1 }}>
         <Container maxWidth="lg">
@@ -137,6 +146,7 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
+                onClick={() => window.open('/files/Tutorial.pdf', '_blank')}
               >
                 Tutorial
               </Button>
@@ -147,5 +157,6 @@ const Home = () => {
     </Box>
   );
 };
+
 
 export default Home;
