@@ -99,7 +99,7 @@
 }
 
 .event-label {
-  position: absolute;
+  position: relative;
   bottom: 5px;
   left: 5px;
   right: 5px;

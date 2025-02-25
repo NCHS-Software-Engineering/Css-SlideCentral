@@ -9,38 +9,49 @@ import {useState} from 'react';
     const firstDayOffset = 2; 
 
     const events = {
-        6: { label: 'Tennis Practice', color: 'green', time : '3:00 PM', place: 'Tennis Courts', description: 'Practice for upcoming match' },
-        9: { label: 'CS Club', color: 'red',  time : '7:00 AM', place: 'Room 52', description: "We'll be having a typing competition today!" },
-        13: { label: '7th Period Assembly', color: 'blue',  time : '12:00 PM - 12:20 PM', place: 'Main Gym', description: 'Learn about the winter assembly!' },
-
+        6: [
+            { label: 'Tennis Practice', color: 'green', time: '3:00 PM', place: 'Tennis Courts', description: 'Practice for upcoming match' },
+            { label: 'Team Meeting', color: 'blue', time: '5:00 PM', place: 'Room 10', description: 'Discuss strategy for the next match' }
+        ],
+        9: [
+            { label: 'CS Club', color: 'red', time: '7:00 AM', place: 'Room 52', description: "We'll be having a typing competition today!" }
+        ],
+        13: [
+            { label: '7th Period Assembly', color: 'blue', time: '12:00 PM - 12:20 PM', place: 'Main Gym', description: 'Learn about the winter assembly!' },
+            { label: 'PARCC & Career Center', color: 'green', time: '2:00 PM', place: 'Auditorium', description: 'PARCC & Career Center' }
+        ]
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     const renderDays = () => {
         let daySquares = [];
-
+    
         // Empty spaces for days before Feb 1st
-           for (let i = 0; i < firstDayOffset; i++) {
+        for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
-
-
+    
         for (let i = 1; i <= numDays; i++) {
             daySquares.push(
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
-                    {/* Check if there's an event for this day */}
-                    {events[i] && (
-                        <div className="event-label" style={{ backgroundColor: events[i].color }} onClick={() => setSelectedEvent(events[i])}>
-                            {events[i].label}
-                            
+                    
+                    {/* Check if there are multiple events for this day */}
+                    {events[i] && events[i].map((event, index) => (
+                        <div
+                            key={index}
+                            className="event-label"
+                            style={{ backgroundColor: event.color }}
+                            onClick={() => setSelectedEvent(event)}
+                        >
+                            {event.label}
                         </div>
-                )}
+                    ))}
                 </div>
             );
         }
-
+    
         return daySquares;
     };
 
