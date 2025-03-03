@@ -1,4 +1,5 @@
 body {
+
    /* Light gray background */
   background: radial-gradient(circle, #ffffff, #c3c2c2);
   margin: 0;
@@ -113,3 +114,117 @@ ul {
   list-style-position: inside;
   padding: 0 0 0 20px; /* Indent the bullets if you like */
 }
+=======
+    /* Light gray background */
+   background: radial-gradient(circle, #ffffff, #c3c2c2);
+   margin: 0;
+   padding: 0;
+   text-align: left;
+ }
+ .page-title{
+   font-size: 7rem;
+   font-weight: bold;
+   margin-bottom: 7rem;
+ }
+ 
+ /* Widget Page */
+ 
+ /* Groups all containers to line them up horizontally */
+ .all-containers{
+   display: flex;          
+   flex-wrap: wrap;         
+   gap: 160px;               /* Space between items  */
+   justify-content: center; 
+   margin: 20px auto;   
+ }
+ 
+ /* Each individual container */
+ .widgets-container {
+   border-radius: 10px;
+   background-color:   #c1c1c1;
+   background: radial-gradient(circle, #c1c1c1, #868686);
+   box-shadow: none;
+   display: flex;
+   flex-direction: column; /* Stack items vertically */
+   align-items: center;
+     position: relative;    
+     justify-content: center; /* Center widgets horizontally */
+     gap: 20px; /* Space between widgets */
+     min-width: 500px;
+     transition: box-shadow 0.3s ease, transform 0.3s ease; 
+   }
+   /* Containers when hovered over */
+   .widgets-container:hover {
+     box-shadow: 0 20px 20px rgba(0,0,0,0.2);
+     display: flex;
+     flex-direction: column; /* Stack items vertically */
+     align-items: center;
+       position: relative;    
+       justify-content: center; /* Center widgets horizontally */
+       gap: 20px; /* Space between widgets */
+       min-width: 500px;
+       transform: scale(1.05);
+     }
+ 
+     /* Description and dimensions of each widget (white square) */
+ .widgetCard{
+   min-height: 300px;
+   position: relative;               
+   background-color: #ffffff;       
+   box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Soft drop shadow for layering effect */
+   width: 300px;                     
+   margin: 20px auto;                /* Center horizontally and add vertical space */
+   padding: 30px ;          
+   text-align: center;
+ }
+ /* Card Text */
+ .widget-title{
+     font-family: 'Montserrat', sans-serif;
+   font-size: 3rem;
+   font-weight: bold;
+   margin-bottom: 0.5rem;
+ }
+ .widgetDesc{
+   font-family: 'Inter', sans-serif;
+     font-size: 1rem;
+   line-height: 1.4;
+   margin-top: 0.5rem;
+ }
+ .widgetDim{
+     font-size: 1rem;
+   line-height: 1.4;
+   margin-top: 0.5rem;
+ }
+ 
+ /* Misc text */
+ .more-widgets{
+   font-size: 2rem;   /* Or 24px, 36px, etc. */
+   font-weight: bold; /* or numeric value like 700 */
+ }
+ 
+ /* Simple fix for activityWidget.png */
+ .activity-image{
+   margin-top: 20px;
+ }
+ 
+ /* FAQ Page */
+ .questions{
+   text-align: left;
+   margin-left: 40px;
+ }
+ 
+ h3{
+   font-family: 'Montserrat', sans-serif;
+ font-size: 3.5rem;
+ font-weight: bold;
+ margin-bottom: 0.5rem;
+ }
+ 
+ ul {
+   
+   margin: 0;
+   padding-left: 2em; 
+   list-style-position: inside;
+   padding: 0 0 0 20px; /* Indent the bullets if you like */
+ }
+

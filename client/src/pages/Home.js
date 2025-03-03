@@ -1,8 +1,14 @@
 // src/pages/Home.js
 import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
+
 import { keyframes } from '@emotion/react'
 import Logo from '../images/homePageLogo.png'
+
+
+import { Link } from 'react-router-dom'; // <-- Import Link from react-router-dom
+
+
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -48,7 +54,12 @@ const Home = () => {
             {/* Left Side Buttons */}
             <Grid item xs={4}>
               <Box sx={{ display: 'flex', gap: '0.5rem', flexWrap: 'nowrap' }}>
-                <Button variant="contained" sx={redButtonStyle}>
+                <Button
+                  component={Link}     // <-- Use Link as the component
+                  to="/activities"     // <-- Destination route
+                  variant="contained"
+                  sx={redButtonStyle}
+                >
                   Enter Activity
                 </Button>
                 <Button variant="contained" sx={redButtonStyle}>
@@ -159,4 +170,6 @@ const Home = () => {
 };
 
 
+
 export default Home;
+
