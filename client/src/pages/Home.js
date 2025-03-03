@@ -1,8 +1,13 @@
 // src/pages/Home.js
 import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
-import { keyframes } from '@emotion/react';
+
+import { keyframes } from '@emotion/react'
+import Logo from '../images/homePageLogo.png'
+
+
 import { Link } from 'react-router-dom'; // <-- Import Link from react-router-dom
+
 
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
@@ -24,15 +29,24 @@ const redButtonStyle = {
   },
 };
 
+
+
+
+
 const Home = () => {
+  
+
   return (
     <Box
       sx={{
         minHeight: '100vh',
         backgroundColor: '#f0f0f0',
         animation: `${fadeIn} 0.7s ease-in-out`,
+        
       }}
     >
+      
+
       {/* TOP BAR */}
       <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 1 }}>
         <Container maxWidth="lg">
@@ -62,14 +76,7 @@ const Home = () => {
 
             {/* Center: Ellipse */}
             <Grid item xs={4} container justifyContent="center">
-              <Box
-                sx={{
-                  width: 80,
-                  height: 40,
-                  backgroundColor: 'black',
-                  borderRadius: '50%',
-                }}
-              />
+              <img src={Logo} width="300" height="300" alt=""/>
             </Grid>
 
             {/* Right Side: Login and Additional Buttons */}
@@ -126,9 +133,12 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
+                onClick={() => window.open('/WidgetPage', '_blank')}
               >
                 Learn more about Widgets
               </Button>
+              
+
               <Button
                 variant="contained"
                 sx={{
@@ -136,6 +146,7 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
+                onClick={() => window.open('/faq', '_blank')}
               >
                 FAQ
               </Button>
@@ -146,6 +157,7 @@ const Home = () => {
                   color: '#000',
                   '&:hover': { backgroundColor: '#f5f5f5' },
                 }}
+                onClick={() => window.open('/files/Tutorial.pdf', '_blank')}
               >
                 Tutorial
               </Button>
@@ -157,4 +169,7 @@ const Home = () => {
   );
 };
 
+
+
 export default Home;
+
