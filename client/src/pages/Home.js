@@ -92,7 +92,7 @@ const Home = () => {
                   <Button variant="contained" sx={redButtonStyle}>
                     Preview Edit
                   </Button>
-                  <Button variant="contained" sx={redButtonStyle}>
+                  <Button component={Link}   to="/calendar" variant="contained" sx={redButtonStyle}>
                     Calendar
                   </Button>
                 </Box>
