@@ -1,7 +1,10 @@
 
 import '../styles/calendarStyles.css';
+import { Link } from 'react-router-dom'; 
+
 import {useState} from 'react';
- 
+import Logo from '../images/homePageLogo.png'
+import { Button } from "@mui/material";
  function Calendar() {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const month = 'February';
@@ -77,8 +80,9 @@ import {useState} from 'react';
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
             <div className="calendar-container">
                 <div className="month-header">
-                    <div className="logo">CSS</div>
-                    <div className="month-name">{month}</div>
+                <Button  component={Link}   to="/" className="logo"><img src={Logo} width="100" height="100" alt=""/></Button>
+                    <div className="month-name" 
+                    >{month}</div>
                 </div>
                 <div className="legend">
                     <span className="legend-item red">Club Meetings</span>
