@@ -1,47 +1,78 @@
-
 import '../styles/calendarStyles.css';
-import { Link } from 'react-router-dom'; 
+import { useState } from 'react';
 
-import {useState} from 'react';
-import Logo from '../images/homePageLogo.png'
-import { Button } from "@mui/material";
- function Calendar() {
+function Calendar() {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const month = 'February';
-    const numDays = 28; // Example for February
-    const firstDayOffset = 2; 
 
+    // Get the current date
+    const today = new Date();
+    const currentMonth = today.getMonth();  // 0 = Jan, 1 = Feb, etc.
+    const currentYear = today.getFullYear();
+
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    const month = monthNames[currentMonth];
+
+    // Get number of days in the current month
+    const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    // Get the weekday index of the 1st day of the month
+    const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
+
+    // Example Events
     const events = {
         6: [
             { label: 'Tennis Practice', color: 'green', time: '3:00 PM', place: 'Tennis Courts', description: 'Practice for upcoming match' },
-            { label: 'Team Meeting', color: 'blue', time: '5:00 PM', place: 'Room 10', description: 'Discuss strategy for the next match' }
+            { label: 'Team Meeting', color: 'blue', time: '5:00 PM', place: 'Room 10', description: 'Discuss strategy for the next match' },
+            { label: 'Music Class', color: 'purple', time: '6:30 PM', place: 'Room 20', description: 'Guitar lessons' },
+            { label: 'Volunteer Work', color: 'orange', time: '8:00 AM', place: 'Community Center', description: 'Helping at the shelter' },
+            { label: 'Dinner with Coach', color: 'yellow', time: '7:00 PM', place: 'Downtown Cafe', description: 'Team bonding dinner' }
         ],
         9: [
             { label: 'CS Club', color: 'red', time: '7:00 AM', place: 'Room 52', description: "We'll be having a typing competition today!" }
-        ],
-        13: [
-            { label: '7th Period Assembly', color: 'blue', time: '12:00 PM - 12:20 PM', place: 'Main Gym', description: 'Learn about the winter assembly!' },
-            { label: 'PARCC & Career Center', color: 'green', time: '2:00 PM', place: 'Auditorium', description: 'PARCC & Career Center' }
         ]
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [eventIndexes, setEventIndexes] = useState({}); // Tracks visible event index per day
+
+    // Function to handle forward pagination
+    const goForward = (day) => {
+        setEventIndexes((prev) => ({
+            ...prev,
+            [day]: Math.min((prev[day] || 0) + 3, events[day].length - 1)
+        }));
+    };
+
+    // Function to handle backward pagination
+    const goBack = (day) => {
+        setEventIndexes((prev) => ({
+            ...prev,
+            [day]: Math.max((prev[day] || 0) - 3, 0)
+        }));
+    };
 
     const renderDays = () => {
         let daySquares = [];
-    
-        // Empty spaces for days before Feb 1st
+
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
-    
+
         for (let i = 1; i <= numDays; i++) {
+            const visibleIndex = eventIndexes[i] || 0;
+            const eventList = events[i] || [];
+            const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
+
             daySquares.push(
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
-                    
-                    {/* Check if there are multiple events for this day */}
-                    {events[i] && events[i].map((event, index) => (
+
+                    {/* Display only 3 events at a time */}
+                    {visibleEvents.map((event, index) => (
                         <div
                             key={index}
                             className="event-label"
@@ -51,16 +82,23 @@ import { Button } from "@mui/material";
                             {event.label}
                         </div>
                     ))}
+
+                    {/* Navigation buttons if there are more than 3 events */}
+                    {eventList.length > 3 && (
+                        <div className="event-pagination">
+                            {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅ Go Back</button>}
+                            {visibleIndex + 3 < eventList.length && <button onClick={() => goForward(i)}>Go Forward ➡</button>}
+                        </div>
+                    )}
                 </div>
             );
         }
-    
+
         return daySquares;
     };
 
     const EventPopup = ({ event, onClose }) => {
-        if (!event) return null; // If no event is selected, don't render
-    
+        if (!event) return null;
         return (
             <div className="popup-overlay" onClick={onClose}>
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
@@ -73,21 +111,13 @@ import { Button } from "@mui/material";
             </div>
         );
     };
-    
 
-     return (
+    return (
         <>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
             <div className="calendar-container">
                 <div className="month-header">
-                <Button  component={Link}   to="/" className="logo"><img src={Logo} width="100" height="100" alt=""/></Button>
-                    <div className="month-name" 
-                    >{month}</div>
-                </div>
-                <div className="legend">
-                    <span className="legend-item red">Club Meetings</span>
-                    <span className="legend-item blue">School Events</span>
-                    <span className="legend-item green">School Sports</span>
+                    <div className="logo">CSS</div>
+                    <div className="month-name">{month} {currentYear}</div>
                 </div>
                 <div className="days-grid">
                     {days.map((day, index) => (
@@ -99,6 +129,6 @@ import { Button } from "@mui/material";
             </div>
         </>
     );
-
 }
+
 export default Calendar;

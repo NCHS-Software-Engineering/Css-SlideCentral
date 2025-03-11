@@ -131,3 +131,24 @@
   text-align: center;
   position: relative;
 }
+
+.event-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.event-pagination button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 3px 6px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 0.7rem;
+}
+
+.event-pagination button:hover {
+  background: #2980b9;
+}
