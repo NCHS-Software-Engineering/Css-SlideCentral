@@ -82,7 +82,7 @@ const Home = () => {
             {/* Right Side: Login and Additional Buttons */}
             <Grid item xs={4} container justifyContent="flex-end">
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <Button variant="contained" sx={redButtonStyle}>
+                <Button id= "LoginID" to="/auth/google" variant="contained" sx={redButtonStyle}>
                   Login
                 </Button>
                 <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>

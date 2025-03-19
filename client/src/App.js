@@ -24,7 +24,7 @@ function App() {
 
   <Route exact path="/WidgetPage" element={<WidgetPage />} /> {/* route to widget page */}
 
-
+      
         <Route path="/" element={<Home />} />
         {/* Add the new ActivitiesForm route */}
         <Route path="/activities" element={<ActivitiesForm />} />
