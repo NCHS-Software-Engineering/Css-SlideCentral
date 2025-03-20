@@ -4,13 +4,20 @@ const path = require("path");
 const cors = require("cors");
 const app = express();
 const route = express.Router();
+const { google } = require('googleapis');
 
 require('dotenv').config(); // For environment variables
 // Google Auth Library for verifying tokens
-const { OAuth2Client } = require('google-auth-library');
+//const { OAuth2Client } = require('google-auth-library');
 
-const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const oAuth2 = new OAuth2Client(CLIENT_ID);
+const OAuth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI 
+);
+const CLIENT_ID = process.env.CLIENT_ID;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+
 
 
 // const jwt = require('jsonwebtoken'); // Add JWT for creating tokens
@@ -32,7 +39,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 // start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8500;
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
 });
@@ -40,7 +47,9 @@ app.listen(PORT, () => {
 //Login
 
 /* auth endpoint */
-app.get('/auth/google', (req, res) => {
+app.get('/signin-google', (req, res) => {
+  console.log("Redirecting to Google Auth:", authorizeUrl); // Debugging step
+
   // Generate the url that will be used for authorization
   const authorizeUrl = OAuth2Client.generateAuthUrl({
     access_type: 'offline',
@@ -80,7 +89,7 @@ app.get('/auth/google/callback', async (req, res) => {
     };
 
     // Redirect to your application's dashboard
-    res.redirect('/dashboard');
+    res.redirect('/');
   } catch (error) {
     console.error('Error during authentication:', error);
     res.redirect('/login?error=auth_failed');

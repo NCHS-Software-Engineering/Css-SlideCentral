@@ -34,7 +34,15 @@ const redButtonStyle = {
 
 
 const Home = () => {
-  
+  const handleLogin = () => {
+    fetch('http://localhost:3000/auth/google', {
+      method: 'GET',
+    })
+      .then((response) => {
+        // If the backend responds correctly, it will redirect
+        window.location.href = response.url; // Redirect to the OAuth URL returned by the backend
+      })
+  };
 
   return (
     <Box
@@ -82,7 +90,7 @@ const Home = () => {
             {/* Right Side: Login and Additional Buttons */}
             <Grid item xs={4} container justifyContent="flex-end">
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <Button id= "LoginID" to="/auth/google" variant="contained" sx={redButtonStyle}>
+                <Button id= "LoginID" onClick={handleLogin} variant="contained" sx={redButtonStyle}>
                   Login
                 </Button>
                 <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
