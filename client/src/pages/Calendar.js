@@ -6,7 +6,7 @@ function Calendar() {
 
     // Get the current date
     const today = new Date();
-    const currentMonth = today.getMonth();  // 0 = Jan, 1 = Feb, etc.
+    const currentMonth = today.getMonth(); 
     const currentYear = today.getFullYear();
 
     const monthNames = [
@@ -18,28 +18,39 @@ function Calendar() {
 
     // Get number of days in the current month
     const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    // Get the weekday index of the 1st day of the month
     const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
 
-    // Example Events
+    // Event categories and colors
+    const eventTypes = {
+        sports: { color: 'green', icon: '🏆', label: 'Sports Event' },
+        club: { color: 'red', icon: '📅', label: 'Club Meeting' },
+        school: { color: 'blue', icon: '🎓', label: 'School Event' }
+    };
+
+    // Example Events (Restricted to 3 types)
     const events = {
+        4: [
+            { type: 'club', label: 'CS Club Meeting', time: '7:00 AM', place: 'Room 52', description: 'Discuss upcoming hackathon' },
+
+        ],
         6: [
-            { label: 'Tennis Practice', color: 'green', time: '3:00 PM', place: 'Tennis Courts', description: 'Practice for upcoming match' },
-            { label: 'Team Meeting', color: 'blue', time: '5:00 PM', place: 'Room 10', description: 'Discuss strategy for the next match' },
-            { label: 'Music Class', color: 'purple', time: '6:30 PM', place: 'Room 20', description: 'Guitar lessons' },
-            { label: 'Volunteer Work', color: 'orange', time: '8:00 AM', place: 'Community Center', description: 'Helping at the shelter' },
-            { label: 'Dinner with Coach', color: 'yellow', time: '7:00 PM', place: 'Downtown Cafe', description: 'Team bonding dinner' }
+            { type: 'sports', label: 'Tennis Match', time: '3:00 PM', place: 'Tennis Courts', description: 'Friendly match against rival school' },
+            { type: 'school', label: 'Parent-Teacher Night', time: '6:30 PM', place: 'Auditorium', description: 'School-wide event' }
         ],
         9: [
-            { label: 'CS Club', color: 'red', time: '7:00 AM', place: 'Room 52', description: "We'll be having a typing competition today!" }
+            { type: 'club', label: 'Debate Club', time: '7:00 AM', place: 'Room 10', description: 'Prepping for state championship' }
+        ],
+        15: [
+            { type: 'sports', label: 'Soccer Practice', time: '4:00 PM', place: 'Field', description: 'Training for weekend game' }
+        ],
+        22: [
+            { type: 'school', label: 'Science Fair', time: '1:00 PM', place: 'Gym', description: 'Students showcase projects' }
         ]
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [eventIndexes, setEventIndexes] = useState({}); // Tracks visible event index per day
+    const [eventIndexes, setEventIndexes] = useState({}); 
 
-    // Function to handle forward pagination
     const goForward = (day) => {
         setEventIndexes((prev) => ({
             ...prev,
@@ -47,7 +58,6 @@ function Calendar() {
         }));
     };
 
-    // Function to handle backward pagination
     const goBack = (day) => {
         setEventIndexes((prev) => ({
             ...prev,
@@ -71,23 +81,25 @@ function Calendar() {
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
 
-                    {/* Display only 3 events at a time */}
-                    {visibleEvents.map((event, index) => (
-                        <div
-                            key={index}
-                            className="event-label"
-                            style={{ backgroundColor: event.color }}
-                            onClick={() => setSelectedEvent(event)}
-                        >
-                            {event.label}
-                        </div>
-                    ))}
+                    {visibleEvents.map((event, index) => {
+                        const eventType = eventTypes[event.type] || {}; 
 
-                    {/* Navigation buttons if there are more than 3 events */}
+                        return (
+                            <div
+                                key={index}
+                                className="event-label"
+                                style={{ backgroundColor: eventType.color }}
+                                onClick={() => setSelectedEvent(event)}
+                            >
+                                {eventType.icon} {event.label}
+                            </div>
+                        );
+                    })}
+
                     {eventList.length > 3 && (
                         <div className="event-pagination">
-                            {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅ Go Back</button>}
-                            {visibleIndex + 3 < eventList.length && <button onClick={() => goForward(i)}>Go Forward ➡</button>}
+                            {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅</button>}
+                            {visibleIndex + 3 < eventList.length && <button onClick={() => goForward(i)}>➡</button>}
                         </div>
                     )}
                 </div>
@@ -116,15 +128,27 @@ function Calendar() {
         <>
             <div className="calendar-container">
                 <div className="month-header">
-                    <div className="logo">CSS</div>
+                    <div className="logo">📆 Calendar</div>
                     <div className="month-name">{month} {currentYear}</div>
                 </div>
+
+                {/* Event Key (Legend) */}
+                <div className="event-key">
+                    {Object.values(eventTypes).map((event, index) => (
+                        <div key={index} className="event-key-item">
+                            <span className="event-key-color" style={{ backgroundColor: event.color }}></span>
+                            {event.icon} {event.label}
+                        </div>
+                    ))}
+                </div>
+
                 <div className="days-grid">
                     {days.map((day, index) => (
                         <div className="day-name" key={index}>{day}</div>
                     ))}
                     {renderDays()}
                 </div>
+
                 {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
             </div>
         </>
