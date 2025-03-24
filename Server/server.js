@@ -13,10 +13,9 @@ require('dotenv').config(); // For environment variables
 const OAuth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URI 
+  process.env.REDIRECT_URI
 );
-const CLIENT_ID = process.env.CLIENT_ID;
-const REDIRECT_URI = process.env.REDIRECT_URI;
+
 
 
 
@@ -25,7 +24,7 @@ const REDIRECT_URI = process.env.REDIRECT_URI;
 
 
 
-route.get("/", (req, res) => {
+route.get("/auth", (req, res) => {
   res.render("auth");
 });
 
@@ -47,40 +46,33 @@ app.listen(PORT, () => {
 //Login
 
 /* auth endpoint */
-app.get('/signin-google', (req, res) => {
-  console.log("Redirecting to Google Auth:", authorizeUrl); // Debugging step
-
-  // Generate the url that will be used for authorization
+app.get("/signin-google", (req, res) => {
   const authorizeUrl = OAuth2Client.generateAuthUrl({
-    access_type: 'offline',
+    access_type: "offline",
     scope: [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email'
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email"
     ],
-    prompt: 'consent'
+    prompt: "consent"
   });
 
   res.redirect(authorizeUrl);
 });
 
 /* Callback endpoint */
-app.get('/auth/google/callback', async (req, res) => {
-  // Get the authorization code from the query parameters
+app.get("/auth/google/callback", async (req, res) => {
   const code = req.query.code;
 
   try {
-    // Exchange the code for access and refresh tokens
+    // Exchange authorization code for tokens
     const { tokens } = await OAuth2Client.getToken(code);
     OAuth2Client.setCredentials(tokens);
 
-    // Use the tokens to get user information
-    const oauth2 = google.oauth2({
-      auth: OAuth2Client,
-      version: 'v2'
-    });
+    // Fetch user profile
+    const oauth2 = google.oauth2({ auth: OAuth2Client, version: "v2" });
     const { data } = await oauth2.userinfo.get();
 
-    // Create a session for the user
+    // Store user session
     req.session.user = {
       id: data.id,
       email: data.email,
@@ -88,11 +80,37 @@ app.get('/auth/google/callback', async (req, res) => {
       picture: data.picture
     };
 
-    // Redirect to your application's dashboard
-    res.redirect('/');
+    console.log("User authenticated:", req.session.user);
+    res.redirect("http://localhost:3000/"); // Redirect to the frontend dashboard
   } catch (error) {
-    console.error('Error during authentication:', error);
-    res.redirect('/login?error=auth_failed');
+    console.error("Auth Error:", error);
+    res.redirect("/login?error=auth_failed");
   }
 });
 
+// 🔹 Route: Verify Token (For frontend token-based login)
+app.post("/verify-token", async (req, res) => {
+  const token = req.body.token;
+
+  try {
+    const ticket = await OAuth2Client.verifyIdToken({
+      idToken: token,
+      audience: process.env.CLIENT_ID
+    });
+
+    const { sub, email, name, picture } = ticket.getPayload();
+    req.session.user = { id: sub, email, name, picture };
+
+    console.log("Token Verified:", req.session.user);
+    res.status(200).json({ success: true, user: req.session.user });
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    res.status(401).json({ success: false, message: "Invalid token" });
+  }
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/"); // Redirect to homepage after logout
+  });
+});

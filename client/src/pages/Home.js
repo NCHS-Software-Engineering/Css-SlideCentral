@@ -35,13 +35,7 @@ const redButtonStyle = {
 
 const Home = () => {
   const handleLogin = () => {
-    fetch('http://localhost:3000/auth/google', {
-      method: 'GET',
-    })
-      .then((response) => {
-        // If the backend responds correctly, it will redirect
-        window.location.href = response.url; // Redirect to the OAuth URL returned by the backend
-      })
+    window.location.href = 'http://localhost:8500/signin-google';
   };
 
   return (
