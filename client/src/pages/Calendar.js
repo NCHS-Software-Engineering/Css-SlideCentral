@@ -36,6 +36,7 @@ function Calendar() {
         6: [
             { type: 'sports', label: 'Tennis Match', time: '3:00 PM', place: 'Tennis Courts', description: 'Friendly match against rival school' },
             { type: 'school', label: 'Parent-Teacher Night', time: '6:30 PM', place: 'Auditorium', description: 'School-wide event' }
+ 
         ],
         9: [
             { type: 'club', label: 'Debate Club', time: '7:00 AM', place: 'Room 10', description: 'Prepping for state championship' }
@@ -128,7 +129,7 @@ function Calendar() {
         <>
             <div className="calendar-container">
                 <div className="month-header">
-                    <div className="logo">📆 Calendar</div>
+                    <div className="logo">CSS</div>
                     <div className="month-name">{month} {currentYear}</div>
                 </div>
 
