@@ -22,9 +22,9 @@ function Calendar() {
 
     // Event categories and colors
     const eventTypes = {
-        sports: { color: 'green', icon: '🏆', label: 'Sports Event' },
-        club: { color: 'red', icon: '📅', label: 'Club Meeting' },
-        school: { color: 'blue', icon: '🎓', label: 'School Event' }
+        sports: { color: 'green', label: 'Sports Event' },
+        club: { color: 'red', label: 'Club Meeting' },
+        school: { color: 'blue', label: 'School Event' }
     };
 
     // Example Events (Restricted to 3 types)
@@ -135,9 +135,13 @@ function Calendar() {
                 {/* Event Key (Legend) */}
                 <div className="event-key">
                     {Object.values(eventTypes).map((event, index) => (
-                        <div key={index} className="event-key-item">
+                        <div 
+                            key={index} 
+                            className="event-key-item" 
+                            style={{ backgroundColor: event.color }}
+                        >
                             <span className="event-key-color" style={{ backgroundColor: event.color }}></span>
-                            {event.icon} {event.label}
+                            {event.label}
                         </div>
                     ))}
                 </div>
