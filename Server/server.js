@@ -33,6 +33,14 @@ route.get("/auth", (req, res) => {
 // Middleware setup
 app.use(cors());
 app.use(express.json());
+const session = require("express-session");
+
+app.use(session({
+  secret: "your-secret-key",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 // Static file serving for the React build (if you do a production build)
 app.use(express.static(path.join(__dirname, "../client/build")));
@@ -46,17 +54,46 @@ app.listen(PORT, () => {
 //Login
 
 /* auth endpoint */
-app.get("/signin-google", (req, res) => {
-  const authorizeUrl = OAuth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: [
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email"
-    ],
-    prompt: "consent"
-  });
+app.get("/signin-google",  async (req, res) => {
+  const code = req.query.code;
 
-  res.redirect(authorizeUrl);
+  if(code !== undefined) {
+    try {
+      // Exchange authorization code for tokens
+      const { tokens } = await OAuth2Client.getToken(code);
+      OAuth2Client.setCredentials(tokens);
+  
+      // Fetch user profile
+      const oauth2 = google.oauth2({ auth: OAuth2Client, version: "v2" });
+      const { data } = await oauth2.userinfo.get();
+  
+      // Store user session
+      req.session.user = {
+        id: data.id,
+        email: data.email,
+        name: data.name,
+        picture: data.picture
+      };
+  
+      console.log("User authenticated:", req.session.user);
+      res.redirect("/"); // Redirect to the frontend dashboard
+    } catch (error) {
+      console.error("Auth Error:", error);
+      res.redirect("/login?error=auth_failed");
+    }
+  } else {
+    const authorizeUrl = OAuth2Client.generateAuthUrl({
+
+      access_type: "offline",
+      scope: [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email"
+      ],
+      prompt: "consent"
+    });
+  
+    res.redirect(authorizeUrl);
+  }
 });
 
 /* Callback endpoint */
@@ -81,7 +118,7 @@ app.get("/auth/google/callback", async (req, res) => {
     };
 
     console.log("User authenticated:", req.session.user);
-    res.redirect("http://localhost:3000/"); // Redirect to the frontend dashboard
+    res.redirect("/"); // Redirect to the frontend dashboard
   } catch (error) {
     console.error("Auth Error:", error);
     res.redirect("/login?error=auth_failed");
