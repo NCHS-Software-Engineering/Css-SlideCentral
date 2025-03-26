@@ -1,13 +1,9 @@
 // src/pages/Home.js
 import React from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
-
-import { keyframes } from '@emotion/react'
-import Logo from '../images/homePageLogo.png'
-
-
-import { Link } from 'react-router-dom'; // <-- Import Link from react-router-dom
-
+import { keyframes } from '@emotion/react';
+import { Link } from 'react-router-dom';
+import Logo from '../images/homePageLogo.png';
 
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
@@ -15,51 +11,47 @@ const fadeIn = keyframes`
   to { opacity: 1; }
 `;
 
-// Compact red button style
+// Red button style
 const redButtonStyle = {
   backgroundColor: 'red',
   color: '#fff',
-  padding: '6px 12px',      // Smaller padding for a compact look
-  textTransform: 'none',    // Keep the text as-is (no uppercase)
+  textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
-  whiteSpace: 'nowrap',     // Prevent text from wrapping
   '&:hover': {
     backgroundColor: '#b71c1c',
     transform: 'scale(1.05)',
   },
 };
 
-
-
-
-
 const Home = () => {
-  
-
   return (
     <Box
       sx={{
         minHeight: '100vh',
         backgroundColor: '#f0f0f0',
         animation: `${fadeIn} 0.7s ease-in-out`,
-        
       }}
     >
-      
-
-      {/* TOP BAR */}
-      <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 1 }}>
+      {/* TOP SECTION */}
+      <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 2 }}>
         <Container maxWidth="lg">
-          <Grid container alignItems="center">
-            {/* Left Side Buttons */}
-            <Grid item xs={4}>
-              <Box sx={{ display: 'flex', gap: '0.5rem', flexWrap: 'nowrap' }}>
-                <Button
-                  component={Link}     // <-- Use Link as the component
-                  to="/activities"     // <-- Destination route
-                  variant="contained"
-                  sx={redButtonStyle}
-                >
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
+            {/* Left Side Buttons - On top in mobile */}
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: 'repeat(auto-fit, minmax(120px, 1fr))', sm: 'repeat(4, 1fr)' },
+                  gap: 1,
+                  justifyContent: 'center',
+                }}
+              >
+                <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
                   Enter Activity
                 </Button>
                 <Button variant="contained" sx={redButtonStyle}>
@@ -74,28 +66,37 @@ const Home = () => {
               </Box>
             </Grid>
 
-            {/* Center: Ellipse */}
-            <Grid item xs={4} container justifyContent="center">
-              <img src={Logo} width="300" height="300" alt=""/>
+            {/* Logo */}
+            <Grid item xs={12} md={4} container justifyContent="center">
+              <img
+                src={Logo}
+                alt="Logo"
+                style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain' }}
+              />
             </Grid>
 
-            {/* Right Side: Login and Additional Buttons */}
-            <Grid item xs={4} container justifyContent="flex-end">
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            {/* Right Side Buttons - On bottom in mobile */}
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: 'repeat(auto-fit, minmax(120px, 1fr))', sm: 'repeat(4, 1fr)' },
+                  gap: 1,
+                  justifyContent: 'center',
+                }}
+              >
                 <Button variant="contained" sx={redButtonStyle}>
                   Login
                 </Button>
-                <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                  <Button variant="contained" sx={redButtonStyle}>
-                    CSS Preview
-                  </Button>
-                  <Button variant="contained" sx={redButtonStyle}>
-                    Preview Edit
-                  </Button>
-                  <Button component={Link}   to="/calendar" variant="contained" sx={redButtonStyle}>
-                    Calendar
-                  </Button>
-                </Box>
+                <Button variant="contained" sx={redButtonStyle}>
+                  CSS Preview
+                </Button>
+                <Button variant="contained" sx={redButtonStyle}>
+                  Preview Edit
+                </Button>
+                <Button component={Link} to="/calendar" variant="contained" sx={redButtonStyle}>
+                  Calendar
+                </Button>
               </Box>
             </Grid>
           </Grid>
@@ -103,29 +104,38 @@ const Home = () => {
       </Box>
 
       {/* MAIN CONTENT */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Grid container spacing={2} alignItems="center">
-          {/* Centered Text */}
+      <Container maxWidth="md" sx={{ py: 6 }}>
+        <Grid container spacing={4} alignItems="center">
+          {/* Text Section */}
           <Grid item xs={12} md={8}>
             <Typography
-              variant="h4" // Use h4 for large text. Change to h2, h1, etc., if needed.
+              variant="h5"
               textAlign="center"
               gutterBottom
               sx={{ fontWeight: 'bold' }}
             >
-              CSS/Slide Central is an application that can be used by teachers and activity sponsors to display information around the school.
+              CSS/Slide Central is an application that can be used by teachers and activity sponsors
+              to display information around the school.
             </Typography>
-            <Typography variant="h6" textAlign="center" paragraph>
-              A clock, countdown to the next period, schedule, and list of activities happening at the school are all available within the application.
+            <Typography variant="body1" textAlign="center" paragraph>
+              A clock, countdown to the next period, schedule, and list of activities happening at
+              the school are all available within the application.
             </Typography>
-            <Typography variant="h6" textAlign="center">
+            <Typography variant="body1" textAlign="center">
               To learn more, click on the buttons on the right.
             </Typography>
           </Grid>
 
-          {/* Right Side White Buttons */}
+          {/* Widget Buttons */}
           <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                alignItems: 'center',
+              }}
+            >
               <Button
                 variant="contained"
                 sx={{
@@ -137,7 +147,6 @@ const Home = () => {
               >
                 Learn more about Widgets
               </Button>
-              
 
               <Button
                 variant="contained"
@@ -150,6 +159,7 @@ const Home = () => {
               >
                 FAQ
               </Button>
+
               <Button
                 variant="contained"
                 sx={{
@@ -169,7 +179,4 @@ const Home = () => {
   );
 };
 
-
-
 export default Home;
-
