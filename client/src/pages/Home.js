@@ -1,5 +1,5 @@
 // src/pages/Home.js
-import React from 'react';
+import {React, useEffect} from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 
 import { keyframes } from '@emotion/react'
@@ -29,7 +29,13 @@ const redButtonStyle = {
   },
 };
 
-
+// if logged in
+useEffect(() => {
+  fetch("http://localhost:8500", { credentials: "include" })
+    .then((res) => res.json())
+    .then((data) => setIsLoggedIn(data.loginVerified))
+    .catch((err) => console.error("Error fetching auth status:", err));
+}, []);
 
 
 

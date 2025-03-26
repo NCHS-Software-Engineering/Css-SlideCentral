@@ -16,7 +16,7 @@ const OAuth2Client = new google.auth.OAuth2(
   process.env.REDIRECT_URI
 );
 
-
+let LOGIN_VERIFIED = false; // boolean for if you are logged in
 
 
 // const jwt = require('jsonwebtoken'); // Add JWT for creating tokens
@@ -76,7 +76,11 @@ app.get("/signin-google",  async (req, res) => {
       };
   
       console.log("User authenticated:", req.session.user);
-      res.redirect("/"); // Redirect to the frontend dashboard
+
+      const LOGIN_VERIFIED = req.session.user ? true : false; // verify account
+      res.json({ loginVerified: LOGIN_VERIFIED });
+
+      res.redirect("http://localhost:3000/"); // Redirect to the frontend dashboard
     } catch (error) {
       console.error("Auth Error:", error);
       res.redirect("/login?error=auth_failed");
