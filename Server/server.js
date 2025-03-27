@@ -77,7 +77,7 @@ app.get("/signin-google",  async (req, res) => {
   
       console.log("User authenticated:", req.session.user);
 
-      const LOGIN_VERIFIED = req.session.user ? true : false; // verify account
+      LOGIN_VERIFIED = true;
       res.json({ loginVerified: LOGIN_VERIFIED });
 
       res.redirect("http://localhost:3000/"); // Redirect to the frontend dashboard
@@ -99,6 +99,12 @@ app.get("/signin-google",  async (req, res) => {
     res.redirect(authorizeUrl);
   }
 });
+
+app.get("/auth/status", (req, res) => {
+  const isLoggedIn = req.session.user ? true : false;
+  res.json({ loginVerified: isLoggedIn });
+});
+
 
 /* Callback endpoint */
 app.get("/auth/google/callback", async (req, res) => {

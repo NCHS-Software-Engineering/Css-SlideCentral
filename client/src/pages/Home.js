@@ -1,5 +1,5 @@
 // src/pages/Home.js
-import {React, useEffect} from 'react';
+import {React, useEffect, useState} from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 
 import { keyframes } from '@emotion/react'
@@ -29,17 +29,19 @@ const redButtonStyle = {
   },
 };
 
-// if logged in
-useEffect(() => {
-  fetch("http://localhost:8500", { credentials: "include" })
-    .then((res) => res.json())
-    .then((data) => setIsLoggedIn(data.loginVerified))
-    .catch((err) => console.error("Error fetching auth status:", err));
-}, []);
+
 
 
 
 const Home = () => {
+  // if logged in
+  const [setIsLoggedIn] = useState(false); 
+useEffect(() => {
+  fetch("http://localhost:8500/auth/status", { credentials: "include" })
+    .then((res) => res.json())
+    .then((data) => setIsLoggedIn(data.loginVerified))
+    .catch((err) => console.error("Error fetching auth status:", err));
+}, []); 
   const handleLogin = () => {
     window.location.href = 'http://localhost:8500/signin-google';
   };
