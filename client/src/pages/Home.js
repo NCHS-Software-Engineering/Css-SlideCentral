@@ -1,5 +1,7 @@
 // src/pages/Home.js
+
 import {React, useEffect, useState} from 'react';
+
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 
 import { keyframes } from '@emotion/react'
@@ -34,14 +36,7 @@ const redButtonStyle = {
 
 
 const Home = () => {
-  // if logged in
-  const [setIsLoggedIn] = useState(false); 
-useEffect(() => {
-  fetch("http://localhost:8500/auth/status", { credentials: "include" })
-    .then((res) => res.json())
-    .then((data) => setIsLoggedIn(data.loginVerified))
-    .catch((err) => console.error("Error fetching auth status:", err));
-}, []); 
+ 
   const handleLogin = () => {
     window.location.href = 'http://localhost:8500/signin-google';
   };
