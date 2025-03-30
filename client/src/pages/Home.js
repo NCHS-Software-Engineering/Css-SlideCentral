@@ -37,9 +37,37 @@ const redButtonStyle = {
 
 const Home = () => {
  
+  const [LOGGED_IN, setLOGGED_IN] = useState(false);
   const handleLogin = () => {
     window.location.href = 'http://localhost:8500/signin-google';
   };
+  const handleLogout = () => {
+    fetch("http://localhost:8500/logout", {
+    method: "GET",
+    credentials: "include", // sends cookie for session destruction
+  })
+    .then((res) => {
+      if (res.ok) {
+        setLOGGED_IN(false); // update button state
+      }
+    });
+    window.location.href = 'http://localhost:8500/logout';
+    
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:8500/auth/status", {
+    method: "GET",
+    credentials: "include", 
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Auth status response:", data);
+      setLOGGED_IN(data.loginVerified);
+    })
+    .catch((err) => console.error("Auth status error:", err));
+  
+  }, []);
 
   return (
     <Box
@@ -87,8 +115,8 @@ const Home = () => {
             {/* Right Side: Login and Additional Buttons */}
             <Grid item xs={4} container justifyContent="flex-end">
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <Button id= "LoginID" onClick={handleLogin} variant="contained" sx={redButtonStyle}>
-                  Login
+                <Button id= "LoginID" onClick={LOGGED_IN ? handleLogout : handleLogin} variant="contained" sx={redButtonStyle}>
+                  {LOGGED_IN ? "Log Out" : "Login"}
                 </Button>
                 <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                   <Button variant="contained" sx={redButtonStyle}>

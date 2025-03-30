@@ -17,8 +17,6 @@ const OAuth2Client = new google.auth.OAuth2(
 );
 
 
-
-
 // const jwt = require('jsonwebtoken'); // Add JWT for creating tokens
 
 
@@ -44,6 +42,11 @@ app.use(session({
 
 // Static file serving for the React build (if you do a production build)
 app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 
 // start server
 const PORT = process.env.PORT || 8500;
@@ -76,8 +79,9 @@ app.get("/signin-google",  async (req, res) => {
       };
   
       console.log("User authenticated:", req.session.user);
-
-      res.redirect("http://localhost:3000/"); // Redirect to the frontend dashboard
+      LOGGED_IN = true; //logged in
+      
+      res.redirect("http://localhost:3000/?loggedIn=true"); // Redirect to the frontend dashboard
 
     } catch (error) {
       console.error("Auth Error:", error);
@@ -99,39 +103,10 @@ app.get("/signin-google",  async (req, res) => {
 });
 
 app.get("/auth/status", (req, res) => {
-  const isLoggedIn = req.session.user ? true : false;
-  res.json({ loginVerified: isLoggedIn });
+  const isLoggedIn = !!req.session.user;
+  res.json({ loginVerified: isLoggedIn, user: req.session.user });
 });
 
-
-/* Callback endpoint */
-app.get("/auth/google/callback", async (req, res) => {
-  const code = req.query.code;
-
-  try {
-    // Exchange authorization code for tokens
-    const { tokens } = await OAuth2Client.getToken(code);
-    OAuth2Client.setCredentials(tokens);
-
-    // Fetch user profile
-    const oauth2 = google.oauth2({ auth: OAuth2Client, version: "v2" });
-    const { data } = await oauth2.userinfo.get();
-
-    // Store user session
-    req.session.user = {
-      id: data.id,
-      email: data.email,
-      name: data.name,
-      picture: data.picture
-    };
-
-    console.log("User authenticated:", req.session.user);
-    res.redirect("/"); // Redirect to the frontend dashboard
-  } catch (error) {
-    console.error("Auth Error:", error);
-    res.redirect("/login?error=auth_failed");
-  }
-});
 
 // 🔹 Route: Verify Token (For frontend token-based login)
 app.post("/verify-token", async (req, res) => {
@@ -156,6 +131,7 @@ app.post("/verify-token", async (req, res) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
-    res.redirect("/"); // Redirect to homepage after logout
+    console.log("User has logged out");
+    res.redirect("http://localhost:3000/"); // Redirect to homepage after logout
   });
 });
