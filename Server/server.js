@@ -107,26 +107,9 @@ app.get("/auth/status", (req, res) => {
   res.json({ loginVerified: isLoggedIn, user: req.session.user });
 });
 
-
-// 🔹 Route: Verify Token (For frontend token-based login)
-app.post("/verify-token", async (req, res) => {
-  const token = req.body.token;
-
-  try {
-    const ticket = await OAuth2Client.verifyIdToken({
-      idToken: token,
-      audience: process.env.CLIENT_ID
-    });
-
-    const { sub, email, name, picture } = ticket.getPayload();
-    req.session.user = { id: sub, email, name, picture };
-
-    console.log("Token Verified:", req.session.user);
-    res.status(200).json({ success: true, user: req.session.user });
-  } catch (error) {
-    console.error("Token verification failed:", error);
-    res.status(401).json({ success: false, message: "Invalid token" });
-  }
+app.get("/account/info", (req, res) => {
+  const {name, email} = req.session.user;
+  res.json({ name, email});
 });
 
 app.get("/logout", (req, res) => {

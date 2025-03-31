@@ -115,9 +115,12 @@ const Home = () => {
             {/* Right Side: Login and Additional Buttons */}
             <Grid item xs={4} container justifyContent="flex-end">
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <Button id= "LoginID" onClick={LOGGED_IN ? handleLogout : handleLogin} variant="contained" sx={redButtonStyle}>
+                <Button id= "LoginID" onClick={LOGGED_IN ? handleLogout : handleLogin} variant="contained" sx={{...redButtonStyle, mt: 1}}>
                   {LOGGED_IN ? "Log Out" : "Login"}
                 </Button>
+                {LOGGED_IN && (<Button component={Link}   to="/account" variant="contained" sx={{ ...redButtonStyle, mt: 1 }}>
+                    My Account
+                  </Button>)}
                 <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                   <Button variant="contained" sx={redButtonStyle}>
                     CSS Preview
@@ -129,8 +132,11 @@ const Home = () => {
                     Calendar
                   </Button>
                 </Box>
+                
               </Box>
+              
             </Grid>
+            
           </Grid>
         </Container>
       </Box>
