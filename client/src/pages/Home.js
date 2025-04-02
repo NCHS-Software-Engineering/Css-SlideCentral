@@ -36,25 +36,31 @@ const redButtonStyle = {
 
 
 const Home = () => {
- 
+
+  // session indicator if user is logged in or out
   const [LOGGED_IN, setLOGGED_IN] = useState(false);
-  const handleLogin = () => {
+
+  const handleLogin = () => { // pressed login button will redirect to sign in
     window.location.href = 'http://localhost:8500/signin-google';
   };
   const handleLogout = () => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm("Are you sure you want to log out?")) { //confirms if user wants to log out, then directs to /logout
     fetch("http://localhost:8500/logout", {
     method: "GET",
     credentials: "include", // sends cookie for session destruction
   })
     .then((res) => {
       if (res.ok) {
-        setLOGGED_IN(false); // update button state
+        setLOGGED_IN(false); // updates to logged out state
       }
     });
     window.location.href = 'http://localhost:8500/logout';
     
-  };
+  }
+};
 
+// retrieves logged in indicator from server
   useEffect(() => {
     fetch("http://localhost:8500/auth/status", {
     method: "GET",
@@ -69,6 +75,18 @@ const Home = () => {
   
   }, []);
 
+  // retrieves session user's role from server
+    const [role,setRole] = useState('');
+    useEffect(() => {
+        fetch("http://localhost:8500/account/info", {
+        method: "GET",
+        credentials: "include", 
+      })
+        .then((res) => res.json())
+        .then((data) => {
+         setRole(data.role);
+        })});
+
   return (
     <Box
       sx={{
@@ -78,7 +96,11 @@ const Home = () => {
         
       }}
     >
-      
+      {/* LIST OF PAGES FOR EACH ROLE'S RESPECTIVE ACCESS:
+          Logged Out User: Developers
+          Student: Developers, Calendar
+          Teacher: Developers, Calendar, Preview and Preview Edit
+          Admin: Developers, Calendar, Preview and Preview Edit, Enter and Edit Activities  */}
 
       {/* TOP BAR */}
       <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 1 }}>
@@ -87,23 +109,18 @@ const Home = () => {
             {/* Left Side Buttons */}
             <Grid item xs={4}>
               <Box sx={{ display: 'flex', gap: '0.5rem', flexWrap: 'nowrap' }}>
-                <Button
-                  component={Link}     // <-- Use Link as the component
-                  to="/activities"     // <-- Destination route
-                  variant="contained"
-                  sx={redButtonStyle}
-                >
+              {(role === "Admin" ) && (<Button component={Link} to="/activities"variant="contained" sx={redButtonStyle}> 
                   Enter Activity
-                </Button>
-                <Button variant="contained" sx={redButtonStyle}>
+                </Button>)}
+                {LOGGED_IN && (<Button variant="contained" sx={redButtonStyle}>
                   Slideshow
-                </Button>
+                </Button>)}
                 <Button variant="contained" sx={redButtonStyle}>
                   Developers
                 </Button>
-                <Button variant="contained" sx={redButtonStyle}>
+                {(role === "Admin" ) && (<Button variant="contained" sx={redButtonStyle}>
                   Edit Activities
-                </Button>
+                </Button>)}
               </Box>
             </Grid>
 
@@ -122,15 +139,15 @@ const Home = () => {
                     My Account
                   </Button>)}
                 <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                  <Button variant="contained" sx={redButtonStyle}>
+                {(role === "Teacher" || role === "Admin" ) && (<Button variant="contained" sx={redButtonStyle}>
                     CSS Preview
-                  </Button>
-                  <Button variant="contained" sx={redButtonStyle}>
+                  </Button>)}
+                  {(role === "Teacher" || role === "Admin" ) && (<Button variant="contained" sx={redButtonStyle}>
                     Preview Edit
-                  </Button>
-                  <Button component={Link}   to="/calendar" variant="contained" sx={redButtonStyle}>
+                  </Button>)}
+                  {LOGGED_IN && (<Button component={Link}   to="/calendar" variant="contained" sx={redButtonStyle}>
                     Calendar
-                  </Button>
+                  </Button>)}
                 </Box>
                 
               </Box>
@@ -144,10 +161,9 @@ const Home = () => {
       {/* MAIN CONTENT */}
       <Container maxWidth="lg" sx={{ py: 6 }}>
         <Grid container spacing={2} alignItems="center">
-          {/* Centered Text */}
           <Grid item xs={12} md={8}>
             <Typography
-              variant="h4" // Use h4 for large text. Change to h2, h1, etc., if needed.
+              variant="h4" 
               textAlign="center"
               gutterBottom
               sx={{ fontWeight: 'bold' }}

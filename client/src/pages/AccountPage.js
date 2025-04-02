@@ -6,8 +6,12 @@ import { keyframes } from '@emotion/react'
 import Logo from '../images/homePageLogo.png'
 
 function AccountPage() {
+    // creates data storage for session user
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');
+    const [role,setRole] = useState('');
+
+    // retrives session user data from server.js
     useEffect(() => {
         fetch("http://localhost:8500/account/info", {
         method: "GET",
@@ -17,7 +21,10 @@ function AccountPage() {
         .then((data) => {
          setName(data.name);
          setEmail(data.email);
+         setRole(data.role);
+         console.log(data.role);
         })});
+
 return(
     <>
     <div
@@ -29,7 +36,7 @@ return(
     padding: "0 20px",
   }}
 >
-  {/* Left: Logo Button */}
+  {/* Logo Home Button*/}
   <Button
     component={Link}
     to="/"
@@ -39,11 +46,12 @@ return(
     <img src={Logo} width="150" height="150" alt="Logo" />
   </Button>
 
-  {/* Center: Title */}
+
     <h1 class="page-title" style={{ margin: 0}}>Your Account</h1>
 
 </div>
     
+    {/* Red Box with details about user's name, email, and current role all based on the google data the software retrived*/}
     <Box
   sx={{
     width: '800px',
@@ -66,7 +74,7 @@ return(
     textAlign: 'center', }}>
         <Typography fontSize='36px' > 
         Name: {name}<br />
-        Role: Administrator<br />
+        Role: {role}<br />
         Email: {email}<br />
         </Typography>
 </Box>

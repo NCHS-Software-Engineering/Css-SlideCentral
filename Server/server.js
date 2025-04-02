@@ -7,32 +7,20 @@ const route = express.Router();
 const { google } = require('googleapis');
 
 require('dotenv').config(); // For environment variables
-// Google Auth Library for verifying tokens
-//const { OAuth2Client } = require('google-auth-library');
 
+// creates new Auth Client
 const OAuth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
   process.env.REDIRECT_URI
 );
 
-
-// const jwt = require('jsonwebtoken'); // Add JWT for creating tokens
-
-
-
-
-route.get("/auth", (req, res) => {
-  res.render("auth");
-});
-
-
-
 // Middleware setup
 app.use(cors());
 app.use(express.json());
 const session = require("express-session");
 
+// Session initialization
 app.use(session({
   secret: "your-secret-key",
   resave: false,
@@ -49,7 +37,7 @@ app.use(cors({
 }));
 
 // start server
-const PORT = process.env.PORT || 8500;
+const PORT = process.env.PORT || 8500; // NEVER 3000!!!
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
 });
@@ -57,9 +45,16 @@ app.listen(PORT, () => {
 //Login
 
 /* auth endpoint */
+
+// renders google sign in page
+route.get("/auth", (req, res) => {
+  res.render("auth");
+}); 
+
+// google sign in requirements
 app.get("/signin-google",  async (req, res) => {
   const code = req.query.code;
-
+  let role = "";
   if(code !== undefined) {
     try {
       // Exchange authorization code for tokens
@@ -69,19 +64,32 @@ app.get("/signin-google",  async (req, res) => {
       // Fetch user profile
       const oauth2 = google.oauth2({ auth: OAuth2Client, version: "v2" });
       const { data } = await oauth2.userinfo.get();
-  
+
+      // DOMAINS
+
+      if(data.email.includes("isliu@stu.naperville203.org")){ // All 4 developers are Admins; Admins must be in the Admin List (coming soon)
+        role = "Admin";
+      }
+      else if(data.email.includes("@stu.naperville203.org")){ // All D203 students have @stu.naperville203.org
+        role = "Student";
+      }
+      else if(data.email.includes("@naperville203.org")){ // All D203 Teachers/Admins have @naperville203.org
+        role = "Teacher";
+      }
+
       // Store user session
       req.session.user = {
         id: data.id,
         email: data.email,
         name: data.name,
-        picture: data.picture
+        picture: data.picture,
+        role: role,
       };
   
       console.log("User authenticated:", req.session.user);
-      LOGGED_IN = true; //logged in
       
-      res.redirect("http://localhost:3000/?loggedIn=true"); // Redirect to the frontend dashboard
+      
+      res.redirect("http://localhost:3000/?loggedIn=true"); // Redirect to the home page
 
     } catch (error) {
       console.error("Auth Error:", error);
@@ -102,18 +110,21 @@ app.get("/signin-google",  async (req, res) => {
   }
 });
 
+// route to check if user is logged in
 app.get("/auth/status", (req, res) => {
   const isLoggedIn = !!req.session.user;
   res.json({ loginVerified: isLoggedIn, user: req.session.user });
 });
 
+// route to retrieve user's required data
 app.get("/account/info", (req, res) => {
-  const {name, email} = req.session.user;
-  res.json({ name, email});
+  const {name, email, role} = req.session.user;
+  res.json({ name, email, role});
 });
 
+// route to log out of session
 app.get("/logout", (req, res) => {
-  req.session.destroy(() => {
+  req.session.destroy(() => { // destroy user's session
     console.log("User has logged out");
     res.redirect("http://localhost:3000/"); // Redirect to homepage after logout
   });
