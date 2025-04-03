@@ -1,4 +1,4 @@
-// src/pages/activitiesform.js
+// src/pages/ActivitiesForm.js
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,9 +8,8 @@ function ActivitiesForm() {
 
   // State for each form field
   const [activityType, setActivityType] = useState('');
-  const [scheduleDay, setScheduleDay] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [activityName, setActivityName] = useState('');
   const [activityDesc, setActivityDesc] = useState('');
   const [image, setImage] = useState(null);
@@ -25,16 +24,27 @@ function ActivitiesForm() {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Add your logic to process form data here, e.g., send to an API or store in state management.
+
+    // Basic validation checks
+    if (!startDate || !endDate) {
+      alert('Please select both a start and end date.');
+      return;
+    }
+    if (new Date(startDate) > new Date(endDate)) {
+      alert('Start date cannot be after end date.');
+      return;
+    }
+
+    // TODO: Add your logic to process form data here (e.g., send to an API or store in state management).
     console.log({
       activityType,
-      scheduleDay,
-      startTime,
-      endTime,
+      startDate,
+      endDate,
       activityName,
       activityDesc,
       image,
     });
+
     // Navigate away or clear the form if needed
     alert('Activity submitted!');
     navigate('/');
@@ -68,56 +78,45 @@ function ActivitiesForm() {
               <input
                 type="radio"
                 name="activityType"
-                value="Club meetings"
-                checked={activityType === 'Club meetings'}
+                value="Club Meetings"
+                checked={activityType === 'Club Meetings'}
                 onChange={(e) => setActivityType(e.target.value)}
               />
-              Club meetings
+              Club Meetings
             </label>
             <label style={styles.radioLabel}>
               <input
                 type="radio"
                 name="activityType"
-                value="School meetings"
-                checked={activityType === 'School meetings'}
+                value="School Events"
+                checked={activityType === 'School Events'}
                 onChange={(e) => setActivityType(e.target.value)}
               />
-              School meetings
+              School Events
             </label>
           </div>
         </div>
 
-        {/* Schedule Day */}
+        {/* Start Date */}
         <div style={styles.fieldGroup}>
-          <label style={styles.label}>Schedule Day:</label>
+          <label style={styles.label}>Start Date:</label>
           <input
-            type="text"
-            value={scheduleDay}
-            onChange={(e) => setScheduleDay(e.target.value)}
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             style={styles.input}
-            placeholder="e.g. Monday"
           />
         </div>
 
-        {/* Start - End Time */}
+        {/* End Date */}
         <div style={styles.fieldGroup}>
-          <label style={styles.label}>Start - End Time:</label>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <input
-              type="text"
-              placeholder="Start"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              style={styles.input}
-            />
-            <input
-              type="text"
-              placeholder="End"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              style={styles.input}
-            />
-          </div>
+          <label style={styles.label}>End Date:</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            style={styles.input}
+          />
         </div>
 
         {/* Activity Name */}
@@ -176,9 +175,9 @@ function ActivitiesForm() {
 // Inline styles
 const styles = {
   container: {
-    maxWidth: '800px',        // <-- Increased width
-    margin: '50px auto',      // <-- Adjust margin to suit your needs
-    padding: '30px',          // <-- Increased padding for a bigger feel
+    maxWidth: '800px',
+    margin: '50px auto',
+    padding: '30px',
     border: '1px solid #ccc',
     borderRadius: '6px',
     backgroundColor: '#f9f9f9',
@@ -187,12 +186,12 @@ const styles = {
   header: {
     marginBottom: '20px',
     textAlign: 'center',
-    fontSize: '1.8rem',       // <-- Larger font for the heading
+    fontSize: '1.8rem',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '20px',              // <-- Increase the gap for spacing
+    gap: '20px',
   },
   fieldGroup: {
     display: 'flex',
@@ -201,13 +200,13 @@ const styles = {
   label: {
     marginBottom: '8px',
     fontWeight: 'bold',
-    fontSize: '1rem',         // <-- Increase label font size
+    fontSize: '1rem',
   },
   input: {
     padding: '10px',
     borderRadius: '4px',
     border: '1px solid #ccc',
-    fontSize: '1rem',         // <-- Increase input font size
+    fontSize: '1rem',
   },
   radioGroup: {
     display: 'flex',
@@ -217,7 +216,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '5px',
-    fontSize: '1rem',         // <-- Increase radio label font size
+    fontSize: '1rem',
   },
   uploadButton: {
     padding: '10px 15px',
@@ -226,7 +225,7 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
     textAlign: 'center',
-    fontSize: '1rem',         // <-- Increase button font size
+    fontSize: '1rem',
   },
   buttonContainer: {
     display: 'flex',
