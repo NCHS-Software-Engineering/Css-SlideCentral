@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 function ActivitiesForm() {
   const navigate = useNavigate();
 
-  // State for each form field
+  // State for Activity Details
   const [activityType, setActivityType] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -14,7 +14,12 @@ function ActivitiesForm() {
   const [activityDesc, setActivityDesc] = useState('');
   const [image, setImage] = useState(null);
 
-  // Handle file upload
+  // State for Calendar Settings
+  const [calendarDayOfWeek, setCalendarDayOfWeek] = useState('');
+  const [calendarFrequency, setCalendarFrequency] = useState('');
+  const [calendarTimeOfDay, setCalendarTimeOfDay] = useState('');
+
+  // Handle file upload (for slideshow image)
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -35,22 +40,23 @@ function ActivitiesForm() {
       return;
     }
 
-    // TODO: Add your logic to process form data here (e.g., send to an API or store in state management).
     console.log({
       activityType,
       startDate,
       endDate,
       activityName,
       activityDesc,
+      calendarDayOfWeek,
+      calendarFrequency,
+      calendarTimeOfDay,
       image,
     });
 
-    // Navigate away or clear the form if needed
     alert('Activity submitted!');
     navigate('/');
   };
 
-  // Handle cancel (e.g., navigate back to home)
+  // Handle cancel (navigate back to home)
   const handleCancel = () => {
     navigate('/');
   };
@@ -58,103 +64,163 @@ function ActivitiesForm() {
   return (
     <div style={styles.container}>
       <h2 style={styles.header}>Enter Activity</h2>
-      
       <form onSubmit={handleSubmit} style={styles.form}>
-        {/* Activity Type */}
-        <div style={styles.fieldGroup}>
-          <label style={styles.label}>Activity type:</label>
-          <div style={styles.radioGroup}>
-            <label style={styles.radioLabel}>
+        <div style={styles.twoColumn}>
+          {/* Left Column: Activity Details */}
+          <div style={styles.leftColumn}>
+            <h3 style={styles.sectionHeader}>Activity Details</h3>
+
+            {/* Activity Type */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Activity type:</label>
+              <div style={styles.radioGroup}>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="activityType"
+                    value="School Sports"
+                    checked={activityType === 'School Sports'}
+                    onChange={(e) => setActivityType(e.target.value)}
+                  />
+                  School Sports
+                </label>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="activityType"
+                    value="Club Meetings"
+                    checked={activityType === 'Club Meetings'}
+                    onChange={(e) => setActivityType(e.target.value)}
+                  />
+                  Club Meetings
+                </label>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="activityType"
+                    value="School Events"
+                    checked={activityType === 'School Events'}
+                    onChange={(e) => setActivityType(e.target.value)}
+                  />
+                  School Events
+                </label>
+              </div>
+            </div>
+
+            {/* Start Date */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Start Date:</label>
               <input
-                type="radio"
-                name="activityType"
-                value="School Sports"
-                checked={activityType === 'School Sports'}
-                onChange={(e) => setActivityType(e.target.value)}
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={styles.input}
               />
-              School Sports
-            </label>
-            <label style={styles.radioLabel}>
+            </div>
+
+            {/* End Date */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>End Date:</label>
               <input
-                type="radio"
-                name="activityType"
-                value="Club Meetings"
-                checked={activityType === 'Club Meetings'}
-                onChange={(e) => setActivityType(e.target.value)}
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={styles.input}
               />
-              Club Meetings
-            </label>
-            <label style={styles.radioLabel}>
+            </div>
+
+            {/* Activity Name */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Activity Name:</label>
               <input
-                type="radio"
-                name="activityType"
-                value="School Events"
-                checked={activityType === 'School Events'}
-                onChange={(e) => setActivityType(e.target.value)}
+                type="text"
+                value={activityName}
+                onChange={(e) => setActivityName(e.target.value)}
+                style={styles.input}
+                placeholder="e.g. Soccer Practice"
               />
-              School Events
-            </label>
+            </div>
+
+            {/* Activity Description */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Activity Desc:</label>
+              <textarea
+                value={activityDesc}
+                onChange={(e) => setActivityDesc(e.target.value)}
+                style={{ ...styles.input, height: '60px' }}
+                placeholder="Describe the activity..."
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Start Date */}
-        <div style={styles.fieldGroup}>
-          <label style={styles.label}>Start Date:</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            style={styles.input}
-          />
-        </div>
+          {/* Right Column: Calendar & Slideshow */}
+          <div style={styles.rightColumn}>
+            <h3 style={styles.sectionHeader}>Calendar Settings</h3>
+            {/* Day of the Week */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Day of the Week:</label>
+              <select
+                value={calendarDayOfWeek}
+                onChange={(e) => setCalendarDayOfWeek(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Day--</option>
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+              </select>
+            </div>
 
-        {/* End Date */}
-        <div style={styles.fieldGroup}>
-          <label style={styles.label}>End Date:</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            style={styles.input}
-          />
-        </div>
+            {/* Frequency */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Frequency:</label>
+              <select
+                value={calendarFrequency}
+                onChange={(e) => setCalendarFrequency(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Frequency--</option>
+                <option value="One-Time">One-Time</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Biweekly">Biweekly</option>
+                <option value="Monthly">Monthly</option>
+              </select>
+            </div>
 
-        {/* Activity Name */}
-        <div style={styles.fieldGroup}>
-          <label style={styles.label}>Activity Name:</label>
-          <input
-            type="text"
-            value={activityName}
-            onChange={(e) => setActivityName(e.target.value)}
-            style={styles.input}
-            placeholder="e.g. Soccer Practice"
-          />
-        </div>
+            {/* Time of Day */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Time of Day:</label>
+              <select
+                value={calendarTimeOfDay}
+                onChange={(e) => setCalendarTimeOfDay(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Time--</option>
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+              </select>
+            </div>
 
-        {/* Activity Description */}
-        <div style={styles.fieldGroup}>
-          <label style={styles.label}>Activity Desc:</label>
-          <textarea
-            value={activityDesc}
-            onChange={(e) => setActivityDesc(e.target.value)}
-            style={{ ...styles.input, height: '80px' }}
-            placeholder="Describe the activity..."
-          />
-        </div>
-
-        {/* Optional Image */}
-        <div style={styles.fieldGroup}>
-          <label style={styles.label}>(Optional) Image:</label>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <label htmlFor="file-upload" style={styles.uploadButton}>
-              File Upload
-            </label>
-            <input
-              id="file-upload"
-              type="file"
-              onChange={handleFileChange}
-              style={{ display: 'none' }}
-            />
+            <h3 style={styles.sectionHeader}>Slideshow Settings</h3>
+            {/* Slideshow Image */}
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>(Optional) Slideshow Image:</label>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <label htmlFor="file-upload" style={styles.uploadButton}>
+                  File Upload
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -175,79 +241,101 @@ function ActivitiesForm() {
 // Inline styles
 const styles = {
   container: {
-    maxWidth: '800px',
-    margin: '50px auto',
-    padding: '30px',
+    maxWidth: '900px',
+    margin: '20px auto',
+    padding: '20px',
     border: '1px solid #ccc',
     borderRadius: '6px',
     backgroundColor: '#f9f9f9',
     fontFamily: 'sans-serif',
   },
   header: {
-    marginBottom: '20px',
+    marginBottom: '15px',
     textAlign: 'center',
-    fontSize: '1.8rem',
+    fontSize: '1.5rem',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
+    gap: '10px',
+  },
+  twoColumn: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
     gap: '20px',
+  },
+  leftColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  rightColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  sectionHeader: {
+    fontSize: '1.2rem',
+    margin: '0 0 5px',
+    borderBottom: '1px solid #ccc',
+    paddingBottom: '5px',
   },
   fieldGroup: {
     display: 'flex',
     flexDirection: 'column',
+    gap: '5px',
   },
   label: {
-    marginBottom: '8px',
     fontWeight: 'bold',
-    fontSize: '1rem',
+    fontSize: '0.95rem',
   },
   input: {
-    padding: '10px',
+    padding: '6px',
     borderRadius: '4px',
     border: '1px solid #ccc',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
   radioGroup: {
     display: 'flex',
-    gap: '15px',
+    gap: '10px',
   },
   radioLabel: {
     display: 'flex',
     alignItems: 'center',
-    gap: '5px',
-    fontSize: '1rem',
+    gap: '4px',
+    fontSize: '0.9rem',
   },
   uploadButton: {
-    padding: '10px 15px',
+    padding: '6px 10px',
     backgroundColor: '#4CAF50',
     color: '#fff',
     borderRadius: '4px',
     cursor: 'pointer',
     textAlign: 'center',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'space-between',
+    marginTop: '10px',
   },
   cancelButton: {
     backgroundColor: '#ccc',
     color: '#000',
     border: 'none',
-    padding: '12px 18px',
+    padding: '8px 12px',
     borderRadius: '4px',
     cursor: 'pointer',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
   submitButton: {
     backgroundColor: '#f44336',
     color: '#fff',
     border: 'none',
-    padding: '12px 18px',
+    padding: '8px 12px',
     borderRadius: '4px',
     cursor: 'pointer',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
 };
 
