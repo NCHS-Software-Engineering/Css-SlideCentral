@@ -1,56 +1,55 @@
 import '../styles/calendarStyles.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Calendar() {
+    console.log('Calendar component rendered');
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    // Get the current date
     const today = new Date();
-    const currentMonth = today.getMonth(); 
+    const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
 
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June', 
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    
-    const month = monthNames[currentMonth];
 
-    // Get number of days in the current month
+    const month = monthNames[currentMonth];
     const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
     const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
 
-    // Event categories and colors
+    // Updated event types
     const eventTypes = {
         sports: { color: 'green', label: 'Sports Event' },
         club: { color: 'red', label: 'Club Meeting' },
-        school: { color: 'blue', label: 'School Event' }
-    };
-
-    // Example Events (Restricted to 3 types)
-    const events = {
-        4: [
-            { type: 'club', label: 'CS Club Meeting', time: '7:00 AM', place: 'Room 52', description: 'Discuss upcoming hackathon' },
-
-        ],
-        6: [
-            { type: 'sports', label: 'Tennis Match', time: '3:00 PM', place: 'Tennis Courts', description: 'Friendly match against rival school' },
-            { type: 'school', label: 'Parent-Teacher Night', time: '6:30 PM', place: 'Auditorium', description: 'School-wide event' }
- 
-        ],
-        9: [
-            { type: 'club', label: 'Debate Club', time: '7:00 AM', place: 'Room 10', description: 'Prepping for state championship' }
-        ],
-        15: [
-            { type: 'sports', label: 'Soccer Practice', time: '4:00 PM', place: 'Field', description: 'Training for weekend game' }
-        ],
-        22: [
-            { type: 'school', label: 'Science Fair', time: '1:00 PM', place: 'Gym', description: 'Students showcase projects' }
-        ]
+        school: { color: 'blue', label: 'School Event' },
+        workshop: { color: 'orange', label: 'Workshop' },
+        meetup: { color: 'purple', label: 'Meetup' }
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventIndexes, setEventIndexes] = useState({}); 
+    const [events, setEvents] = useState({}); 
+
+    useEffect(() => {
+        fetch('http://localhost:3002/api/events')  
+            .then((response) => response.json())
+            .then((data) => {
+                // Group events by the day of the month
+                const eventsGroupedByDay = data.reduce((acc, event) => {
+                    const day = new Date(event.startDate).getDate();
+                    if (!acc[day]) acc[day] = [];
+                    acc[day].push(event);
+                    return acc;
+                }, {});
+                setEvents(eventsGroupedByDay);
+                console.log('Fetched events:', eventsGroupedByDay); // Check the grouped events
+            })
+            .catch((error) => {
+                console.error('Error fetching events:', error);
+            });
+    }, []);
+    
 
     const goForward = (day) => {
         setEventIndexes((prev) => ({
@@ -68,23 +67,25 @@ function Calendar() {
 
     const renderDays = () => {
         let daySquares = [];
-
+    
+        // Fill empty days before the first day of the month
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
-
+    
+        // Render days of the current month
         for (let i = 1; i <= numDays; i++) {
             const visibleIndex = eventIndexes[i] || 0;
             const eventList = events[i] || [];
             const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
-
+    
             daySquares.push(
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
-
+    
                     {visibleEvents.map((event, index) => {
-                        const eventType = eventTypes[event.type] || {}; 
-
+                        const eventType = eventTypes[event.activityType.toLowerCase()] || {}; // Map to correct event type
+    
                         return (
                             <div
                                 key={index}
@@ -92,11 +93,11 @@ function Calendar() {
                                 style={{ backgroundColor: eventType.color }}
                                 onClick={() => setSelectedEvent(event)}
                             >
-                                {eventType.icon} {event.label}
+                                {eventType.label || event.activityName} {/* Display activity name if label is missing */}
                             </div>
                         );
                     })}
-
+    
                     {eventList.length > 3 && (
                         <div className="event-pagination">
                             {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅</button>}
@@ -106,19 +107,23 @@ function Calendar() {
                 </div>
             );
         }
-
+    
         return daySquares;
     };
+    
 
     const EventPopup = ({ event, onClose }) => {
         if (!event) return null;
+
+        const { label, time, place, description } = event;
+
         return (
             <div className="popup-overlay" onClick={onClose}>
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-                    <h2>{event.label}</h2>
-                    <p><strong>Time:</strong> {event.time}</p>
-                    <p><strong>Place:</strong> {event.place}</p>
-                    <p><strong>Description:</strong> {event.description}</p>
+                    <h2>{label}</h2>
+                    <p><strong>Time:</strong> {time || 'TBD'}</p>
+                    <p><strong>Place:</strong> {place || 'TBD'}</p>
+                    <p><strong>Description:</strong> {description || 'No description available.'}</p>
                     <button onClick={onClose}>Close</button>
                 </div>
             </div>
@@ -133,7 +138,6 @@ function Calendar() {
                     <div className="month-name">{month} {currentYear}</div>
                 </div>
 
-                {/* Event Key (Legend) */}
                 <div className="event-key">
                     {Object.values(eventTypes).map((event, index) => (
                         <div 
