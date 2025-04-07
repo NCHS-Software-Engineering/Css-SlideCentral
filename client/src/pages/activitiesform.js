@@ -27,7 +27,7 @@ function ActivitiesForm() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation checks
@@ -40,7 +40,7 @@ function ActivitiesForm() {
       return;
     }
 
-    console.log({
+    const formData = {
       activityType,
       startDate,
       endDate,
@@ -49,11 +49,27 @@ function ActivitiesForm() {
       calendarDayOfWeek,
       calendarFrequency,
       calendarTimeOfDay,
-      image,
-    });
+      image: image ? { name: image.name } : null,
+    };
 
-    alert('Activity submitted!');
-    navigate('/');
+    try {
+      // HARD-CODED URL to ensure request goes to port 3000
+      const response = await fetch('http://localhost:3000/api/addActivity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Activity submitted!');
+        navigate('/');
+      } else {
+        alert('Error submitting activity');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Error submitting activity');
+    }
   };
 
   // Handle cancel (navigate back to home)
@@ -156,6 +172,7 @@ function ActivitiesForm() {
           {/* Right Column: Calendar & Slideshow */}
           <div style={styles.rightColumn}>
             <h3 style={styles.sectionHeader}>Calendar Settings</h3>
+
             {/* Day of the Week */}
             <div style={styles.fieldGroup}>
               <label style={styles.label}>Day of the Week:</label>
@@ -238,7 +255,6 @@ function ActivitiesForm() {
   );
 }
 
-// Inline styles
 const styles = {
   container: {
     maxWidth: '900px',
