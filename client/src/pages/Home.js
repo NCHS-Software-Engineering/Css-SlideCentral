@@ -11,12 +11,15 @@ const fadeIn = keyframes`
   to { opacity: 1; }
 `;
 
-// Red button style
+// Red button style with responsive font size
 const redButtonStyle = {
   backgroundColor: 'red',
   color: '#fff',
   textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
+  whiteSpace: 'nowrap',
+  // Use a slightly larger font on mobile (xs) and smaller on desktop (md)
+  fontSize: { xs: '0.875rem', md: '0.75rem' },
   '&:hover': {
     backgroundColor: '#b71c1c',
     transform: 'scale(1.05)',
@@ -92,12 +95,14 @@ const Home = () => {
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: { xs: 'repeat(auto-fit, minmax(120px, 1fr))', sm: 'repeat(4, 1fr)' },
+                  gridTemplateColumns: {
+                    xs: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    sm: 'repeat(4, auto)',
+                  },
                   gap: 1,
                   justifyContent: 'center',
                 }}
               >
-                {/* If desired, you can conditionally render based on role */}
                 {role === "Admin" && (
                   <>
                     <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
@@ -141,7 +146,10 @@ const Home = () => {
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: { xs: 'repeat(auto-fit, minmax(120px, 1fr))', sm: 'repeat(4, 1fr)' },
+                  gridTemplateColumns: {
+                    xs: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    sm: 'repeat(4, auto)',
+                  },
                   gap: 1,
                   justifyContent: 'center',
                 }}
