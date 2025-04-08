@@ -15,8 +15,8 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 // MySQL connection setup
 const db = mysql.createConnection({
   host: "localhost",
-  user: "mysql_username",       // Replace with your MySQL username, important that you do this
-  password: "msql_password",   // Replace with your MySQL password, important that you do this
+  user: "",       // Replace with your MySQL username, important that you do this
+  password: "",   // Replace with your MySQL password, important that you do this
   database: "activitiesDB"
 });
 
@@ -69,6 +69,20 @@ app.post("/api/addActivity", (req, res) => {
     res.status(200).send("Activity added successfully");
   });
 });
+
+// API endpoint to fetch events
+app.get("/api/events", (req, res) => {
+  const sql = "SELECT * FROM activities"; // Ensure your table is named 'activities'
+  
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching events:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results);
+  });
+});
+
 
 // Note: The following endpoint using window.open is not applicable in a Node environment.
 // You may want to update or remove it.

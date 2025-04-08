@@ -1,104 +1,173 @@
-
 import '../styles/calendarStyles.css';
-import { Link } from 'react-router-dom'; 
+import { useState, useEffect } from 'react';
 
-import {useState} from 'react';
-import Logo from '../images/homePageLogo.png'
-import { Button } from "@mui/material";
- function Calendar() {
+function Calendar() {
+    console.log('Calendar component rendered');
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const month = 'February';
-    const numDays = 28; // Example for February
-    const firstDayOffset = 2; 
 
-    const events = {
-        6: [
-            { label: 'Tennis Practice', color: 'green', time: '3:00 PM', place: 'Tennis Courts', description: 'Practice for upcoming match' },
-            { label: 'Team Meeting', color: 'blue', time: '5:00 PM', place: 'Room 10', description: 'Discuss strategy for the next match' }
-        ],
-        9: [
-            { label: 'CS Club', color: 'red', time: '7:00 AM', place: 'Room 52', description: "We'll be having a typing competition today!" }
-        ],
-        13: [
-            { label: '7th Period Assembly', color: 'blue', time: '12:00 PM - 12:20 PM', place: 'Main Gym', description: 'Learn about the winter assembly!' },
-            { label: 'PARCC & Career Center', color: 'green', time: '2:00 PM', place: 'Auditorium', description: 'PARCC & Career Center' }
-        ]
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const month = monthNames[currentMonth];
+    const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
+
+    // Updated event types
+    const eventTypes = {
+        'school sports': { color: 'green', label: 'School Sports' },
+        'club meetings': { color: 'red', label: 'Club Meeting' },
+        'school events': { color: 'blue', label: 'School Event' },
+        'workshop': { color: 'orange', label: 'Workshop' },
+        'meetup': { color: 'purple', label: 'Meetup' }
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [eventIndexes, setEventIndexes] = useState({}); 
+    const [events, setEvents] = useState({}); 
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/events')  
+            .then((response) => response.json())
+            .then((data) => {
+                // Group events by the day of the month
+                const eventsGroupedByDay = data.reduce((acc, event) => {
+                    const day = new Date(event.startDate).getDate();
+                    if (!acc[day]) acc[day] = [];
+                    acc[day].push(event);
+                    return acc;
+                }, {});
+                setEvents(eventsGroupedByDay);
+                console.log('Fetched events:', eventsGroupedByDay); // Check the grouped events
+            })
+            .catch((error) => {
+                console.error('Error fetching events:', error);
+            });
+    }, []);
+    
+
+    const goForward = (day) => {
+        setEventIndexes((prev) => ({
+            ...prev,
+            [day]: Math.min((prev[day] || 0) + 3, events[day].length - 1)
+        }));
+    };
+
+    const goBack = (day) => {
+        setEventIndexes((prev) => ({
+            ...prev,
+            [day]: Math.max((prev[day] || 0) - 3, 0)
+        }));
+    };
 
     const renderDays = () => {
         let daySquares = [];
     
-        // Empty spaces for days before Feb 1st
+        // Fill empty days before the first day of the month
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
     
+        // Render days of the current month
         for (let i = 1; i <= numDays; i++) {
+            const visibleIndex = eventIndexes[i] || 0;
+            const eventList = events[i] || [];
+            const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
+    
             daySquares.push(
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
-                    
-                    {/* Check if there are multiple events for this day */}
-                    {events[i] && events[i].map((event, index) => (
-                        <div
-                            key={index}
-                            className="event-label"
-                            style={{ backgroundColor: event.color }}
-                            onClick={() => setSelectedEvent(event)}
-                        >
-                            {event.label}
+    
+                    {visibleEvents.map((event, index) => {
+                        const eventType = eventTypes[event.activityType.toLowerCase()] || {}; // Map to correct event type
+    
+                        return (
+                            <div
+                                key={index}
+                                className="event-label"
+                                style={{ backgroundColor: eventType.color }}
+                                onClick={() => setSelectedEvent(event)}
+                            >
+                                {event.activityName || eventType.label} {/* Display activity name if label is missing */}
+                                
+                            </div>
+                        );
+                    })}
+    
+                    {eventList.length > 3 && (
+                        <div className="event-pagination">
+                            {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅</button>}
+                            {visibleIndex + 3 < eventList.length && <button onClick={() => goForward(i)}>➡</button>}
                         </div>
-                    ))}
+                    )}
                 </div>
             );
         }
     
         return daySquares;
     };
+    
+    
 
     const EventPopup = ({ event, onClose }) => {
-        if (!event) return null; // If no event is selected, don't render
-    
+        if (!event) return null;
+
+        const { label, time, place, description } = event;
+        console.log('Event details:', event); // Check the event details
+        console.log('Description:', event.activityDesc); // Check the event
+        console.log('Label:', label); // Check the label    
+        console.log('Time:', time); // Check the time
+        console.log('Place:', place); // Check the place
+        console.log('Description:', description); // Check the description
         return (
             <div className="popup-overlay" onClick={onClose}>
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-                    <h2>{event.label}</h2>
-                    <p><strong>Time:</strong> {event.time}</p>
-                    <p><strong>Place:</strong> {event.place}</p>
-                    <p><strong>Description:</strong> {event.description}</p>
+                    <h2>{event.activityName}</h2>
+                    <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
+                    <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
                     <button onClick={onClose}>Close</button>
                 </div>
             </div>
         );
     };
-    
 
-     return (
+    return (
         <>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
             <div className="calendar-container">
                 <div className="month-header">
-                <Button  component={Link}   to="/" className="logo"><img src={Logo} width="100" height="100" alt=""/></Button>
-                    <div className="month-name" 
-                    >{month}</div>
+                    <div className="logo">CSS</div>
+                    <div className="month-name">{month} {currentYear}</div>
                 </div>
-                <div className="legend">
-                    <span className="legend-item red">Club Meetings</span>
-                    <span className="legend-item blue">School Events</span>
-                    <span className="legend-item green">School Sports</span>
+
+                <div className="event-key">
+                    {Object.values(eventTypes).map((event, index) => (
+                        <div 
+                            key={index} 
+                            className="event-key-item" 
+                            style={{ backgroundColor: event.color }}
+                        >
+                            <span className="event-key-color" style={{ backgroundColor: event.color }}></span>
+                            {event.label}
+                        </div>
+                    ))}
                 </div>
+
                 <div className="days-grid">
                     {days.map((day, index) => (
                         <div className="day-name" key={index}>{day}</div>
                     ))}
                     {renderDays()}
                 </div>
+
                 {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
             </div>
         </>
     );
-
 }
+
 export default Calendar;
