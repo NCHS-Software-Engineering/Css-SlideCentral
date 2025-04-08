@@ -1,13 +1,9 @@
 // src/pages/Home.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
-
-import { keyframes } from '@emotion/react'
-import Logo from '../images/homePageLogo.png'
-
-
-import { Link } from 'react-router-dom'; // <-- Import Link from react-router-dom
-
+import { keyframes } from '@emotion/react';
+import { Link } from 'react-router-dom';
+import Logo from '../images/homePageLogo.png';
 
 // Fade-in animation for the whole page
 const fadeIn = keyframes`
@@ -15,26 +11,72 @@ const fadeIn = keyframes`
   to { opacity: 1; }
 `;
 
-// Compact red button style
+// Red button style with responsive font size
 const redButtonStyle = {
   backgroundColor: 'red',
   color: '#fff',
-  padding: '6px 12px',      // Smaller padding for a compact look
-  textTransform: 'none',    // Keep the text as-is (no uppercase)
+  textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
-  whiteSpace: 'nowrap',     // Prevent text from wrapping
+  whiteSpace: 'nowrap',
+  // Use a slightly larger font on mobile (xs) and smaller on desktop (md)
+  fontSize: { xs: '0.875rem', md: '0.75rem' },
   '&:hover': {
     backgroundColor: '#b71c1c',
     transform: 'scale(1.05)',
   },
 };
 
-
-
-
-
 const Home = () => {
-  
+  // Session and role state
+  const [LOGGED_IN, setLOGGED_IN] = useState(false);
+  const [role, setRole] = useState('');
+
+  // Handle login redirection
+  const handleLogin = () => {
+    window.location.href = 'http://localhost:8500/signin-google';
+  };
+
+  // Handle logout with confirmation and session destruction
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      fetch("http://localhost:8500/logout", {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => {
+          if (res.ok) {
+            setLOGGED_IN(false);
+          }
+        });
+      window.location.href = 'http://localhost:8500/logout';
+    }
+  };
+
+  // Retrieve login status from the server
+  useEffect(() => {
+    fetch("http://localhost:8500/auth/status", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setLOGGED_IN(data.loginVerified);
+      })
+      .catch((err) => console.error("Auth status error:", err));
+  }, []);
+
+  // Retrieve user role info from the server
+  useEffect(() => {
+    fetch("http://localhost:8500/account/info", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setRole(data.role);
+      })
+      .catch((err) => console.error("Account info error:", err));
+  }, []);
 
   return (
     <Box
@@ -42,60 +84,94 @@ const Home = () => {
         minHeight: '100vh',
         backgroundColor: '#f0f0f0',
         animation: `${fadeIn} 0.7s ease-in-out`,
-        
       }}
     >
-      
-
-      {/* TOP BAR */}
-      <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 1 }}>
+      {/* TOP SECTION */}
+      <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 2 }}>
         <Container maxWidth="lg">
-          <Grid container alignItems="center">
-            {/* Left Side Buttons */}
-            <Grid item xs={4}>
-              <Box sx={{ display: 'flex', gap: '0.5rem', flexWrap: 'nowrap' }}>
-                <Button
-                  component={Link}     // <-- Use Link as the component
-                  to="/activities"     // <-- Destination route
-                  variant="contained"
-                  sx={redButtonStyle}
-                >
-                  Enter Activity
-                </Button>
+          <Grid container spacing={2} alignItems="center" justifyContent="center">
+            {/* Left Side Buttons - On top in mobile */}
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    sm: 'repeat(4, auto)',
+                  },
+                  gap: 1,
+                  justifyContent: 'center',
+                }}
+              >
+                {role === "Admin" && (
+                  <>
+                    <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
+                      Enter Activity
+                    </Button>
+                    <Button variant="contained" sx={redButtonStyle}>
+                      Edit Activities
+                    </Button>
+                  </>
+                )}
+                {role !== "Admin" && (
+                  <>
+                    <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
+                      Enter Activity
+                    </Button>
+                    <Button variant="contained" sx={redButtonStyle}>
+                      Edit Activities
+                    </Button>
+                  </>
+                )}
                 <Button variant="contained" sx={redButtonStyle}>
                   Slideshow
                 </Button>
                 <Button variant="contained" sx={redButtonStyle}>
                   Developers
                 </Button>
-                <Button variant="contained" sx={redButtonStyle}>
-                  Edit Activities
-                </Button>
               </Box>
             </Grid>
 
-            {/* Center: Ellipse */}
-            <Grid item xs={4} container justifyContent="center">
-              <img src={Logo} width="300" height="300" alt=""/>
+            {/* Logo */}
+            <Grid item xs={12} md={4} container justifyContent="center">
+              <img
+                src={Logo}
+                alt="Logo"
+                style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain' }}
+              />
             </Grid>
 
-            {/* Right Side: Login and Additional Buttons */}
-            <Grid item xs={4} container justifyContent="flex-end">
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            {/* Right Side Buttons - On bottom in mobile */}
+            <Grid item xs={12} md={4}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    sm: 'repeat(4, auto)',
+                  },
+                  gap: 1,
+                  justifyContent: 'center',
+                }}
+              >
+                {LOGGED_IN ? (
+                  <Button variant="contained" sx={redButtonStyle} onClick={handleLogout}>
+                    Log Out
+                  </Button>
+                ) : (
+                  <Button variant="contained" sx={redButtonStyle} onClick={handleLogin}>
+                    Login
+                  </Button>
+                )}
                 <Button variant="contained" sx={redButtonStyle}>
-                  Login
+                  CSS Preview
                 </Button>
-                <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                  <Button variant="contained" sx={redButtonStyle}>
-                    CSS Preview
-                  </Button>
-                  <Button variant="contained" sx={redButtonStyle}>
-                    Preview Edit
-                  </Button>
-                  <Button component={Link}   to="/calendar" variant="contained" sx={redButtonStyle}>
-                    Calendar
-                  </Button>
-                </Box>
+                <Button variant="contained" sx={redButtonStyle}>
+                  Preview Edit
+                </Button>
+                <Button component={Link} to="/calendar" variant="contained" sx={redButtonStyle}>
+                  Calendar
+                </Button>
               </Box>
             </Grid>
           </Grid>
@@ -103,29 +179,31 @@ const Home = () => {
       </Box>
 
       {/* MAIN CONTENT */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Grid container spacing={2} alignItems="center">
-          {/* Centered Text */}
+      <Container maxWidth="md" sx={{ py: 6 }}>
+        <Grid container spacing={4} alignItems="center">
+          {/* Text Section */}
           <Grid item xs={12} md={8}>
-            <Typography
-              variant="h4" // Use h4 for large text. Change to h2, h1, etc., if needed.
-              textAlign="center"
-              gutterBottom
-              sx={{ fontWeight: 'bold' }}
-            >
+            <Typography variant="h5" textAlign="center" gutterBottom sx={{ fontWeight: 'bold' }}>
               CSS/Slide Central is an application that can be used by teachers and activity sponsors to display information around the school.
             </Typography>
-            <Typography variant="h6" textAlign="center" paragraph>
+            <Typography variant="body1" textAlign="center" paragraph>
               A clock, countdown to the next period, schedule, and list of activities happening at the school are all available within the application.
             </Typography>
-            <Typography variant="h6" textAlign="center">
+            <Typography variant="body1" textAlign="center">
               To learn more, click on the buttons on the right.
             </Typography>
           </Grid>
 
-          {/* Right Side White Buttons */}
+          {/* Widget Buttons */}
           <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                alignItems: 'center',
+              }}
+            >
               <Button
                 variant="contained"
                 sx={{
@@ -137,7 +215,6 @@ const Home = () => {
               >
                 Learn more about Widgets
               </Button>
-              
 
               <Button
                 variant="contained"
@@ -150,6 +227,7 @@ const Home = () => {
               >
                 FAQ
               </Button>
+
               <Button
                 variant="contained"
                 sx={{
@@ -169,7 +247,4 @@ const Home = () => {
   );
 };
 
-
-
 export default Home;
-
