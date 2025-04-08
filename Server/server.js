@@ -19,7 +19,11 @@ const OAuth2Client = new google.auth.OAuth2(
 
 
 // Middleware setup
-app.use(cors());
+
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(express.json());
 const session = require("express-session");
 
@@ -34,7 +38,8 @@ app.use(session({
 // Static file serving for the React build (if you do a production build)
 app.use(express.static(path.join(__dirname, "../client/build")));
 
-// MySQL connection setup
+
+/* // MySQL connection setup
 const db = mysql.createConnection({
   host: "localhost",
   user: "",       // Replace with your MySQL username, important that you do this
@@ -105,6 +110,7 @@ app.get("/api/events", (req, res) => {
   });
 });
 
+*/
 
 // Note: The following endpoint using window.open is not applicable in a Node environment.
 // You may want to update or remove it.
@@ -112,22 +118,15 @@ app.get('/Learn more about widgets', (req, res) => {
   res.send("This endpoint needs to be updated for proper widget functionality.");
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
-=======
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
-}));
-
 // start server
 const PORT = process.env.PORT || 8500; // NEVER 3000!!!
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
 });
+
+
+
+
 
 //Login
 
@@ -205,8 +204,12 @@ app.get("/auth/status", (req, res) => {
 
 // route to retrieve user's required data
 app.get("/account/info", (req, res) => {
-  const {name, email, role} = req.session.user;
-  res.json({ name, email, role});
+  if (!req.session.user) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  const { name, email, role } = req.session.user;
+  res.json({ name, email, role });
 });
 
 // route to log out of session
