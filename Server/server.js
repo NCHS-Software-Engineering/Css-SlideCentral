@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const mysql = require("mysql2");
+//const mysql = require("mysql2");
 const app = express();
 const route = express.Router();
 const { google } = require('googleapis');

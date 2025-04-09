@@ -52,6 +52,7 @@ const Home = () => {
     }
   };
 
+
   // Retrieve login status from the server
   useEffect(() => {
     fetch("http://localhost:8500/auth/status", {
@@ -73,7 +74,9 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setRole(data.role);
+        if (data.role) {
+          setRole(data.role);
+        }
       })
       .catch((err) => console.error("Account info error:", err));
   }, []);
@@ -113,24 +116,17 @@ const Home = () => {
                     </Button>
                   </>
                 )}
-                {role !== "Admin" && (
-                  <>
-                    <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
-                      Enter Activity
-                    </Button>
-                    <Button variant="contained" sx={redButtonStyle}>
-                      Edit Activities
-                    </Button>
-                  </>
-                )}
+                
+                {LOGGED_IN && (
                 <Button variant="contained" sx={redButtonStyle}>
                   Slideshow
-                </Button>
+                </Button>)}
                 <Button variant="contained" sx={redButtonStyle}>
                   Developers
                 </Button>
               </Box>
             </Grid>
+
 
             {/* Logo */}
             <Grid item xs={12} md={4} container justifyContent="center">
@@ -163,15 +159,29 @@ const Home = () => {
                     Login
                   </Button>
                 )}
+
+                {LOGGED_IN && (
+                  <Button component={Link} to="/account" variant="contained" sx={redButtonStyle}>
+                    My Account
+                  </Button>
+                  )}
+
+                {(role === "Teacher" || role === "Admin") && (
+                  <>
                 <Button variant="contained" sx={redButtonStyle}>
                   CSS Preview
                 </Button>
                 <Button variant="contained" sx={redButtonStyle}>
                   Preview Edit
                 </Button>
+                </>
+                )}
+                
+                {LOGGED_IN && (
                 <Button component={Link} to="/calendar" variant="contained" sx={redButtonStyle}>
                   Calendar
                 </Button>
+                )}
               </Box>
             </Grid>
           </Grid>
