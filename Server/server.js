@@ -153,7 +153,7 @@ app.get("/signin-google",  async (req, res) => {
 
       // DOMAINS
 
-      if(data.email.includes("isliu@stu.naperville203.org")){ // All 4 developers are Admins; Admins must be in the Admin List (coming soon)
+      if(data.email.includes("isliu@stu.naperville203.org") || data.email.includes("jsparves@stu.naperville203.org") || data.email.includes("arvedavyas@stu.naperville203.org") ){ // All 4 developers are Admins; Admins must be in the Admin List (coming soon)
         role = "Admin";
       }
       else if(data.email.includes("@stu.naperville203.org")){ // All D203 students have @stu.naperville203.org
@@ -215,7 +215,7 @@ app.get("/account/info", (req, res) => {
 // route to log out of session
 app.get("/logout", (req, res) => {
   req.session.destroy(() => { // destroy user's session
-    console.log("User has logged out");
+      console.log("User has logged out");
     res.redirect("http://localhost:3000/"); // Redirect to homepage after logout
   });
 });
