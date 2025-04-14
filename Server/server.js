@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-//const mysql = require("mysql2");
+const mysql = require("mysql2");
 const app = express();
 const route = express.Router();
 const { google } = require('googleapis');
@@ -39,11 +39,11 @@ app.use(session({
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 
-/* // MySQL connection setup
+// MySQL connection setup
 const db = mysql.createConnection({
   host: "localhost",
-  user: "",       // Replace with your MySQL username, important that you do this
-  password: "",   // Replace with your MySQL password, important that you do this
+  user: "root",       // Replace with your MySQL username, important that you do this
+  password: "centralsliders",   // Replace with your MySQL password, important that you do this
   database: "activitiesDB"
 });
 
@@ -110,7 +110,7 @@ app.get("/api/events", (req, res) => {
   });
 });
 
-*/
+ 
 
 // Note: The following endpoint using window.open is not applicable in a Node environment.
 // You may want to update or remove it.

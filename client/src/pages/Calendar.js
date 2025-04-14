@@ -32,16 +32,54 @@ function Calendar() {
     const [events, setEvents] = useState({}); 
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/events')  
+        fetch('http://localhost:8500/api/events')  
             .then((response) => response.json())
             .then((data) => {
                 // Group events by the day of the month
-                const eventsGroupedByDay = data.reduce((acc, event) => {
-                    const day = new Date(event.startDate).getDate();
-                    if (!acc[day]) acc[day] = [];
-                    acc[day].push(event);
-                    return acc;
-                }, {});
+                const eventsGroupedByDay = {};
+const targetMonth = currentMonth;
+const targetYear = currentYear;
+
+data.forEach((event) => {
+    const start = new Date(event.startDate);
+    const end = new Date(event.endDate);
+    const frequency = event.calendarFrequency?.toLowerCase();
+    const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
+    const startDay = start.getDate();
+
+    const addEvent = (date) => {
+            if (date.getMonth() !== targetMonth || date.getFullYear() !== targetYear) return;
+
+            const day = date.getDate();
+            if (!eventsGroupedByDay[day]) eventsGroupedByDay[day] = [];
+            eventsGroupedByDay[day].push({ ...event, displayDate: new Date(date) });
+        };
+
+            if (frequency === 'one-time') {
+                addEvent(new Date(start));
+            } else if (frequency === 'weekly' || frequency === 'biweekly') {
+                const interval = frequency === 'weekly' ? 7 : 14;
+                const startWeekday = start.toLocaleString('en-US', { weekday: 'long' }).toLowerCase();
+
+                // Align start to the correct weekday
+                let firstEventDate = new Date(start);
+                while (firstEventDate.toLocaleString('en-US', { weekday: 'long' }).toLowerCase() !== targetDayOfWeek) {
+                    firstEventDate.setDate(firstEventDate.getDate() + 1);
+                }
+
+                for (let d = new Date(firstEventDate); d <= end; d.setDate(d.getDate() + interval)) {
+                    addEvent(new Date(d));
+                }
+            } else if (frequency === 'monthly') {
+                for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+                    const date = new Date(d);
+                    date.setDate(startDay); // Use same day of the month
+                    addEvent(date);
+                }
+            }
+        });
+
+                
                 setEvents(eventsGroupedByDay);
                 console.log('Fetched events:', eventsGroupedByDay); // Check the grouped events
             })

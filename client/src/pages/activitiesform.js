@@ -54,7 +54,7 @@ function ActivitiesForm() {
 
     try {
       // HARD-CODED URL to ensure request goes to port 3000
-      const response = await fetch('http://localhost:3000/api/addActivity', {
+      const response = await fetch('http://localhost:8500/api/addActivity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
