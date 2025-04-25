@@ -1,13 +1,30 @@
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
+import {Button } from '@mui/material';
+
+
+const redButtonStyle = {
+    backgroundColor: 'red',
+    color: '#fff',
+    textTransform: 'none',
+    transition: 'transform 0.3s, background-color 0.3s',
+    whiteSpace: 'nowrap',
+    // Use a slightly larger font on mobile (xs) and smaller on desktop (md)
+    fontSize: { xs: '0.875rem', md: '0.75rem' },
+    '&:hover': {
+      backgroundColor: '#b71c1c',
+      transform: 'scale(1.05)',
+    },
+  };
+  
 
 function Calendar() {
     console.log('Calendar component rendered');
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
+    const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+    const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June', 
@@ -18,7 +35,6 @@ function Calendar() {
     const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
     const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
 
-    // Updated event types
     const eventTypes = {
         'school sports': { color: 'green', label: 'School Sports' },
         'club meetings': { color: 'red', label: 'Club Meeting' },
@@ -35,59 +51,51 @@ function Calendar() {
         fetch('http://localhost:8500/api/events')  
             .then((response) => response.json())
             .then((data) => {
-                // Group events by the day of the month
                 const eventsGroupedByDay = {};
-const targetMonth = currentMonth;
-const targetYear = currentYear;
+                const targetMonth = currentMonth;
+                const targetYear = currentYear;
 
-data.forEach((event) => {
-    const start = new Date(event.startDate);
-    const end = new Date(event.endDate);
-    const frequency = event.calendarFrequency?.toLowerCase();
-    const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
-    const startDay = start.getDate();
+                data.forEach((event) => {
+                    const start = new Date(event.startDate);
+                    const end = new Date(event.endDate);
+                    const frequency = event.calendarFrequency?.toLowerCase();
+                    const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
+                    const startDay = start.getDate();
 
-    const addEvent = (date) => {
-            if (date.getMonth() !== targetMonth || date.getFullYear() !== targetYear) return;
+                    const addEvent = (date) => {
+                        if (date.getMonth() !== targetMonth || date.getFullYear() !== targetYear) return;
+                        const day = date.getDate();
+                        if (!eventsGroupedByDay[day]) eventsGroupedByDay[day] = [];
+                        eventsGroupedByDay[day].push({ ...event, displayDate: new Date(date) });
+                    };
 
-            const day = date.getDate();
-            if (!eventsGroupedByDay[day]) eventsGroupedByDay[day] = [];
-            eventsGroupedByDay[day].push({ ...event, displayDate: new Date(date) });
-        };
+                    if (frequency === 'one-time') {
+                        addEvent(new Date(start));
+                    } else if (frequency === 'weekly' || frequency === 'biweekly') {
+                        const interval = frequency === 'weekly' ? 7 : 14;
+                        let firstEventDate = new Date(start);
+                        while (firstEventDate.toLocaleString('en-US', { weekday: 'long' }).toLowerCase() !== targetDayOfWeek) {
+                            firstEventDate.setDate(firstEventDate.getDate() + 1);
+                        }
+                        for (let d = new Date(firstEventDate); d <= end; d.setDate(d.getDate() + interval)) {
+                            addEvent(new Date(d));
+                        }
+                    } else if (frequency === 'monthly') {
+                        for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+                            const date = new Date(d);
+                            date.setDate(startDay);
+                            addEvent(date);
+                        }
+                    }
+                });
 
-            if (frequency === 'one-time') {
-                addEvent(new Date(start));
-            } else if (frequency === 'weekly' || frequency === 'biweekly') {
-                const interval = frequency === 'weekly' ? 7 : 14;
-                const startWeekday = start.toLocaleString('en-US', { weekday: 'long' }).toLowerCase();
-
-                // Align start to the correct weekday
-                let firstEventDate = new Date(start);
-                while (firstEventDate.toLocaleString('en-US', { weekday: 'long' }).toLowerCase() !== targetDayOfWeek) {
-                    firstEventDate.setDate(firstEventDate.getDate() + 1);
-                }
-
-                for (let d = new Date(firstEventDate); d <= end; d.setDate(d.getDate() + interval)) {
-                    addEvent(new Date(d));
-                }
-            } else if (frequency === 'monthly') {
-                for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
-                    const date = new Date(d);
-                    date.setDate(startDay); // Use same day of the month
-                    addEvent(date);
-                }
-            }
-        });
-
-                
                 setEvents(eventsGroupedByDay);
-                console.log('Fetched events:', eventsGroupedByDay); // Check the grouped events
+                console.log('Fetched events:', eventsGroupedByDay);
             })
             .catch((error) => {
                 console.error('Error fetching events:', error);
             });
-    }, []);
-    
+    }, [currentMonth, currentYear]);
 
     const goForward = (day) => {
         setEventIndexes((prev) => ({
@@ -103,27 +111,31 @@ data.forEach((event) => {
         }));
     };
 
+    const changeMonth = (offset) => {
+        setEventIndexes({});
+        const newDate = new Date(currentYear, currentMonth + offset);
+        setCurrentMonth(newDate.getMonth());
+        setCurrentYear(newDate.getFullYear());
+    };
+
     const renderDays = () => {
         let daySquares = [];
-    
-        // Fill empty days before the first day of the month
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
-    
-        // Render days of the current month
+
         for (let i = 1; i <= numDays; i++) {
             const visibleIndex = eventIndexes[i] || 0;
             const eventList = events[i] || [];
             const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
-    
+
             daySquares.push(
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
-    
+
                     {visibleEvents.map((event, index) => {
-                        const eventType = eventTypes[event.activityType.toLowerCase()] || {}; // Map to correct event type
-    
+                        const eventType = eventTypes[event.activityType.toLowerCase()] || {};
+
                         return (
                             <div
                                 key={index}
@@ -131,12 +143,11 @@ data.forEach((event) => {
                                 style={{ backgroundColor: eventType.color }}
                                 onClick={() => setSelectedEvent(event)}
                             >
-                                {event.activityName || eventType.label} {/* Display activity name if label is missing */}
-                                
+                                {event.activityName || eventType.label}
                             </div>
                         );
                     })}
-    
+
                     {eventList.length > 3 && (
                         <div className="event-pagination">
                             {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅</button>}
@@ -146,22 +157,13 @@ data.forEach((event) => {
                 </div>
             );
         }
-    
+
         return daySquares;
     };
-    
-    
 
     const EventPopup = ({ event, onClose }) => {
         if (!event) return null;
-
         const { label, time, place, description } = event;
-        console.log('Event details:', event); // Check the event details
-        console.log('Description:', event.activityDesc); // Check the event
-        console.log('Label:', label); // Check the label    
-        console.log('Time:', time); // Check the time
-        console.log('Place:', place); // Check the place
-        console.log('Description:', description); // Check the description
         return (
             <div className="popup-overlay" onClick={onClose}>
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
@@ -179,7 +181,11 @@ data.forEach((event) => {
             <div className="calendar-container">
                 <div className="month-header">
                     <div className="logo">CSS</div>
-                    <div className="month-name">{month} {currentYear}</div>
+                    <div className="month-controls">
+                        <div className="month-name">{month} {currentYear}</div>
+                        <Button style = {redButtonStyle} onClick={() => changeMonth(-1)} >&lt;</Button>
+                        <Button style = {redButtonStyle} onClick={() => changeMonth(1)}>&gt;</Button>
+                    </div>
                 </div>
 
                 <div className="event-key">
