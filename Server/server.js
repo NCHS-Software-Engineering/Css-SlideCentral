@@ -40,9 +40,9 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 
 // MySQL connection setup
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,       // Replace with your MySQL username, important that you do this
-  password: process.env.DB_PASS,   // Replace with your MySQL password, important that you do this
+  host: "localhost",
+  user: "root",       // Replace with your MySQL username, important that you do this
+  password: "centralsliders",   // Replace with your MySQL password, important that you do this
   database: "activitiesDB"
 });
 
