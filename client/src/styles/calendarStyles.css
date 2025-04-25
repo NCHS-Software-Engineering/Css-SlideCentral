@@ -1,7 +1,7 @@
 .calendar-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Keep elements centered */
+  align-items: center;
   background: #f1f1f1;
   padding: 50px;
   border-radius: 10px;
@@ -54,8 +54,8 @@
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  width: 100%; /* Ensure it takes full width */
-  max-width: 1200px; /* Optional: Prevent excessive stretching on big screens */
+  width: 100%;
+  max-width: 1200px;
   gap: 2px; 
 }
 
@@ -69,8 +69,8 @@
 }
 
 .day-square {
-  width: 100%; /* Make day squares fill the grid */
-  max-width: 170px; /* Optional: Set a reasonable max width */
+  width: 100%;
+  max-width: 170px;
   height: 120px;
   border: 5px solid black;
   display: flex;
@@ -79,14 +79,14 @@
   justify-content: center;
   position: relative;
   font-size: 1.2rem;
-  padding : 1px; 
+  padding: 1px; 
   margin: 0; 
   box-sizing: border-box;
   background: white;
 }
 
 .day-number {
-  position : absolute;
+  position: absolute;
   top: 5px;
   left: 5px;
   font-size: 1.5rem;
@@ -108,7 +108,6 @@
   text-align: center;
   border-radius: 3px;
   color: white;
-
 }
 
 .popup-overlay {
@@ -132,46 +131,59 @@
   position: relative;
 }
 
-.event-pagination {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.event-pagination button {
-  background: #3498db;
-  color: white;
-  border: none;
-  padding: 3px 6px;
-  cursor: pointer;
-  border-radius: 3px;
-  font-size: 0.7rem;
-}
-
-.event-pagination button:hover {
-  background: #2980b9;
-}
-
 .event-key {
   display: flex;
-  gap: 15px;
-  margin: 10px 0;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px;
 }
 
 .event-key-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: bold;
-  color: white; /* Text color for contrast */
+  margin-right: 10px;
+  text-align: center;
+  color: white;
+  padding: 5px;
 }
 
 .event-key-color {
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
   border-radius: 50%;
 }
+
+.navigation-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 5px;
+}
+
+.navigation-button:hover {
+  background-color: #c0392b;
+}
+
+.month-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between the buttons and the text */
+  width: 100%; /* Ensure it spans the full width */
+  max-width: 600px; /* Optional: Set a max width for the container */
+  margin: 0 auto; /* Center the controls horizontally */
+}
+
+.month-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1; /* Allow the text to take up remaining space */
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+ 
