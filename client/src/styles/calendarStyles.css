@@ -20,15 +20,12 @@
   border-radius: 8px;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  background: #333;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
 
+.logo {
+  width: 100px; /* Adjust the size as needed */
+  height: auto;
+  cursor: pointer; /* Show a pointer cursor to indicate it's clickable */
+}
 .month-name {
   font-size: 1.8rem;
   font-weight: bold;
@@ -91,6 +88,7 @@
   left: 5px;
   font-size: 1.5rem;
   font-weight: bold;
+  z-index: 2;
 }
 
 .empty {

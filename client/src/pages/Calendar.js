@@ -1,6 +1,9 @@
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
 import {Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import Logo from '../images/homePageLogo.png';
+
 
 
 const redButtonStyle = {
@@ -15,6 +18,7 @@ const redButtonStyle = {
       backgroundColor: '#b71c1c',
       transform: 'scale(1.05)',
     },
+    
   };
   
 
@@ -39,8 +43,6 @@ function Calendar() {
         'school sports': { color: 'green', label: 'School Sports' },
         'club meetings': { color: 'red', label: 'Club Meeting' },
         'school events': { color: 'blue', label: 'School Event' },
-        'workshop': { color: 'orange', label: 'Workshop' },
-        'meetup': { color: 'purple', label: 'Meetup' }
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -137,14 +139,25 @@ function Calendar() {
                         const eventType = eventTypes[event.activityType.toLowerCase()] || {};
 
                         return (
-                            <div
-                                key={index}
-                                className="event-label"
-                                style={{ backgroundColor: eventType.color }}
-                                onClick={() => setSelectedEvent(event)}
-                            >
-                                {event.activityName || eventType.label}
-                            </div>
+                            <Button
+                            key={index}
+                            variant="contained"
+                            sx={{
+                                backgroundColor: eventType.color,
+                                color: 'white',
+                                fontSize: '0.8rem',
+                                padding: '4px 8px',
+                                margin: '2px 0',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: eventType.color,
+                                    opacity: 0.9,
+                                },
+                            }}
+                            onClick={() => setSelectedEvent(event)}
+                        >
+                            {event.activityName || eventType.label}
+                        </Button>
                         );
                     })}
 
@@ -170,7 +183,21 @@ function Calendar() {
                     <h2>{event.activityName}</h2>
                     <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
                     <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
-                    <button onClick={onClose}>Close</button>
+                    <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onClose}
+                    sx={{
+                        backgroundColor: 'red',
+                        color: 'white',
+                        textTransform: 'none',
+                        '&:hover': {
+                        backgroundColor: '#b71c1c',
+                        },
+                    }}
+                    >
+                    Close
+                    </Button>
                 </div>
             </div>
         );
@@ -180,7 +207,10 @@ function Calendar() {
         <>
             <div className="calendar-container">
                 <div className="month-header">
-                    <div className="logo">CSS</div>
+                     {/* Add the logo image and make it clickable */}
+                     <Link to="/"> {/* Navigate back to the home page */}
+                        <img src={Logo} alt="Logo" className="logo" />
+                    </Link>
                     <div className="month-controls">
                         <div className="month-name">{month} {currentYear}</div>
                         <Button style = {redButtonStyle} onClick={() => changeMonth(-1)} >&lt;</Button>
