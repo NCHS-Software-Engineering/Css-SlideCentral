@@ -3,6 +3,7 @@ import {React, useEffect, useState} from 'react';
 import { Link } from 'react-router-dom'; 
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 import Logo from '../images/homePageLogo.png'
+import Trump from '../images/Trump.png'
 // specific details need to be changed once CSS is fixed
 function SlideshowPage() {
     return (
@@ -25,6 +26,7 @@ function SlideshowPage() {
 
         <h1 class="page-title">Slideshow </h1>
         
+        <img src={Trump} width="150" height="150" alt="Logo" />
   
         
 
