@@ -13,7 +13,7 @@ import Calendar from '../src/pages/Calendar.js';
 import './App.css';
 import ActivitiesForm from './pages/activitiesform'; // <-- Import your new component
 import AccountPage  from './pages/AccountPage.js';
-
+import SlideshowPage from './pages/Slideshow.js';
 function App() {
   return (
     <Router>
@@ -21,7 +21,7 @@ function App() {
 
 
       <Route path="/faq" element={<FAQ />} />  {/* route to FAQ page */}
-
+      <Route exact path="/Slideshow" element={<SlideshowPage />}/>
   <Route exact path="/WidgetPage" element={<WidgetPage />} /> {/* route to widget page */}
 
   <Route path="/account" element={<AccountPage />} />

@@ -111,14 +111,14 @@ const Home = () => {
                     <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
                       Enter Activity
                     </Button>
-                    <Button variant="contained" sx={redButtonStyle}>
+                    <Button  variant="contained" sx={redButtonStyle}>
                       Edit Activities
                     </Button>
                   </>
                 )}
                 
                 {LOGGED_IN && (
-                <Button variant="contained" sx={redButtonStyle}>
+                <Button component={Link} to="/slideshow" variant="contained" sx={redButtonStyle}>
                   Slideshow
                 </Button>)}
                 <Button variant="contained" sx={redButtonStyle}>
