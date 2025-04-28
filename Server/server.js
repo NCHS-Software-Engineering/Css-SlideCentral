@@ -44,7 +44,7 @@ const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,       // Replace with your MySQL username, important that you do this
   password: process.env.DB_PASS,   // Replace with your MySQL password, important that you do this
-  database: "activitiesDB"
+  database: "css"
 });
 
 db.connect((err) => {
