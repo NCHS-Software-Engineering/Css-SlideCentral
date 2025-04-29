@@ -236,3 +236,43 @@ ul {
   width: 100%;
   padding: 10px;
 }
+
+/* Slideshow */
+.slide-content {
+  display: flex;
+  aspect-ratio: 16 / 9;
+  max-width: 1152px;
+  max-height: 648;
+  align-items: flex-start;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  margin: auto;
+  background-color: #fff;
+}
+
+.slide-text {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.slide-header {
+  align-items: center; /* Vertically align logo and text */
+  text-align: center;
+  justify-content: center; /* Centers the entire content */
+  position: relative; /* Helps position the logo */
+  margin-bottom: 10px;
+  font-size: 64px;
+}
+
+.slide-text p {
+  margin: 4px 0;
+  color: #333;
+}
+
+.slide-image img {
+  width: 200px;
+  height: auto;
+  border-radius: 4px;
+}

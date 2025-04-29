@@ -30,7 +30,20 @@ function SlideshowPage() {
         
         <img src={Trump} width="1152" height="648" style={{ display: 'block', margin: '0 auto' }} />
   
-        
+        <div class="slideshow-container">
+        <div class="slide-content">
+        <div class="slide-text">
+
+          <h1 class="slide-header">Activity Title</h1>
+          <p><strong>Sponsor:</strong> Michael Romanov</p>
+          <p><strong>Date:</strong> 4/28/25</p>
+          <p><strong>Time:</strong> 3:10 pm </p>
+          <p><strong>Desc:</strong> Michael Romanov is cool asf</p>
+
+          <div class="slide-image"> {/* image*/} </div>
+          </div>
+          </div>
+        </div>
 
 
 
