@@ -21,12 +21,14 @@ function SlideshowPage() {
     className="logo"
     sx={{ padding: 0, minWidth: "auto" }}
   >
-    <img src={Logo} width="150" height="150" alt="Logo" />
+   
+    <img src={Logo} width="150" height="150" alt="Logo"  style={{ display: 'block', margin: '0 auto' }}/>
+    
   </Button>
 
         <h1 class="page-title">Slideshow </h1>
         
-        <img src={Trump} width="150" height="150" alt="Logo" />
+        <img src={Trump} width="1152" height="648" style={{ display: 'block', margin: '0 auto' }} />
   
         
 
