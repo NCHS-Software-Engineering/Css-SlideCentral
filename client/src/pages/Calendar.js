@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import {Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
-
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const redButtonStyle = {
@@ -176,27 +176,87 @@ function Calendar() {
 
     const EventPopup = ({ event, onClose }) => {
         if (!event) return null;
-        const { label, time, place, description } = event;
+    
+        const handleEdit = () => {
+            console.log('Edit event:', event);
+            // Add logic to navigate to an edit page or open an edit form
+        };
+    
+        const handleDelete = () => {
+            console.log('Delete event:', event);
+            fetch(`http://localhost:8500/api/events/${event.id}`, {
+                method: 'DELETE',
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        console.log('Event deleted successfully');
+                        onClose(); // Close the popup after deletion
+                    } else {
+                        console.error('Failed to delete event');
+                    }
+                })
+                .catch((error) => console.error('Error deleting event:', error));
+        };
+    
         return (
             <div className="popup-overlay" onClick={onClose}>
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                    {/* Buttons Container */}
+                    <div className="popup-buttons">
+                        <Button
+                            variant="contained"
+                            onClick={handleEdit}
+                            sx={{
+                                ...redButtonStyle,
+                                backgroundColor: 'red',
+                                '&:hover': {
+                                    backgroundColor: '#b71c1c',
+                                },
+                                }}
+                        >
+                            Edit
+                        </Button>
+        
+                        <Button
+                            variant="contained"
+                            className="small-button"
+                            onClick={handleDelete}
+                            sx={{
+                                ...redButtonStyle,
+                                backgroundColor: 'red',
+                                '&:hover': {
+                                    backgroundColor: '#b71c1c',
+                                },
+                                minWidth: '10px', // optional: controls button width
+                                padding: '6px', // optional: adjusts button padding
+                             }}
+                             
+                            startIcon={<DeleteIcon/>} 
+                            
+                        >
+                        </Button>
+                    </div>
+        
                     <h2>{event.activityName}</h2>
                     <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
                     <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
+        
+                    {/* Close Button */}
                     <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onClose}
-                    sx={{
-                        backgroundColor: 'red',
-                        color: 'white',
-                        textTransform: 'none',
-                        '&:hover': {
-                        backgroundColor: '#b71c1c',
-                        },
-                    }}
+                        variant="contained"
+                        color="primary"
+                        onClick={onClose}
+                        sx={{
+                            backgroundColor: 'red',
+                            color: 'white',
+                            textTransform: 'none',
+                            '&:hover': {
+                                backgroundColor: '#b71c1c',
+                            },
+                            marginTop: '20px',
+                        }}
                     >
-                    Close
+                        Close
                     </Button>
                 </div>
             </div>
