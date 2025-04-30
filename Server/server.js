@@ -110,7 +110,37 @@ app.get("/api/events", (req, res) => {
   });
 });
 
- 
+// API endpoint to delete an event by ID
+app.delete("/api/events/:id", (req, res) => {
+  // Check if the user is logged in
+  console.log("Session user:", req.session.user);
+  if (!req.session.user) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  // Optional: Restrict deletion to Admins only
+  if (req.session.user.role !== "Admin") {
+    return res.status(403).json({ message: "Unauthorized: Admins only" });
+  }
+
+  const eventId = req.params.id;
+
+  const deleteQuery = "DELETE FROM activities WHERE id = ?";
+  db.query(deleteQuery, [eventId], (err, result) => {
+    if (err) {
+      console.error("Error deleting event:", err);
+      return res.status(500).json({ message: "Server error during deletion" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.status(200).json({ message: "Event deleted successfully" });
+  });
+});
+
+
 
 // Note: The following endpoint using window.open is not applicable in a Node environment.
 // You may want to update or remove it.

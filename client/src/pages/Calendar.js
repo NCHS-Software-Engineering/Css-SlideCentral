@@ -48,29 +48,30 @@ function Calendar() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventIndexes, setEventIndexes] = useState({}); 
     const [events, setEvents] = useState({}); 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    useEffect(() => {
+    const fetchEvents = () => {
         fetch('http://localhost:8500/api/events')  
             .then((response) => response.json())
             .then((data) => {
                 const eventsGroupedByDay = {};
                 const targetMonth = currentMonth;
                 const targetYear = currentYear;
-
+    
                 data.forEach((event) => {
                     const start = new Date(event.startDate);
                     const end = new Date(event.endDate);
                     const frequency = event.calendarFrequency?.toLowerCase();
                     const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
                     const startDay = start.getDate();
-
+    
                     const addEvent = (date) => {
                         if (date.getMonth() !== targetMonth || date.getFullYear() !== targetYear) return;
                         const day = date.getDate();
                         if (!eventsGroupedByDay[day]) eventsGroupedByDay[day] = [];
                         eventsGroupedByDay[day].push({ ...event, displayDate: new Date(date) });
                     };
-
+    
                     if (frequency === 'one-time') {
                         addEvent(new Date(start));
                     } else if (frequency === 'weekly' || frequency === 'biweekly') {
@@ -90,13 +91,18 @@ function Calendar() {
                         }
                     }
                 });
-
+    
                 setEvents(eventsGroupedByDay);
                 console.log('Fetched events:', eventsGroupedByDay);
             })
             .catch((error) => {
                 console.error('Error fetching events:', error);
             });
+    };
+
+
+    useEffect(() => {
+        fetchEvents();
     }, [currentMonth, currentYear]);
 
     const goForward = (day) => {
@@ -174,28 +180,78 @@ function Calendar() {
         return daySquares;
     };
 
+    const DeleteConfirmationModal = ({ onConfirm, onCancel }) => {
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h2>Are you sure you want to delete this event?</h2>
+                    <div className="modal-buttons">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={onConfirm}
+                            sx={{
+                                backgroundColor: 'red',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#b71c1c',
+                                },
+                                marginRight: '10px',
+                            }}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={onCancel}
+                            sx={{
+                                backgroundColor: 'gray',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#555',
+                                },
+                            }}
+                        >
+                            No
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const EventPopup = ({ event, onClose }) => {
         if (!event) return null;
     
-        const handleEdit = () => {
-            console.log('Edit event:', event);
-            // Add logic to navigate to an edit page or open an edit form
-        };
+  
     
         const handleDelete = () => {
-            console.log('Delete event:', event);
+            setShowDeleteModal(true);
+        };
+
+        const confirmDelete = () => {
             fetch(`http://localhost:8500/api/events/${event.id}`, {
                 method: 'DELETE',
+                credentials: 'include',
             })
                 .then((response) => {
                     if (response.ok) {
                         console.log('Event deleted successfully');
+                        fetchEvents(); // Refresh the calendar by fetching updated events
                         onClose(); // Close the popup after deletion
                     } else {
                         console.error('Failed to delete event');
                     }
                 })
-                .catch((error) => console.error('Error deleting event:', error));
+                .catch((error) => console.error('Error deleting event:', error))
+                .finally(() => setShowDeleteModal(false)); // Hide the modal
+        };
+        
+        const cancelDelete = () => {
+            setShowDeleteModal(false); // Hide the modal without deleting
         };
     
         return (
@@ -203,20 +259,6 @@ function Calendar() {
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                     {/* Buttons Container */}
                     <div className="popup-buttons">
-                        <Button
-                            variant="contained"
-                            onClick={handleEdit}
-                            sx={{
-                                ...redButtonStyle,
-                                backgroundColor: 'red',
-                                '&:hover': {
-                                    backgroundColor: '#b71c1c',
-                                },
-                                }}
-                        >
-                            Edit
-                        </Button>
-        
                         <Button
                             variant="contained"
                             className="small-button"
@@ -227,13 +269,12 @@ function Calendar() {
                                 '&:hover': {
                                     backgroundColor: '#b71c1c',
                                 },
-                                minWidth: '10px', // optional: controls button width
-                                padding: '6px', // optional: adjusts button padding
-                             }}
-                             
-                            startIcon={<DeleteIcon/>} 
-                            
+                                minWidth: '10px',
+                                padding: '6px',
+                            }}
+                            startIcon={<DeleteIcon />}
                         >
+                            Delete
                         </Button>
                     </div>
         
@@ -258,6 +299,14 @@ function Calendar() {
                     >
                         Close
                     </Button>
+        
+                    {/* Render the Delete Confirmation Modal */}
+                    {showDeleteModal && (
+                        <DeleteConfirmationModal
+                            onConfirm={confirmDelete}
+                            onCancel={cancelDelete}
+                        />
+                    )}
                 </div>
             </div>
         );
