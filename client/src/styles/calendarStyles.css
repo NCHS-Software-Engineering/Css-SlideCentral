@@ -226,3 +226,18 @@
   justify-content: center;
   gap: 10px;
 }
+
+.event-pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.event-pagination button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: black;
+  padding: 0;
+}

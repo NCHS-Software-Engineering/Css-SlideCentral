@@ -108,14 +108,14 @@ function Calendar() {
     const goForward = (day) => {
         setEventIndexes((prev) => ({
             ...prev,
-            [day]: Math.min((prev[day] || 0) + 3, events[day].length - 1)
+            [day]: Math.min((prev[day] || 0) + 3, events[day].length - 3),
         }));
     };
-
+    
     const goBack = (day) => {
         setEventIndexes((prev) => ({
             ...prev,
-            [day]: Math.max((prev[day] || 0) - 3, 0)
+            [day]: Math.max((prev[day] || 0) - 3, 0),
         }));
     };
 
@@ -131,52 +131,80 @@ function Calendar() {
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
-
+    
         for (let i = 1; i <= numDays; i++) {
             const visibleIndex = eventIndexes[i] || 0;
             const eventList = events[i] || [];
             const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
-
+    
             daySquares.push(
                 <div className="day-square" key={i}>
                     <div className="day-number">{i}</div>
-
+    
+                    {/* Render visible events */}
                     {visibleEvents.map((event, index) => {
                         const eventType = eventTypes[event.activityType.toLowerCase()] || {};
-
+    
                         return (
                             <Button
-                            key={index}
-                            variant="contained"
-                            sx={{
-                                backgroundColor: eventType.color,
-                                color: 'white',
-                                fontSize: '0.8rem',
-                                padding: '4px 8px',
-                                margin: '2px 0',
-                                textTransform: 'none',
-                                '&:hover': {
+                                key={index}
+                                variant="contained"
+                                sx={{
                                     backgroundColor: eventType.color,
-                                    opacity: 0.9,
-                                },
-                            }}
-                            onClick={() => setSelectedEvent(event)}
-                        >
-                            {event.activityName || eventType.label}
-                        </Button>
+                                    color: 'white',
+                                    fontSize: '0.8rem',
+                                    padding: '4px 8px',
+                                    margin: '2px 0',
+                                    textTransform: 'none',
+                                    '&:hover': {
+                                        backgroundColor: eventType.color,
+                                        opacity: 0.9,
+                                    },
+                                }}
+                                onClick={() => setSelectedEvent(event)}
+                            >
+                                {event.activityName || eventType.label}
+                            </Button>
                         );
                     })}
-
+    
+                    {/* Add navigation buttons if there are more events */}
                     {eventList.length > 3 && (
                         <div className="event-pagination">
-                            {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅</button>}
-                            {visibleIndex + 3 < eventList.length && <button onClick={() => goForward(i)}>➡</button>}
+                            {visibleIndex > 0 && (
+                                <Button
+                                    variant="text"
+                                    onClick={() => goBack(i)}
+                                    sx={{
+                                        fontSize: '1.2rem',
+                                        color: 'black',
+                                        minWidth: '30px',
+                                        padding: '0',
+                                    }}
+                                >
+                                    ⬅
+                                </Button>
+                            )}
+                            {visibleIndex + 3 < eventList.length && (
+                                <Button
+                                    variant="text"
+                                    onClick={() => goForward(i)}
+                                    sx={{
+                                        fontSize: '1.2rem',
+                                        color: 'black',
+                                        minWidth: '30px',
+                                        padding: '0',
+                                    }}
+                                >
+                                    ➡
+                                </Button>
+                            )}
                         </div>
                     )}
                 </div>
             );
         }
-
+    
         return daySquares;
     };
 
