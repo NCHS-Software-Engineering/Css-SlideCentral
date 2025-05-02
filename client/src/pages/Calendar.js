@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import {Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
+import { useRef } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
@@ -126,8 +127,12 @@ function Calendar() {
         setCurrentYear(newDate.getFullYear());
     };
 
+    const dayRefs = useRef({}); // Move useRef to the top level of the component
+
+
     const renderDays = () => {
         let daySquares = [];
+     
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
@@ -135,10 +140,24 @@ function Calendar() {
         for (let i = 1; i <= numDays; i++) {
             const visibleIndex = eventIndexes[i] || 0;
             const eventList = events[i] || [];
-            const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
+            const visibleEvents = [];
+            let totalHeight = 0;
+            const maxHeight = 120; // Example: Maximum height for events in a day cell
+    
+            // Calculate visible events based on height
+            for (let j = visibleIndex; j < eventList.length; j++) {
+                const eventHeight = 30; // Example: Approximate height of each event
+                if (totalHeight + eventHeight > maxHeight) break;
+                totalHeight += eventHeight;
+                visibleEvents.push(eventList[j]);
+            }
     
             daySquares.push(
-                <div className="day-square" key={i}>
+                <div
+                    className="day-square"
+                    key={i}
+                    ref={(el) => (dayRefs.current[i] = el)} // Store the ref for this day
+                >
                     <div className="day-number">{i}</div>
     
                     {/* Render visible events */}
@@ -169,7 +188,7 @@ function Calendar() {
                     })}
     
                     {/* Add navigation buttons if there are more events */}
-                    {eventList.length > 3 && (
+                    {eventList.length > visibleEvents.length && (
                         <div className="event-pagination">
                             {visibleIndex > 0 && (
                                 <Button
@@ -185,7 +204,7 @@ function Calendar() {
                                     ⬅
                                 </Button>
                             )}
-                            {visibleIndex + 3 < eventList.length && (
+                            {visibleIndex + visibleEvents.length < eventList.length && (
                                 <Button
                                     variant="text"
                                     onClick={() => goForward(i)}

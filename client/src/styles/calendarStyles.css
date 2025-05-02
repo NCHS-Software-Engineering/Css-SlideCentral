@@ -66,18 +66,16 @@
 }
 
 .day-square {
+  position: relative;
   width: 100%;
   max-width: 170px;
-  height: 120px;
-  border: 5px solid black;
+  height: 120px; /* Example: Fixed height for the day cell */
+  border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  font-size: 1.2rem;
-  padding: 1px; 
-  margin: 0; 
+  justify-content: flex-start;
+  overflow: hidden; /* Hide overflowing events */
   box-sizing: border-box;
   background: white;
 }
