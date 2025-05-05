@@ -6,6 +6,24 @@ import Logo from '../images/homePageLogo.png'
 import Trump from '../images/Trump.png'
 // specific details need to be changed once CSS is fixed
 function SlideshowPage() {
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+  
+  const [desc, setDesc] = useState("");
+  async function iterateTexts() {
+    const texts = ["Michael is a bum", "Jinan is a bum", "Arnav is a bum"];
+    for (let text of texts) {
+      setDesc(text);  // Update the state with the current text
+      await wait(3000);  // Wait for 3 seconds before moving to the next text
+    }
+  }
+  
+
+  useEffect(() => {
+    iterateTexts();
+  }, []); 
     return (
         <>
          <link
@@ -30,22 +48,27 @@ function SlideshowPage() {
         
        
   
-        <div class="slideshow-container">
-        <h1 class="slide-header">Activity Title</h1>
+       
+        
   
         <div class="slide-content">
+        <h1 class="slide-header">Activity Title</h1>
+        <div class="slide-body">
         <div class="slide-text">
 
           <p><strong>Sponsor:</strong> Michael Romanov</p>
           <p><strong>Date:</strong> 4/28/25</p>
           <p><strong>Time:</strong> 3:10 pm </p>
-          <p><strong>Desc:</strong> ichael is massive font-size: clamp(12px, 2.5vw, 28px);  font-size: clamp(12px, 2.5vw, 28px);  </p>
+          <p><strong>Desc:</strong> {desc}  </p>
           </div>
         
-          <div class="slide-image"> {/* image*/} </div>
-          
+          <div class="slide-image"> 
+            <img src={Logo}
+                            alt="Logo"/> 
+             </div>
+             </div>
           </div>
-        </div>
+        
         
 
 
