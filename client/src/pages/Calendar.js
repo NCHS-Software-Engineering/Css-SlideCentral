@@ -1,10 +1,11 @@
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
-import {Button } from '@mui/material';
+import {Button, Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
 import { useRef } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 const redButtonStyle = {
@@ -30,6 +31,7 @@ function Calendar() {
     const today = new Date();
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
+    const [showSearchModal, setShowSearchModal] = useState(false);
 
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June', 
@@ -273,8 +275,6 @@ function Calendar() {
     const EventPopup = ({ event, onClose }) => {
         if (!event) return null;
     
-  
-    
         const handleDelete = () => {
             setShowDeleteModal(true);
         };
@@ -359,8 +359,113 @@ function Calendar() {
         );
     };
 
+    const SearchModal = ({ onClose, onApply }) => {
+        const [searchText, setSearchText] = useState('');
+        const [filters, setFilters] = useState({
+            sports: false,
+            meetings: false,
+            events: false,
+        });
+    
+        const handleCheckboxChange = (e) => {
+            const { name, checked } = e.target;
+            setFilters((prev) => ({
+                ...prev,
+                [name]: checked,
+            }));
+        };
+    
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h2>Search and Filter Events</h2>
+    
+                    {/* Text Input for Search */}
+                    <div className="modal-section">
+                        <label htmlFor="searchText">Search:</label>
+                        <input
+                            type="text"
+                            id="searchText"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            placeholder="Type to search..."
+                        />
+                    </div>
+    
+                    {/* Checkboxes for Filters */}
+                    <div className="modal-section">
+                        <h3>Filters:</h3>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="sports"
+                                checked={filters.sports}
+                                onChange={handleCheckboxChange}
+                            />
+                            School Sports
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="meetings"
+                                checked={filters.meetings}
+                                onChange={handleCheckboxChange}
+                            />
+                            Club Meetings
+                        </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="events"
+                                checked={filters.events}
+                                onChange={handleCheckboxChange}
+                            />
+                            School Events
+                        </label>
+                    </div>
+    
+                    {/* Action Buttons */}
+                    <div className="modal-buttons">
+                        <Button
+                            variant="contained"
+                            onClick={() => onApply(searchText, filters)}
+                            sx={{
+                                backgroundColor: 'green',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#2ecc71',
+                                },
+                                marginRight: '10px',
+                            }}
+                        >
+                            Apply
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={onClose}
+                            sx={{
+                                backgroundColor: 'gray',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#555',
+                                },
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <>
+
+        
+
             <div className="calendar-container">
                 <div className="month-header">
                      {/* Add the logo image and make it clickable */}
@@ -368,23 +473,43 @@ function Calendar() {
                         <img src={Logo} alt="Logo" className="logo" />
                     </Link>
                     <div className="month-controls">
-                        <div className="month-name">{month} {currentYear}</div>
-                        <Button style = {redButtonStyle} onClick={() => changeMonth(-1)} >&lt;</Button>
-                        <Button style = {redButtonStyle} onClick={() => changeMonth(1)}>&gt;</Button>
-                    </div>
+            <div className="month-name">{month} {currentYear}</div>
+            <Button style={redButtonStyle} onClick={() => changeMonth(-1)}>&lt;</Button>
+            <Button style={redButtonStyle} onClick={() => changeMonth(1)}>&gt;</Button>
+
+                {/* Search Button */}
+                <Button
+                    variant="contained"
+                    sx={{
+                        backgroundColor: 'gray',
+                        color: 'white',
+                        marginLeft: 'auto', // Push the button to the far right
+                        textTransform: 'none',
+                        '&:hover': {
+                            backgroundColor: '#555',
+                        },
+                    }}
+                    startIcon={<SearchIcon />}
+                    onClick={() => setShowSearchModal(true)} // Show the modal
+                    >
+                    Search
+                </Button>
+            </div>
                 </div>
 
                 <div className="event-key">
-                    {Object.values(eventTypes).map((event, index) => (
-                        <div 
-                            key={index} 
-                            className="event-key-item" 
-                            style={{ backgroundColor: event.color }}
-                        >
-                            <span className="event-key-color" style={{ backgroundColor: event.color }}></span>
-                            {event.label}
-                        </div>
-                    ))}
+                 {Object.values(eventTypes).map((event, index) => (
+        <Chip
+            key={index}
+            label={event.label} // Use the label from the event type
+            sx={{
+                backgroundColor: event.color,  
+                color: 'white',  
+                fontWeight: 'bold',
+                margin: '5px',
+            }}
+            />
+            ))}
                 </div>
 
                 <div className="days-grid">
@@ -396,7 +521,22 @@ function Calendar() {
 
                 {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
             </div>
+        
+            {showSearchModal && (
+            <SearchModal
+                onClose={() => setShowSearchModal(false)} // Close the modal
+                onApply={(searchText, filters) => {
+                    console.log('Search Text:', searchText);
+                    console.log('Filters:', filters);
+                    setShowSearchModal(false); // Close the modal after applying filters
+                }}
+            />
+        )}
+        
         </>
+
+        
+
     );
 }
 

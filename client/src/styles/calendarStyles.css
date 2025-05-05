@@ -59,9 +59,9 @@
 .day-name {
   font-weight: bold;
   text-align: center;
-  padding: 5px;
+  padding: 4px;
   background: #ddd;
-  border: 6px solid black;
+  border: 0px solid black;
   border-radius: 5px;
 }
 
@@ -181,17 +181,19 @@
 .month-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Space between the buttons and the text */
-  width: 100%; /* Ensure it spans the full width */
-  max-width: 600px; /* Optional: Set a max width for the container */
-  margin: 0 auto; /* Center the controls horizontally */
+  justify-content: space-between; /* Space between the month name and arrow buttons */
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .month-name {
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  flex-grow: 1; /* Allow the text to take up remaining space */
+  flex-grow: 1; /* Allow the month name to take up remaining space */
+  margin-left: 140px; /* Optional: Add margin to adjust alignment */
   white-space: nowrap; /* Prevent text from wrapping */
 }
  
@@ -238,4 +240,37 @@
   font-size: 1.2rem;
   color: black;
   padding: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
