@@ -5,7 +5,7 @@
   background: #f1f1f1;
   padding: 50px;
   border-radius: 10px;
-  height: 90.34vh; 
+  height: 100%; 
   width: 100%; 
   max-width: 94.73%;  
 }
@@ -52,6 +52,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
+  height: 100%;
   max-width: 1200px;
   gap: 2px; 
 }
@@ -69,8 +70,8 @@
   position: relative;
   width: 100%;
   max-width: 170px;
-  height: 120px; /* Example: Fixed height for the day cell */
-  border: 1px solid #ccc;
+  height: 150px; /* Example: Fixed height for the day cell */
+  border: 2px solid #ccc;
   display: flex;
   flex-direction: column;
   align-items: center;

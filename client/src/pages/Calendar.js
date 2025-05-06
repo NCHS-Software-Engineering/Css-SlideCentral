@@ -1,6 +1,6 @@
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
-import {Button, Chip } from '@mui/material';
+import {Button, Chip, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
 import { useRef } from 'react';
@@ -45,7 +45,7 @@ function Calendar() {
     const eventTypes = {
         'school sports': { color: 'green', label: 'School Sports' },
         'club meetings': { color: 'red', label: 'Club Meeting' },
-        'school events': { color: 'blue', label: 'School Event' },
+        'school event': { color: 'blue', label: 'School Event' },
     };
 
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -278,7 +278,7 @@ function Calendar() {
         const handleDelete = () => {
             setShowDeleteModal(true);
         };
-
+    
         const confirmDelete = () => {
             fetch(`http://localhost:8500/api/events/${event.id}`, {
                 method: 'DELETE',
@@ -296,10 +296,14 @@ function Calendar() {
                 .catch((error) => console.error('Error deleting event:', error))
                 .finally(() => setShowDeleteModal(false)); // Hide the modal
         };
-        
+    
         const cancelDelete = () => {
             setShowDeleteModal(false); // Hide the modal without deleting
         };
+    
+        // Get the color for the event type
+        const eventType = event.activityType.toLowerCase();
+        const eventColor = eventTypes[eventType]?.color || 'gray'; // Default to gray if no color is found
     
         return (
             <div className="popup-overlay" onClick={onClose}>
@@ -311,42 +315,42 @@ function Calendar() {
                             className="small-button"
                             onClick={handleDelete}
                             sx={{
-                                ...redButtonStyle,
-                                backgroundColor: 'red',
+                                backgroundColor: eventColor,
                                 '&:hover': {
-                                    backgroundColor: '#b71c1c',
+                                    backgroundColor: eventColor,
+                                    opacity: 0.9,
                                 },
                                 minWidth: '10px',
                                 padding: '6px',
                             }}
                             startIcon={<DeleteIcon />}
                         >
-                            Delete
+                            
                         </Button>
                     </div>
-        
+    
                     <h2>{event.activityName}</h2>
                     <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
                     <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
-        
+    
                     {/* Close Button */}
                     <Button
                         variant="contained"
-                        color="primary"
                         onClick={onClose}
                         sx={{
-                            backgroundColor: 'red',
+                            backgroundColor: eventColor,
                             color: 'white',
                             textTransform: 'none',
                             '&:hover': {
-                                backgroundColor: '#b71c1c',
+                                backgroundColor: eventColor,
+                                opacity: 0.9,
                             },
                             marginTop: '20px',
                         }}
                     >
                         Close
                     </Button>
-        
+    
                     {/* Render the Delete Confirmation Modal */}
                     {showDeleteModal && (
                         <DeleteConfirmationModal
@@ -378,17 +382,22 @@ function Calendar() {
         return (
             <div className="modal-overlay">
                 <div className="modal-content">
-                    <h2>Search and Filter Events</h2>
+                    <h2>Filter Events</h2>
     
                     {/* Text Input for Search */}
                     <div className="modal-section">
-                        <label htmlFor="searchText">Search:</label>
-                        <input
-                            type="text"
+                        <TextField
                             id="searchText"
+                            label="Enter a name..."
+                            variant="outlined"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             placeholder="Type to search..."
+                            fullWidth
+                            sx={{
+                                marginTop: '10px',
+                                marginBottom: '20px',
+                            }}
                         />
                     </div>
     
@@ -492,7 +501,7 @@ function Calendar() {
                     startIcon={<SearchIcon />}
                     onClick={() => setShowSearchModal(true)} // Show the modal
                     >
-                    Search
+                    Filter
                 </Button>
             </div>
                 </div>
