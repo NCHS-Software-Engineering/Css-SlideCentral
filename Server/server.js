@@ -72,12 +72,25 @@ app.post("/api/addActivity", (req, res) => {
   // For image, we store the file name as a placeholder.
   const imagePath = image ? image.name || "" : "";
 
-  const sql = `INSERT INTO activities 
-    (activityType, startDate, endDate, activityName, activityDesc, calendarDayOfWeek, calendarFrequency, calendarTimeOfDay, imagePath) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    
+  const sql = `
+    INSERT INTO activities
+      (userId,
+       activityType,
+       activityDate,
+       slideshowStartDate,
+       slideshowEndDate,
+       activityName,
+       activityDesc,
+       calendarDayOfWeek,
+       calendarFrequency,
+       calendarTimeOfDay,
+       imagePath)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
   const values = [
+    user.id,
     activityType,
+    startDate,
     startDate,
     endDate,
     activityName,
@@ -87,7 +100,7 @@ app.post("/api/addActivity", (req, res) => {
     calendarTimeOfDay,
     imagePath
   ];
-
+  
   db.query(sql, values, (err, result) => {
     if (err) {
       console.error("Error inserting activity:", err);
@@ -97,18 +110,6 @@ app.post("/api/addActivity", (req, res) => {
   });
 });
 
-// API endpoint to fetch events
-app.get("/api/events", (req, res) => {
-  const sql = "SELECT * FROM activities"; // Ensure your table is named 'activities'
-  
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error fetching events:", err);
-      return res.status(500).json({ error: "Database query failed" });
-    }
-    res.json(results);
-  });
-});
 
  
 

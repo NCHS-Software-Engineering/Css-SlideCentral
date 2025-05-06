@@ -1,5 +1,3 @@
-// src/pages/ActivitiesForm.js
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -30,7 +28,7 @@ function ActivitiesForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation checks
+    // Basic validation
     if (!startDate || !endDate) {
       alert('Please select both a start and end date.');
       return;
@@ -40,10 +38,12 @@ function ActivitiesForm() {
       return;
     }
 
+    // Build payload matching database columns
     const formData = {
       activityType,
-      startDate,
-      endDate,
+      activityDate:       startDate,         // required NOT NULL
+      slideshowStartDate: startDate,         // optional slideshow start
+      slideshowEndDate:   endDate,           // required slideshow end
       activityName,
       activityDesc,
       calendarDayOfWeek,
@@ -53,7 +53,6 @@ function ActivitiesForm() {
     };
 
     try {
-      // HARD-CODED URL to ensure request goes to port 3000
       const response = await fetch('http://localhost:8500/api/addActivity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -72,7 +71,7 @@ function ActivitiesForm() {
     }
   };
 
-  // Handle cancel (navigate back to home)
+  // Handle cancel
   const handleCancel = () => {
     navigate('/');
   };
