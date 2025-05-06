@@ -1,6 +1,6 @@
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
-import {Button, Chip, TextField } from '@mui/material';
+import {Button, Chip, TextField, Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
 import { useRef } from 'react';
@@ -134,25 +134,17 @@ function Calendar() {
 
     const renderDays = () => {
         let daySquares = [];
-     
+    
+        // Add empty squares for days before the first day of the month
         for (let i = 0; i < firstDayOffset; i++) {
             daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
         }
     
+        // Render days with events
         for (let i = 1; i <= numDays; i++) {
-            const visibleIndex = eventIndexes[i] || 0;
-            const eventList = events[i] || [];
-            const visibleEvents = [];
-            let totalHeight = 0;
-            const maxHeight = 120; // Example: Maximum height for events in a day cell
-    
-            // Calculate visible events based on height
-            for (let j = visibleIndex; j < eventList.length; j++) {
-                const eventHeight = 30; // Example: Approximate height of each event
-                if (totalHeight + eventHeight > maxHeight) break;
-                totalHeight += eventHeight;
-                visibleEvents.push(eventList[j]);
-            }
+            const visibleIndex = eventIndexes[i] || 0; // Starting index of visible events
+            const eventList = events[i] || []; // Events for the current day
+            const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3); // Show 3 events at a time
     
             daySquares.push(
                 <div
@@ -177,12 +169,18 @@ function Calendar() {
                                     padding: '4px 8px',
                                     margin: '2px 0',
                                     textTransform: 'none',
+                                    display: 'inline-block', // Required for ellipsis
+                                    whiteSpace: 'nowrap', // Prevent text wrapping
+                                    overflow: 'hidden', // Hide overflowing text
+                                    textOverflow: 'ellipsis', // Add ellipsis for overflowing text
+                                    maxWidth: '75%', // Ensure the text fits within the button
                                     '&:hover': {
                                         backgroundColor: eventType.color,
                                         opacity: 0.9,
                                     },
                                 }}
                                 onClick={() => setSelectedEvent(event)}
+                                className="event-text"
                             >
                                 {event.activityName || eventType.label}
                             </Button>
@@ -190,7 +188,7 @@ function Calendar() {
                     })}
     
                     {/* Add navigation buttons if there are more events */}
-                    {eventList.length > visibleEvents.length && (
+                    {eventList.length > 3 && (
                         <div className="event-pagination">
                             {visibleIndex > 0 && (
                                 <Button
@@ -206,7 +204,7 @@ function Calendar() {
                                     ⬅
                                 </Button>
                             )}
-                            {visibleIndex + visibleEvents.length < eventList.length && (
+                            {visibleIndex + 3 < eventList.length && (
                                 <Button
                                     variant="text"
                                     onClick={() => goForward(i)}
@@ -401,36 +399,56 @@ function Calendar() {
                         />
                     </div>
     
-                    {/* Checkboxes for Filters */}
+                    {/* Material-UI Checkboxes for Filters */}
                     <div className="modal-section">
-                        <h3>Filters:</h3>
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="sports"
-                                checked={filters.sports}
-                                onChange={handleCheckboxChange}
-                            />
-                            School Sports
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="meetings"
-                                checked={filters.meetings}
-                                onChange={handleCheckboxChange}
-                            />
-                            Club Meetings
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="events"
-                                checked={filters.events}
-                                onChange={handleCheckboxChange}
-                            />
-                            School Events
-                        </label>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="sports"
+                                    checked={filters.sports}
+                                    onChange={handleCheckboxChange}
+                                    sx={{
+                                        color: 'green',
+                                        '&.Mui-checked': {
+                                            color: 'green',
+                                        },
+                                    }}
+                                />
+                            }
+                            label="School Sports"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="meetings"
+                                    checked={filters.meetings}
+                                    onChange={handleCheckboxChange}
+                                    sx={{
+                                        color: 'red',
+                                        '&.Mui-checked': {
+                                            color: 'red',
+                                        },
+                                    }}
+                                />
+                            }
+                            label="Club Meetings"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="events"
+                                    checked={filters.events}
+                                    onChange={handleCheckboxChange}
+                                    sx={{
+                                        color: 'blue',
+                                        '&.Mui-checked': {
+                                            color: 'blue',
+                                        },
+                                    }}
+                                />
+                            }
+                            label="School Events"
+                        />
                     </div>
     
                     {/* Action Buttons */}
