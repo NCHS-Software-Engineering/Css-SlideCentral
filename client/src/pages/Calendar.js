@@ -50,8 +50,10 @@ function Calendar() {
 
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [eventIndexes, setEventIndexes] = useState({}); 
+    const [allEvents, setAllEvents] = useState({}); // Store all events
     const [events, setEvents] = useState({}); 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    
 
     const fetchEvents = () => {
         fetch('http://localhost:8500/api/events')  
@@ -95,7 +97,8 @@ function Calendar() {
                     }
                 });
     
-                setEvents(eventsGroupedByDay);
+                setAllEvents(eventsGroupedByDay); // Store all events
+                setEvents(eventsGroupedByDay); // Initially, show all events
                 console.log('Fetched events:', eventsGroupedByDay);
             })
             .catch((error) => {
@@ -361,14 +364,15 @@ function Calendar() {
         );
     };
 
-    const SearchModal = ({ onClose, onApply }) => {
-        const [searchText, setSearchText] = useState('');
-        const [filters, setFilters] = useState({
-            sports: false,
-            meetings: false,
-            events: false,
-        });
-    
+    const [filters, setFilters] = useState({
+        sports: false,
+        meetings: false,
+        events: false,
+    });
+
+    const [searchText, setSearchText] = useState('');  
+
+    const SearchModal = ({ onClose, onApply, filters, setFilters, searchText, setSearchText }) => {
         const handleCheckboxChange = (e) => {
             const { name, checked } = e.target;
             setFilters((prev) => ({
@@ -388,8 +392,8 @@ function Calendar() {
                             id="searchText"
                             label="Enter a name..."
                             variant="outlined"
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            value={searchText} // Use the searchText prop
+                            onChange={(e) => setSearchText(e.target.value)} // Update the parent state
                             placeholder="Type to search..."
                             fullWidth
                             sx={{
@@ -455,7 +459,7 @@ function Calendar() {
                     <div className="modal-buttons">
                         <Button
                             variant="contained"
-                            onClick={() => onApply(searchText, filters)}
+                            onClick={() => onApply(searchText, filters)} // Pass searchText and filters to the parent
                             sx={{
                                 backgroundColor: 'green',
                                 color: 'white',
@@ -486,6 +490,30 @@ function Calendar() {
                 </div>
             </div>
         );
+    };
+
+    const applyFilters = (searchText, filters) => {
+        const filteredEvents = {};
+    
+        // Loop through all events and apply filters
+        Object.keys(allEvents).forEach((day) => {
+            const dayEvents = allEvents[day].filter((event) => {
+                const matchesSearchText = event.activityName.toLowerCase().includes(searchText.toLowerCase());
+                const matchesFilter =
+                    (filters.sports && event.activityType.toLowerCase() === 'school sports') ||
+                    (filters.meetings && event.activityType.toLowerCase() === 'club meetings') ||
+                    (filters.events && event.activityType.toLowerCase() === 'school event');
+    
+                // If no filters are selected, show all events that match the search text
+                return matchesSearchText && (matchesFilter || (!filters.sports && !filters.meetings && !filters.events));
+            });
+    
+            if (dayEvents.length > 0) {
+                filteredEvents[day] = dayEvents;
+            }
+        });
+    
+        setEvents(filteredEvents); // Update the events state with filtered events
     };
 
     return (
@@ -551,13 +579,16 @@ function Calendar() {
         
             {showSearchModal && (
             <SearchModal
-                onClose={() => setShowSearchModal(false)} // Close the modal
-                onApply={(searchText, filters) => {
-                    console.log('Search Text:', searchText);
-                    console.log('Filters:', filters);
-                    setShowSearchModal(false); // Close the modal after applying filters
-                }}
-            />
+            filters={filters}
+            setFilters={setFilters}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            onClose={() => setShowSearchModal(false)} // Close the modal
+            onApply={(searchText, filters) => {
+                applyFilters(searchText, filters); // Apply the filters
+                setShowSearchModal(false); // Close the modal after applying filters
+            }}
+        />
         )}
         
         </>
