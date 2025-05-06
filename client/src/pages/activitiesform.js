@@ -1,49 +1,60 @@
 // src/pages/ActivitiesForm.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function ActivitiesForm() {
+function ActivitiesForm({ originalStartDate = '' }) {
   const navigate = useNavigate();
 
-  // State for Activity Details
-  const [activityType, setActivityType] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [activityName, setActivityName] = useState('');
-  const [activityDesc, setActivityDesc] = useState('');
-  const [image, setImage] = useState(null);
+  // detect mobile
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 600);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // State for Calendar Settings
+  // Activity Information
+  const [activityType, setActivityType]           = useState('');
+  const [activityDate, setActivityDate]           = useState('');
+  const [activityName, setActivityName]           = useState('');
+  const [activityDesc, setActivityDesc]           = useState('');
+
+  // Slideshow Settings
+  const [slideshowStartDate, setSlideshowStartDate] = useState('');
+  const [slideshowEndDate, setSlideshowEndDate]   = useState('');
+  const [image, setImage]                         = useState(null);
+
+  // Calendar Settings
   const [calendarDayOfWeek, setCalendarDayOfWeek] = useState('');
   const [calendarFrequency, setCalendarFrequency] = useState('');
   const [calendarTimeOfDay, setCalendarTimeOfDay] = useState('');
 
-  // Handle file upload (for slideshow image)
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
+  // if you pass an originalStartDate in via props
+  useEffect(() => {
+    setActivityDate(originalStartDate);
+  }, [originalStartDate]);
+
+  const handleFileChange = e => {
+    if (e.target.files?.[0]) setImage(e.target.files[0]);
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    // Basic validation checks
-    if (!startDate || !endDate) {
-      alert('Please select both a start and end date.');
-      return;
+    // simple slideshow date validation
+    if (!slideshowStartDate || !slideshowEndDate) {
+      return alert('Please select both slideshow start and end dates.');
     }
-    if (new Date(startDate) > new Date(endDate)) {
-      alert('Start date cannot be after end date.');
-      return;
+    if (new Date(slideshowStartDate) > new Date(slideshowEndDate)) {
+      return alert('Slideshow start date cannot be after slideshow end date.');
     }
 
     const formData = {
       activityType,
-      startDate,
-      endDate,
+      activityDate,
+      slideshowStartDate,
+      slideshowEndDate,
       activityName,
       activityDesc,
       calendarDayOfWeek,
@@ -53,196 +64,171 @@ function ActivitiesForm() {
     };
 
     try {
-      // HARD-CODED URL to ensure request goes to port 3000
-      const response = await fetch('http://localhost:8500/api/addActivity', {
+      const res = await fetch('/api/addActivity', {
         method: 'POST',
+        credentials: 'include',              // send session cookie
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        alert('Activity submitted!');
-        navigate('/');
-      } else {
-        alert('Error submitting activity');
-      }
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      alert('Activity submitted!');
+      navigate('/');
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Submit error:', err);
       alert('Error submitting activity');
     }
   };
 
-  // Handle cancel (navigate back to home)
-  const handleCancel = () => {
-    navigate('/');
-  };
+  const handleCancel = () => navigate('/');
+
+  const formLayout = isMobile
+    ? { display: 'flex', flexDirection: 'column', gap: '20px' }
+    : styles.formGrid;
 
   return (
     <div style={styles.container}>
       <h2 style={styles.header}>Enter Activity</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.twoColumn}>
-          {/* Left Column: Activity Details */}
-          <div style={styles.leftColumn}>
-            <h3 style={styles.sectionHeader}>Activity Details</h3>
+      <form onSubmit={handleSubmit} style={formLayout}>
 
-            {/* Activity Type */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Activity type:</label>
-              <div style={styles.radioGroup}>
-                <label style={styles.radioLabel}>
+        {/* Activity Information */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionHeader}>Activity Information</h3>
+
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Activity type:</label>
+            <div style={styles.radioGroup}>
+              {['School Sports','Club Meetings','School Events'].map(type => (
+                <label key={type} style={styles.radioLabel}>
                   <input
                     type="radio"
                     name="activityType"
-                    value="School Sports"
-                    checked={activityType === 'School Sports'}
-                    onChange={(e) => setActivityType(e.target.value)}
+                    value={type}
+                    checked={activityType === type}
+                    onChange={e => setActivityType(e.target.value)}
                   />
-                  School Sports
+                  {type}
                 </label>
-                <label style={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="activityType"
-                    value="Club Meetings"
-                    checked={activityType === 'Club Meetings'}
-                    onChange={(e) => setActivityType(e.target.value)}
-                  />
-                  Club Meetings
-                </label>
-                <label style={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="activityType"
-                    value="School Events"
-                    checked={activityType === 'School Events'}
-                    onChange={(e) => setActivityType(e.target.value)}
-                  />
-                  School Events
-                </label>
-              </div>
-            </div>
-
-            {/* Start Date */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Start Date:</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            {/* End Date */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>End Date:</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={styles.input}
-              />
-            </div>
-
-            {/* Activity Name */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Activity Name:</label>
-              <input
-                type="text"
-                value={activityName}
-                onChange={(e) => setActivityName(e.target.value)}
-                style={styles.input}
-                placeholder="e.g. Soccer Practice"
-              />
-            </div>
-
-            {/* Activity Description */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Activity Desc:</label>
-              <textarea
-                value={activityDesc}
-                onChange={(e) => setActivityDesc(e.target.value)}
-                style={{ ...styles.input, height: '60px' }}
-                placeholder="Describe the activity..."
-              />
+              ))}
             </div>
           </div>
 
-          {/* Right Column: Calendar & Slideshow */}
-          <div style={styles.rightColumn}>
-            <h3 style={styles.sectionHeader}>Calendar Settings</h3>
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Activity Date:</label>
+            <input
+              type="date"
+              value={activityDate}
+              onChange={e => setActivityDate(e.target.value)}
+              style={styles.input}
+            />
+          </div>
 
-            {/* Day of the Week */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Day of the Week:</label>
-              <select
-                value={calendarDayOfWeek}
-                onChange={(e) => setCalendarDayOfWeek(e.target.value)}
-                style={styles.input}
-              >
-                <option value="">--Select Day--</option>
-                <option value="Sunday">Sunday</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-              </select>
-            </div>
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Activity Name:</label>
+            <input
+              type="text"
+              value={activityName}
+              onChange={e => setActivityName(e.target.value)}
+              placeholder="e.g. Soccer Practice"
+              style={styles.input}
+            />
+          </div>
 
-            {/* Frequency */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Frequency:</label>
-              <select
-                value={calendarFrequency}
-                onChange={(e) => setCalendarFrequency(e.target.value)}
-                style={styles.input}
-              >
-                <option value="">--Select Frequency--</option>
-                <option value="One-Time">One-Time</option>
-                <option value="Weekly">Weekly</option>
-                <option value="Biweekly">Biweekly</option>
-                <option value="Monthly">Monthly</option>
-              </select>
-            </div>
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Activity Description:</label>
+            <textarea
+              value={activityDesc}
+              onChange={e => setActivityDesc(e.target.value)}
+              placeholder="Describe the activity..."
+              style={{ ...styles.input, height: '60px', resize: 'vertical' }}
+            />
+          </div>
+        </div>
 
-            {/* Time of Day */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>Time of Day:</label>
-              <select
-                value={calendarTimeOfDay}
-                onChange={(e) => setCalendarTimeOfDay(e.target.value)}
-                style={styles.input}
-              >
-                <option value="">--Select Time--</option>
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-              </select>
-            </div>
+        {/* Slideshow Settings */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionHeader}>Slideshow Settings</h3>
 
-            <h3 style={styles.sectionHeader}>Slideshow Settings</h3>
-            {/* Slideshow Image */}
-            <div style={styles.fieldGroup}>
-              <label style={styles.label}>(Optional) Slideshow Image:</label>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <label htmlFor="file-upload" style={styles.uploadButton}>
-                  File Upload
-                </label>
-                <input
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileChange}
-                  style={{ display: 'none' }}
-                />
-              </div>
-            </div>
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Slideshow Start Date:</label>
+            <input
+              type="date"
+              value={slideshowStartDate}
+              onChange={e => setSlideshowStartDate(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Slideshow End Date:</label>
+            <input
+              type="date"
+              value={slideshowEndDate}
+              onChange={e => setSlideshowEndDate(e.target.value)}
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>(Optional) Slideshow Image:</label>
+            <label htmlFor="file-upload" style={styles.uploadButton}>
+              File Upload
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+        </div>
+
+        {/* Calendar Settings */}
+        <div style={styles.section}>
+          <h3 style={styles.sectionHeader}>Calendar Settings</h3>
+
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Day of the Week:</label>
+            <select
+              value={calendarDayOfWeek}
+              onChange={e => setCalendarDayOfWeek(e.target.value)}
+              style={styles.input}
+            >
+              <option value="">--Select Day--</option>
+              {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+                .map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
+
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Frequency:</label>
+            <select
+              value={calendarFrequency}
+              onChange={e => setCalendarFrequency(e.target.value)}
+              style={styles.input}
+            >
+              <option value="">--Select Frequency--</option>
+              {['One-Time','Weekly','Biweekly','Monthly']
+                .map(f => <option key={f} value={f}>{f}</option>)}
+            </select>
+          </div>
+
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>Time of Day:</label>
+            <select
+              value={calendarTimeOfDay}
+              onChange={e => setCalendarTimeOfDay(e.target.value)}
+              style={styles.input}
+            >
+              <option value="">--Select Time--</option>
+              <option value="Morning">Morning</option>
+              <option value="Afternoon">Afternoon</option>
+            </select>
           </div>
         </div>
 
         {/* Buttons */}
-        <div style={styles.buttonContainer}>
+        <div style={styles.buttonRow}>
           <button type="button" onClick={handleCancel} style={styles.cancelButton}>
             Cancel
           </button>
@@ -250,6 +236,7 @@ function ActivitiesForm() {
             Submit
           </button>
         </div>
+
       </form>
     </div>
   );
@@ -257,59 +244,51 @@ function ActivitiesForm() {
 
 const styles = {
   container: {
-    maxWidth: '900px',
+    maxWidth: '95%',
     margin: '20px auto',
     padding: '20px',
-    border: '1px solid #ccc',
+    backgroundColor: '#fff',
     borderRadius: '6px',
-    backgroundColor: '#f9f9f9',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     fontFamily: 'sans-serif',
   },
   header: {
-    marginBottom: '15px',
     textAlign: 'center',
-    fontSize: '1.5rem',
+    fontSize: '1.6rem',
+    marginBottom: '1rem',
   },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-  },
-  twoColumn: {
+  formGrid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr 1fr 1fr',
     gap: '20px',
+    alignItems: 'start',
   },
-  leftColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-  },
-  rightColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
+  section: {
+    padding: '10px',
+    border: '1px solid #eee',
+    borderRadius: '4px',
   },
   sectionHeader: {
-    fontSize: '1.2rem',
-    margin: '0 0 5px',
-    borderBottom: '1px solid #ccc',
-    paddingBottom: '5px',
+    fontSize: '1.1rem',
+    marginBottom: '0.8rem',
+    borderBottom: '1px solid #ddd',
+    paddingBottom: '4px',
   },
   fieldGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
+    marginBottom: '0.8rem',
   },
   label: {
-    fontWeight: 'bold',
-    fontSize: '0.95rem',
+    display: 'block',
+    fontWeight: '600',
+    marginBottom: '4px',
   },
   input: {
-    padding: '6px',
+    boxSizing: 'border-box',
+    width: '100%',
+    padding: '6px 8px',
+    fontSize: '0.9rem',
     borderRadius: '4px',
     border: '1px solid #ccc',
-    fontSize: '0.9rem',
   },
   radioGroup: {
     display: 'flex',
@@ -327,31 +306,29 @@ const styles = {
     color: '#fff',
     borderRadius: '4px',
     cursor: 'pointer',
-    textAlign: 'center',
     fontSize: '0.9rem',
+    display: 'inline-block',
   },
-  buttonContainer: {
+  buttonRow: {
+    gridColumn: '1 / -1',
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: '10px',
   },
   cancelButton: {
-    backgroundColor: '#ccc',
-    color: '#000',
-    border: 'none',
     padding: '8px 12px',
+    backgroundColor: '#ccc',
+    border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
   },
   submitButton: {
+    padding: '8px 12px',
     backgroundColor: '#f44336',
     color: '#fff',
     border: 'none',
-    padding: '8px 12px',
     borderRadius: '4px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
   },
 };
 

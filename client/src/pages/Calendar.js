@@ -1,217 +1,186 @@
+// src/pages/Calendar.js
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
-import {Button } from '@mui/material';
-
+import { Button } from '@mui/material';
 
 const redButtonStyle = {
-    backgroundColor: 'red',
-    color: '#fff',
-    textTransform: 'none',
-    transition: 'transform 0.3s, background-color 0.3s',
-    whiteSpace: 'nowrap',
-    // Use a slightly larger font on mobile (xs) and smaller on desktop (md)
-    fontSize: { xs: '0.875rem', md: '0.75rem' },
-    '&:hover': {
-      backgroundColor: '#b71c1c',
-      transform: 'scale(1.05)',
-    },
-  };
-  
+  backgroundColor: 'red',
+  color: '#fff',
+  textTransform: 'none',
+  transition: 'transform 0.3s, background-color 0.3s',
+  whiteSpace: 'nowrap',
+  fontSize: { xs: '0.875rem', md: '0.75rem' },
+  '&:hover': {
+    backgroundColor: '#b71c1c',
+    transform: 'scale(1.05)',
+  },
+};
 
 function Calendar() {
-    console.log('Calendar component rendered');
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear,  setCurrentYear]  = useState(today.getFullYear());
 
-    const today = new Date();
-    const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-    const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const monthNames = [
+    'January','February','March','April','May','June',
+    'July','August','September','October','November','December'
+  ];
+  const month          = monthNames[currentMonth];
+  const numDays        = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
 
-    const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June', 
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+  const [events,        setEvents]        = useState({});
+  const [eventIndexes,  setEventIndexes]  = useState({});
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-    const month = monthNames[currentMonth];
-    const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
+  const eventTypes = {
+    'school sports': { color:'green',  label:'School Sports' },
+    'club meetings': { color:'red',    label:'Club Meeting'  },
+    'school events': { color:'blue',   label:'School Event'  },
+    'workshop':      { color:'orange', label:'Workshop'      },
+    'meetup':        { color:'purple', label:'Meetup'        },
+  };
 
-    const eventTypes = {
-        'school sports': { color: 'green', label: 'School Sports' },
-        'club meetings': { color: 'red', label: 'Club Meeting' },
-        'school events': { color: 'blue', label: 'School Event' },
-        'workshop': { color: 'orange', label: 'Workshop' },
-        'meetup': { color: 'purple', label: 'Meetup' }
-    };
+  // fetch only this user's one-time events
+  useEffect(() => {
+    fetch('http://localhost:8500/api/events', {
+      credentials: 'include'
+    })
+      .then(r => r.json())
+      .then(data => {
+        const grouped = {};
+        data.forEach(ev => {
+          // only use activityDate now
+          const d = new Date(ev.activityDate);
+          if (d.getMonth() !== currentMonth || d.getFullYear() !== currentYear) {
+            return;
+          }
+          const day = d.getDate();
+          grouped[day] = grouped[day] || [];
+          grouped[day].push(ev);
+        });
+        setEvents(grouped);
+      })
+      .catch(console.error);
+  }, [currentMonth, currentYear]);
 
-    const [selectedEvent, setSelectedEvent] = useState(null);
-    const [eventIndexes, setEventIndexes] = useState({}); 
-    const [events, setEvents] = useState({}); 
+  const changeMonth = offset => {
+    setEventIndexes({});
+    const d = new Date(currentYear, currentMonth + offset);
+    setCurrentMonth(d.getMonth());
+    setCurrentYear(d.getFullYear());
+  };
 
-    useEffect(() => {
-        fetch('http://localhost:8500/api/events')  
-            .then((response) => response.json())
-            .then((data) => {
-                const eventsGroupedByDay = {};
-                const targetMonth = currentMonth;
-                const targetYear = currentYear;
+  const goBack = day => {
+    setEventIndexes(prev => ({
+      ...prev,
+      [day]: Math.max((prev[day] || 0) - 1, 0)
+    }));
+  };
+  const goForward = day => {
+    setEventIndexes(prev => ({
+      ...prev,
+      [day]: Math.min((prev[day] || 0) + 1, (events[day]?.length||1) - 1)
+    }));
+  };
 
-                data.forEach((event) => {
-                    const start = new Date(event.startDate);
-                    const end = new Date(event.endDate);
-                    const frequency = event.calendarFrequency?.toLowerCase();
-                    const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
-                    const startDay = start.getDate();
+  const renderDays = () => {
+    const squares = [];
 
-                    const addEvent = (date) => {
-                        if (date.getMonth() !== targetMonth || date.getFullYear() !== targetYear) return;
-                        const day = date.getDate();
-                        if (!eventsGroupedByDay[day]) eventsGroupedByDay[day] = [];
-                        eventsGroupedByDay[day].push({ ...event, displayDate: new Date(date) });
-                    };
+    // leading blanks
+    for (let i = 0; i < firstDayOffset; i++) {
+      squares.push(<div key={`e${i}`} className="day-square empty" />);
+    }
 
-                    if (frequency === 'one-time') {
-                        addEvent(new Date(start));
-                    } else if (frequency === 'weekly' || frequency === 'biweekly') {
-                        const interval = frequency === 'weekly' ? 7 : 14;
-                        let firstEventDate = new Date(start);
-                        while (firstEventDate.toLocaleString('en-US', { weekday: 'long' }).toLowerCase() !== targetDayOfWeek) {
-                            firstEventDate.setDate(firstEventDate.getDate() + 1);
-                        }
-                        for (let d = new Date(firstEventDate); d <= end; d.setDate(d.getDate() + interval)) {
-                            addEvent(new Date(d));
-                        }
-                    } else if (frequency === 'monthly') {
-                        for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
-                            const date = new Date(d);
-                            date.setDate(startDay);
-                            addEvent(date);
-                        }
-                    }
-                });
+    // actual days
+    for (let dayNum = 1; dayNum <= numDays; dayNum++) {
+      const list = events[dayNum] || [];
+      const idx  = eventIndexes[dayNum] || 0;
 
-                setEvents(eventsGroupedByDay);
-                console.log('Fetched events:', eventsGroupedByDay);
-            })
-            .catch((error) => {
-                console.error('Error fetching events:', error);
-            });
-    }, [currentMonth, currentYear]);
+      squares.push(
+        <div key={dayNum} className="day-square">
+          <div className="day-number">{dayNum}</div>
 
-    const goForward = (day) => {
-        setEventIndexes((prev) => ({
-            ...prev,
-            [day]: Math.min((prev[day] || 0) + 3, events[day].length - 1)
-        }));
-    };
-
-    const goBack = (day) => {
-        setEventIndexes((prev) => ({
-            ...prev,
-            [day]: Math.max((prev[day] || 0) - 3, 0)
-        }));
-    };
-
-    const changeMonth = (offset) => {
-        setEventIndexes({});
-        const newDate = new Date(currentYear, currentMonth + offset);
-        setCurrentMonth(newDate.getMonth());
-        setCurrentYear(newDate.getFullYear());
-    };
-
-    const renderDays = () => {
-        let daySquares = [];
-        for (let i = 0; i < firstDayOffset; i++) {
-            daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
-        }
-
-        for (let i = 1; i <= numDays; i++) {
-            const visibleIndex = eventIndexes[i] || 0;
-            const eventList = events[i] || [];
-            const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3);
-
-            daySquares.push(
-                <div className="day-square" key={i}>
-                    <div className="day-number">{i}</div>
-
-                    {visibleEvents.map((event, index) => {
-                        const eventType = eventTypes[event.activityType.toLowerCase()] || {};
-
-                        return (
-                            <div
-                                key={index}
-                                className="event-label"
-                                style={{ backgroundColor: eventType.color }}
-                                onClick={() => setSelectedEvent(event)}
-                            >
-                                {event.activityName || eventType.label}
-                            </div>
-                        );
-                    })}
-
-                    {eventList.length > 3 && (
-                        <div className="event-pagination">
-                            {visibleIndex > 0 && <button onClick={() => goBack(i)}>⬅</button>}
-                            {visibleIndex + 3 < eventList.length && <button onClick={() => goForward(i)}>➡</button>}
-                        </div>
-                    )}
-                </div>
+          {list.slice(idx, idx + 1).map((ev, i) => {
+            const type = eventTypes[ev.activityType.toLowerCase()] || {};
+            return (
+              <div
+                key={i}
+                className="event-label"
+                style={{ backgroundColor: type.color }}
+                onClick={() => setSelectedEvent(ev)}
+              >
+                {ev.activityName || type.label}
+              </div>
             );
-        }
+          })}
 
-        return daySquares;
-    };
-
-    const EventPopup = ({ event, onClose }) => {
-        if (!event) return null;
-        const { label, time, place, description } = event;
-        return (
-            <div className="popup-overlay" onClick={onClose}>
-                <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-                    <h2>{event.activityName}</h2>
-                    <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
-                    <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
-                    <button onClick={onClose}>Close</button>
-                </div>
+          {list.length > 1 && (
+            <div className="event-pagination">
+              {idx > 0 && <button onClick={() => goBack(dayNum)}>⬅</button>}
+              {idx + 1 < list.length && (
+                <button onClick={() => goForward(dayNum)}>➡</button>
+              )}
             </div>
-        );
-    };
+          )}
+        </div>
+      );
+    }
 
+    return squares;
+  };
+
+  const EventPopup = ({ event, onClose }) => {
+    if (!event) return null;
     return (
-        <>
-            <div className="calendar-container">
-                <div className="month-header">
-                    <div className="logo">CSS</div>
-                    <div className="month-controls">
-                        <div className="month-name">{month} {currentYear}</div>
-                        <Button style = {redButtonStyle} onClick={() => changeMonth(-1)} >&lt;</Button>
-                        <Button style = {redButtonStyle} onClick={() => changeMonth(1)}>&gt;</Button>
-                    </div>
-                </div>
-
-                <div className="event-key">
-                    {Object.values(eventTypes).map((event, index) => (
-                        <div 
-                            key={index} 
-                            className="event-key-item" 
-                            style={{ backgroundColor: event.color }}
-                        >
-                            <span className="event-key-color" style={{ backgroundColor: event.color }}></span>
-                            {event.label}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="days-grid">
-                    {days.map((day, index) => (
-                        <div className="day-name" key={index}>{day}</div>
-                    ))}
-                    {renderDays()}
-                </div>
-
-                {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
-            </div>
-        </>
+      <div className="popup-overlay" onClick={onClose}>
+        <div className="popup-content" onClick={e => e.stopPropagation()}>
+          <h2>{event.activityName}</h2>
+          <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
+          <p><strong>Description:</strong> {event.activityDesc || ''}</p>
+          <button onClick={onClose}>Close</button>
+        </div>
+      </div>
     );
+  };
+
+  return (
+    <>
+      <div className="calendar-container">
+        <div className="month-header">
+          <div className="logo">CSS</div>
+          <div className="month-controls">
+            <div className="month-name">{month} {currentYear}</div>
+            <Button style={redButtonStyle} onClick={() => changeMonth(-1)}>
+              &lt;
+            </Button>
+            <Button style={redButtonStyle} onClick={() => changeMonth(1)}>
+              &gt;
+            </Button>
+          </div>
+        </div>
+
+        <div className="event-key">
+          {Object.values(eventTypes).map((et,i)=>(
+            <div key={i} className="event-key-item" style={{backgroundColor:et.color}}>
+              <span className="event-key-color" style={{backgroundColor:et.color}}/>
+              {et.label}
+            </div>
+          ))}
+        </div>
+
+        <div className="days-grid">
+          {days.map((d,i)=><div key={i} className="day-name">{d}</div>)}
+          {renderDays()}
+        </div>
+      </div>
+
+      {selectedEvent && (
+        <EventPopup event={selectedEvent} onClose={()=>setSelectedEvent(null)} />
+      )}
+    </>
+  );
 }
 
 export default Calendar;
