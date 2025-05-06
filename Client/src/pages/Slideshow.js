@@ -14,10 +14,14 @@ function SlideshowPage() {
   const [desc, setDesc] = useState("");
   async function iterateTexts() {
     const texts = ["Michael is a bum", "Jinan is a bum", "Arnav is a bum"];
-    for (let text of texts) {
-      setDesc(text);  // Update the state with the current text
-      await wait(3000);  // Wait for 3 seconds before moving to the next text
+    while(true){
+      for (let text of texts) {
+        setDesc(text);  // Update the state with the current text
+        await wait(12000);  // Wait for 3 seconds before moving to the next text
+        
+      }
     }
+    
   }
   
 

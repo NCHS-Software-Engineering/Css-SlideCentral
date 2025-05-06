@@ -255,7 +255,7 @@ ul {
   border-radius: 8px;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
-  animation: changeBackground 60s infinite steps(1, end);
+  animation: changeBackground 48s infinite steps(1, end);
 }
 
 .slide-header {
