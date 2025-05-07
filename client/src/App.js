@@ -1,28 +1,40 @@
+
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import WidgetPage from './pages/WidgetPage';
+import FAQ from './pages/faq';
+
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-import Home           from './pages/Home';
-import ActivitiesForm from './pages/ActivitiesForm';
-import EditActivities from './pages/EditActivities';
-import Calendar       from './pages/Calendar';
-import AccountPage    from './pages/AccountPage';
-import WidgetPage     from './pages/WidgetPage';
-import FAQ            from './pages/FAQ';
+import Home from './pages/Home';
+import logo from './logo.svg';
+import Calendar from '../src/pages/Calendar.js'; 
+import './App.css';
+import ActivitiesForm from './pages/activitiesform'; // <-- Import your new component
+import AccountPage  from './pages/AccountPage.js';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/"                element={<Home />} />
-        <Route path="/activities"      element={<ActivitiesForm />} />
-        <Route path="/edit-activities" element={<EditActivities />} />
-        <Route path="/calendar"        element={<Calendar />} />
-        <Route path="/account"         element={<AccountPage />} />
-        <Route path="/WidgetPage"      element={<WidgetPage />} />
-        <Route path="/faq"             element={<FAQ />} />
+
+
+      <Route path="/faq" element={<FAQ />} />  {/* route to FAQ page */}
+
+  <Route exact path="/WidgetPage" element={<WidgetPage />} /> {/* route to widget page */}
+
+  <Route path="/account" element={<AccountPage />} />
+        <Route path="/" element={<Home />} />
+        {/* Add the new ActivitiesForm route */}
+        <Route path="/activities" element={<ActivitiesForm />} />
+          <Route path="/calendar" element={<Calendar />} />
+
       </Routes>
+
+      
     </Router>
+
+
   );
 }
 
