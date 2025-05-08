@@ -113,12 +113,14 @@ const Home = () => {
                     >
                       Enter Activity
                     </Button>
+
                     <Button
                       component={Link}
                       to="/edit-activities"
                       variant="contained"
                       sx={redButtonStyle}
                     >
+
                       Edit Activities
                     </Button>
                   </>
@@ -126,6 +128,7 @@ const Home = () => {
 
                 {/* Logged in only */}
                 {LOGGED_IN && (
+
                   <Button
                     component={Link}
                     to="/slideshow"
@@ -143,6 +146,7 @@ const Home = () => {
                   variant="contained"
                   sx={redButtonStyle}
                 >
+
                   Developers
                 </Button>
               </Box>
