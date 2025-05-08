@@ -13,6 +13,7 @@ import './App.css';
 import ActivitiesForm from './pages/activitiesform'; // <-- Import your new component
 import AccountPage  from './pages/AccountPage.js';
 import SlideshowPage from './pages/Slideshow.js';
+import EditActivities from './pages/EditActivities.js';
 function App() {
   return (
     <Router>
@@ -28,7 +29,7 @@ function App() {
         {/* Add the new ActivitiesForm route */}
         <Route path="/activities" element={<ActivitiesForm />} />
           <Route path="/calendar" element={<Calendar />} />
-
+ <Route path="/edit-activities" element={<EditActivities />} />
       </Routes>
 
       
