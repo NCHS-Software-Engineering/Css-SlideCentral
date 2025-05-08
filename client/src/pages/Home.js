@@ -1,24 +1,24 @@
 // src/pages/Home.js
+
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
 
-// Fade-in animation for the whole page
+// Fade-in animation
 const fadeIn = keyframes`
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 `;
 
-// Red button style with responsive font size
+// Red button style
 const redButtonStyle = {
   backgroundColor: 'red',
   color: '#fff',
   textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
   whiteSpace: 'nowrap',
-  // Use a slightly larger font on mobile (xs) and smaller on desktop (md)
   fontSize: { xs: '0.875rem', md: '0.75rem' },
   '&:hover': {
     backgroundColor: '#b71c1c',
@@ -27,58 +27,53 @@ const redButtonStyle = {
 };
 
 const Home = () => {
-  // Session and role state
   const [LOGGED_IN, setLOGGED_IN] = useState(false);
-  const [role, setRole] = useState('');
+  const [role, setRole]         = useState('');
 
-  // Handle login redirection
+  // Kick off Google OAuth
   const handleLogin = () => {
     window.location.href = 'http://localhost:8500/signin-google';
   };
 
-  // Handle logout with confirmation and session destruction
+  // Destroy session
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to log out?")) {
-      fetch("http://localhost:8500/logout", {
-        method: "GET",
-        credentials: "include",
+    if (window.confirm('Are you sure you want to log out?')) {
+      fetch('http://localhost:8500/logout', {
+        method: 'GET',
+        credentials: 'include',
       })
-        .then((res) => {
+        .then(res => {
           if (res.ok) {
             setLOGGED_IN(false);
+            window.location.href = '/';
           }
-        });
-      window.location.href = 'http://localhost:8500/logout';
+        })
+        .catch(console.error);
     }
   };
 
-
-  // Retrieve login status from the server
+  // Check login on mount
   useEffect(() => {
-    fetch("http://localhost:8500/auth/status", {
-      method: "GET",
-      credentials: "include",
+    fetch('http://localhost:8500/auth/status', {
+      method: 'GET',
+      credentials: 'include',
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setLOGGED_IN(data.loginVerified);
-      })
-      .catch((err) => console.error("Auth status error:", err));
+      .then(r => r.json())
+      .then(data => setLOGGED_IN(data.loginVerified))
+      .catch(console.error);
   }, []);
 
-  // Retrieve user role info from the server
+  // Grab role once logged in
   useEffect(() => {
-    fetch("http://localhost:8500/account/info", {
-      method: "GET",
-      credentials: "include",
+    fetch('http://localhost:8500/account/info', {
+      method: 'GET',
+      credentials: 'include',
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.role) {
-          setRole(data.role);
-        }
+      .then(r => r.json())
+      .then(data => {
+        if (data.role) setRole(data.role);
       })
-      .catch((err) => console.error("Account info error:", err));
+      .catch(console.error);
   }, []);
 
   return (
@@ -89,11 +84,12 @@ const Home = () => {
         animation: `${fadeIn} 0.7s ease-in-out`,
       }}
     >
-      {/* TOP SECTION */}
+      {/* TOP NAV */}
       <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 2 }}>
         <Container maxWidth="lg">
           <Grid container spacing={2} alignItems="center" justifyContent="center">
-            {/* Left Side Buttons - On top in mobile */}
+
+            {/* LEFT */}
             <Grid item xs={12} md={4}>
               <Box
                 sx={{
@@ -106,29 +102,57 @@ const Home = () => {
                   justifyContent: 'center',
                 }}
               >
-                {role === "Admin" && (
+                {/* Admin only */}
+                {role === 'Admin' && (
                   <>
-                    <Button component={Link} to="/activities" variant="contained" sx={redButtonStyle}>
+                    <Button
+                      component={Link}
+                      to="/activities"
+                      variant="contained"
+                      sx={redButtonStyle}
+                    >
                       Enter Activity
                     </Button>
-                    <Button variant="contained" sx={redButtonStyle}>
+
+                    <Button
+                      component={Link}
+                      to="/edit-activities"
+                      variant="contained"
+                      sx={redButtonStyle}
+                    >
+
                       Edit Activities
                     </Button>
                   </>
                 )}
-                
+
+                {/* Logged in only */}
                 {LOGGED_IN && (
-                <Button variant="contained" sx={redButtonStyle}>
-                  Slideshow
-                </Button>)}
-                <Button variant="contained" sx={redButtonStyle}>
+
+                  <Button
+                    component={Link}
+                    to="/slideshow"
+                    variant="contained"
+                    sx={redButtonStyle}
+                  >
+                    Slideshow
+                  </Button>
+                )}
+
+                {/* Always visible */}
+                <Button
+                  component={Link}
+                  to="/developers"
+                  variant="contained"
+                  sx={redButtonStyle}
+                >
+
                   Developers
                 </Button>
               </Box>
             </Grid>
 
-
-            {/* Logo */}
+            {/* CENTER LOGO */}
             <Grid item xs={12} md={4} container justifyContent="center">
               <img
                 src={Logo}
@@ -137,7 +161,7 @@ const Home = () => {
               />
             </Grid>
 
-            {/* Right Side Buttons - On bottom in mobile */}
+            {/* RIGHT */}
             <Grid item xs={12} md={4}>
               <Box
                 sx={{
@@ -161,29 +185,40 @@ const Home = () => {
                 )}
 
                 {LOGGED_IN && (
-                  <Button component={Link} to="/account" variant="contained" sx={redButtonStyle}>
+                  <Button
+                    component={Link}
+                    to="/account"
+                    variant="contained"
+                    sx={redButtonStyle}
+                  >
                     My Account
                   </Button>
-                  )}
-
-                {(role === "Teacher" || role === "Admin") && (
-                  <>
-                <Button variant="contained" sx={redButtonStyle}>
-                  CSS Preview
-                </Button>
-                <Button variant="contained" sx={redButtonStyle}>
-                  Preview Edit
-                </Button>
-                </>
                 )}
-                
+
+                {(role === 'Teacher' || role === 'Admin') && (
+                  <>
+                    <Button variant="contained" sx={redButtonStyle}>
+                      CSS Preview
+                    </Button>
+                    <Button variant="contained" sx={redButtonStyle}>
+                      Preview Edit
+                    </Button>
+                  </>
+                )}
+
                 {LOGGED_IN && (
-                <Button component={Link} to="/calendar" variant="contained" sx={redButtonStyle}>
-                  Calendar
-                </Button>
+                  <Button
+                    component={Link}
+                    to="/calendar"
+                    variant="contained"
+                    sx={redButtonStyle}
+                  >
+                    Calendar
+                  </Button>
                 )}
               </Box>
             </Grid>
+
           </Grid>
         </Container>
       </Box>
@@ -191,9 +226,14 @@ const Home = () => {
       {/* MAIN CONTENT */}
       <Container maxWidth="md" sx={{ py: 6 }}>
         <Grid container spacing={4} alignItems="center">
-          {/* Text Section */}
+          {/* TEXT */}
           <Grid item xs={12} md={8}>
-            <Typography variant="h5" textAlign="center" gutterBottom sx={{ fontWeight: 'bold' }}>
+            <Typography
+              variant="h5"
+              textAlign="center"
+              gutterBottom
+              sx={{ fontWeight: 'bold' }}
+            >
               CSS/Slide Central is an application that can be used by teachers and activity sponsors to display information around the school.
             </Typography>
             <Typography variant="body1" textAlign="center" paragraph>
@@ -204,7 +244,7 @@ const Home = () => {
             </Typography>
           </Grid>
 
-          {/* Widget Buttons */}
+          {/* WIDGET / FAQ / TUTORIAL */}
           <Grid item xs={12} md={4}>
             <Box
               sx={{
@@ -216,35 +256,22 @@ const Home = () => {
             >
               <Button
                 variant="contained"
-                sx={{
-                  backgroundColor: '#fff',
-                  color: '#000',
-                  '&:hover': { backgroundColor: '#f5f5f5' },
-                }}
+                sx={{ backgroundColor: '#fff', color: '#000', '&:hover': { backgroundColor: '#f5f5f5' } }}
                 onClick={() => window.open('/WidgetPage', '_blank')}
               >
                 Learn more about Widgets
               </Button>
-
               <Button
                 variant="contained"
-                sx={{
-                  backgroundColor: '#fff',
-                  color: '#000',
-                  '&:hover': { backgroundColor: '#f5f5f5' },
-                }}
-                onClick={() => window.open('/faq', '_blank')}
+                sx={{ backgroundColor: '#fff', color: '#000', '&:hover': { backgroundColor: '#f5f5f5' } }}
+                component={Link}
+                to="/faq"
               >
                 FAQ
               </Button>
-
               <Button
                 variant="contained"
-                sx={{
-                  backgroundColor: '#fff',
-                  color: '#000',
-                  '&:hover': { backgroundColor: '#f5f5f5' },
-                }}
+                sx={{ backgroundColor: '#fff', color: '#000', '&:hover': { backgroundColor: '#f5f5f5' } }}
                 onClick={() => window.open('/files/Tutorial.pdf', '_blank')}
               >
                 Tutorial
