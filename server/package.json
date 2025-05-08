@@ -17,6 +17,6 @@
     "express-session": "^1.18.1",
     "google-auth-library": "^9.15.1",
     "googleapis": "^146.0.0",
-    "mysql2": "^3.14.0"
+    "mysql2": "^3.14.1"
   }
 }

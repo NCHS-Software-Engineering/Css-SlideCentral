@@ -1,6 +1,5 @@
 
 
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import WidgetPage from './pages/WidgetPage';
 import FAQ from './pages/faq';
