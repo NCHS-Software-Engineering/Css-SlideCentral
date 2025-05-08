@@ -311,23 +311,7 @@ function Calendar() {
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                     {/* Buttons Container */}
                     <div className="popup-buttons">
-                        <Button
-                            variant="contained"
-                            className="small-button"
-                            onClick={handleDelete}
-                            sx={{
-                                backgroundColor: eventColor,
-                                '&:hover': {
-                                    backgroundColor: eventColor,
-                                    opacity: 0.9,
-                                },
-                                minWidth: '10px',
-                                padding: '6px',
-                            }}
-                            startIcon={<DeleteIcon />}
-                        >
-                            
-                        </Button>
+                       
                     </div>
     
                     <h2>{event.activityName}</h2>
