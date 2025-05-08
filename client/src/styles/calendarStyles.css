@@ -5,7 +5,7 @@
   background: #f1f1f1;
   padding: 50px;
   border-radius: 10px;
-  height: 90.34vh; 
+  height: 100%; 
   width: 100%; 
   max-width: 94.73%;  
 }
@@ -20,15 +20,12 @@
   border-radius: 8px;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  background: #333;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
 
+.logo {
+  width: 100px; /* Adjust the size as needed */
+  height: auto;
+  cursor: pointer; /* Show a pointer cursor to indicate it's clickable */
+}
 .month-name {
   font-size: 1.8rem;
   font-weight: bold;
@@ -55,6 +52,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
+  height: 100%;
   max-width: 1200px;
   gap: 2px; 
 }
@@ -62,25 +60,23 @@
 .day-name {
   font-weight: bold;
   text-align: center;
-  padding: 5px;
+  padding: 4px;
   background: #ddd;
-  border: 6px solid black;
+  border: 0px solid black;
   border-radius: 5px;
 }
 
 .day-square {
+  position: relative;
   width: 100%;
   max-width: 170px;
-  height: 120px;
-  border: 5px solid black;
+  height: 150px; /* Example: Fixed height for the day cell */
+  border: 2px solid #ccc;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  font-size: 1.2rem;
-  padding: 1px; 
-  margin: 0; 
+  justify-content: flex-start;
+  overflow: hidden; /* Hide overflowing events */
   box-sizing: border-box;
   background: white;
 }
@@ -91,6 +87,7 @@
   left: 5px;
   font-size: 1.5rem;
   font-weight: bold;
+  z-index: 2;
 }
 
 .empty {
@@ -110,16 +107,30 @@
   color: white;
 }
 
+ 
+
 .popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 3;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+ 
+
+.popup-buttons {
+  position: absolute;
+  top: 10px; /* Adjust as needed to position at the top */
+  left: 10px; /* Align the buttons to the left */
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 10px; /* Add spacing between the buttons */
 }
 
 .popup-content {
@@ -173,42 +184,96 @@
 .month-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Space between the buttons and the text */
-  width: 100%; /* Ensure it spans the full width */
-  max-width: 600px; /* Optional: Set a max width for the container */
-  margin: 0 auto; /* Center the controls horizontally */
+  justify-content: space-between; /* Space between the month name and arrow buttons */
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .month-name {
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  flex-grow: 1; /* Allow the text to take up remaining space */
+  flex-grow: 1; /* Allow the month name to take up remaining space */
+  margin-left: 140px; /* Optional: Add margin to adjust alignment */
   white-space: nowrap; /* Prevent text from wrapping */
 }
  
 
-/* --- Mobile event “cards” --- */
-.mobile-event-block {
-  /* subtle outer box */
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
-  padding: 8px;
-  margin: 6px 0;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-  /* keep your colored left‐border from inline style */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Optional: style the “no events” placeholder to match */
-.mobile-no-events {
-  padding: 8px;
-  margin: 6px 0;
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 200px;
+  border-radius: 8px;
   text-align: center;
-  color: #666;
-  font-style: italic;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.event-pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.event-pagination button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: black;
+  padding: 0;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
