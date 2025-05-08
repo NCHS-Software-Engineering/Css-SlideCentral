@@ -1,306 +1,554 @@
 import '../styles/calendarStyles.css';
 import { useState, useEffect } from 'react';
-import { Button, useMediaQuery, useTheme } from '@mui/material';
+import {Button, Chip, TextField, Checkbox, FormControlLabel } from '@mui/material';
+import { Link } from 'react-router-dom';
+import Logo from '../images/homePageLogo.png';
+import { useRef } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
+
 
 const redButtonStyle = {
-  backgroundColor: 'red',
-  color: '#fff',
-  textTransform: 'none',
-  transition: 'transform 0.3s, background-color 0.3s',
-  whiteSpace: 'nowrap',
-  fontSize: { xs: '0.875rem', md: '0.75rem' },
-  '&:hover': { backgroundColor: '#b71c1c', transform: 'scale(1.05)' },
-};
+    backgroundColor: 'red',
+    color: '#fff',
+    textTransform: 'none',
+    transition: 'transform 0.3s, background-color 0.3s',
+    whiteSpace: 'nowrap',
+    // Use a slightly larger font on mobile (xs) and smaller on desktop (md)
+    fontSize: { xs: '0.875rem', md: '0.75rem' },
+    '&:hover': {
+      backgroundColor: '#b71c1c',
+      transform: 'scale(1.05)',
+    },
+    
+  };
+  
 
 function Calendar() {
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear,  setCurrentYear]  = useState(today.getFullYear());
+    console.log('Calendar component rendered');
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Mobile detection + pagination
-  const theme    = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const maxEventsPerDay = isMobile ? 1 : 3;
+    const today = new Date();
+    const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+    const [currentYear, setCurrentYear] = useState(today.getFullYear());
+    const [showSearchModal, setShowSearchModal] = useState(false);
 
-  // Mobile view state
-  const [mobileView, setMobileView]           = useState('week');  // 'week' | 'day'
-  const [mobileWeekStart, setMobileWeekStart] = useState(1);
-  const prevWeek = () => setMobileWeekStart(w => Math.max(1, w - 7));
-  const nextWeek = () => setMobileWeekStart(w => (w + 7 <= numDays ? w + 7 : w));
-  const [mobileSelectedDay, setMobileSelectedDay] = useState(1);
-  const prevDay = () => setMobileSelectedDay(d => Math.max(1, d - 1));
-  const nextDay = () => setMobileSelectedDay(d => Math.min(numDays, d + 1));
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June', 
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
 
-  const [events, setEvents]             = useState({});
-  const [eventIndexes, setEventIndexes] = useState({});
-  const [selectedEvent, setSelectedEvent] = useState(null);
+    const month = monthNames[currentMonth];
+    const numDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
 
-  // Fetch & group events
-  useEffect(() => {
-    fetch('http://localhost:8500/api/events', { credentials: 'include' })
-      .then(r => r.json())
-      .then(data => {
-        const grouped = {};
-        const m = currentMonth, y = currentYear;
-        data.forEach(evt => {
-          const freq = evt.calendarFrequency?.toLowerCase() || 'one-time';
-          const dow  = evt.calendarDayOfWeek?.toLowerCase();
-          const start = new Date(
-            freq === 'one-time' ? evt.activityDate : evt.slideshowStartDate
-          );
-          const end   = new Date(
-            freq === 'one-time' ? evt.activityDate : evt.slideshowEndDate
-          );
-          const d0 = start.getDate();
+    const eventTypes = {
+        'school sports': { color: 'green', label: 'School Sports' },
+        'club meetings': { color: 'red', label: 'Club Meeting' },
+        'school event': { color: 'blue', label: 'School Event' },
+    };
 
-          const add = date => {
-            if (date.getMonth() !== m || date.getFullYear() !== y) return;
-            const day = date.getDate();
-            grouped[day] = grouped[day] || [];
-            grouped[day].push({ ...evt, displayDate: new Date(date) });
-          };
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [eventIndexes, setEventIndexes] = useState({}); 
+    const [allEvents, setAllEvents] = useState({}); // Store all events
+    const [events, setEvents] = useState({}); 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    
 
-          if (freq === 'one-time') {
-            add(start);
-          } else if (freq === 'weekly' || freq === 'biweekly') {
-            const interval = freq === 'weekly' ? 7 : 14;
-            let first = new Date(start);
-            while (
-              first.toLocaleString('en-US',{ weekday: 'long' }).toLowerCase() !== dow
-            ) {
-              first.setDate(first.getDate() + 1);
-            }
-            for (let d = new Date(first); d <= end; d.setDate(d.getDate() + interval)) {
-              add(new Date(d));
-            }
-          } else if (freq === 'monthly') {
-            for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
-              const dd = new Date(d);
-              dd.setDate(d0);
-              add(dd);
-            }
-          }
-        });
-        setEvents(grouped);
-      })
-      .catch(console.error);
-  }, [currentMonth, currentYear]);
+    const fetchEvents = () => {
+        fetch('http://localhost:8500/api/events', {
+            method: 'GET',
+            credentials: 'include', // Include cookies or other credentials
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const eventsGroupedByDay = {};
+                const targetMonth = currentMonth;
+                const targetYear = currentYear;
+    
+                data.forEach((event) => {
+                    const start = new Date(event.slideshowStartDate || event.activityDate);
+                    const end = new Date(event.slideshowEndDate || event.activityDate);
+                    const frequency = event.calendarFrequency?.toLowerCase();
+                    const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
+                    const startDay = start.getDate();
+    
+                    const addEvent = (date) => {
+                        if (date.getMonth() !== targetMonth || date.getFullYear() !== targetYear) return;
+                        const day = date.getDate();
+                        if (!eventsGroupedByDay[day]) eventsGroupedByDay[day] = [];
+                        eventsGroupedByDay[day].push({ ...event, displayDate: new Date(date) });
+                    };
+    
+                    if (frequency === 'one-time') {
+                        addEvent(new Date(start));
+                    } else if (frequency === 'weekly' || frequency === 'biweekly') {
+                        const interval = frequency === 'weekly' ? 7 : 14;
+                        let firstEventDate = new Date(start);
+                        while (firstEventDate.toLocaleString('en-US', { weekday: 'long' }).toLowerCase() !== targetDayOfWeek) {
+                            firstEventDate.setDate(firstEventDate.getDate() + 1);
+                        }
+                        for (let d = new Date(firstEventDate); d <= end; d.setDate(d.getDate() + interval)) {
+                            addEvent(new Date(d));
+                        }
+                    } else if (frequency === 'monthly') {
+                        for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+                            const date = new Date(d);
+                            date.setDate(startDay);
+                            addEvent(date);
+                        }
+                    }
+                });
+    
+                setAllEvents(eventsGroupedByDay); // Store all events
+                setEvents(eventsGroupedByDay); // Initially, show all events
+                console.log('Fetched events:', eventsGroupedByDay);
+            })
+            .catch((error) => {
+                console.error('Error fetching events:', error);
+            });
+    };
 
-  // Month + grid setup
-  const monthNames = ['January','February','March','April','May','June',
-    'July','August','September','October','November','December'];
-  const month          = monthNames[currentMonth];
-  const numDays        = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const firstDayOffset = new Date(currentYear, currentMonth, 1).getDay();
 
-  // Reset pagers on month change
-  const changeMonth = offset => {
-    setEventIndexes({});
-    setMobileView('week');
-    setMobileWeekStart(1);
-    setMobileSelectedDay(1);
-    const d = new Date(currentYear, currentMonth + offset);
-    setCurrentMonth(d.getMonth());
-    setCurrentYear(d.getFullYear());
-  };
+    useEffect(() => {
+        fetchEvents();
+    }, [currentMonth, currentYear]);
 
-  const eventTypes = {
-    'school sports': { color:'green',  label:'School Sports' },
-    'club meetings': { color:'red',    label:'Club Meeting' },
-    'school events': { color:'blue',   label:'School Event' },
-    'workshop':      { color:'orange', label:'Workshop' },
-    'meetup':        { color:'purple', label:'Meetup' },
-  };
+    const goForward = (day) => {
+        setEventIndexes((prev) => ({
+            ...prev,
+            [day]: Math.min((prev[day] || 0) + 3, events[day].length - 3),
+        }));
+    };
+    
+    const goBack = (day) => {
+        setEventIndexes((prev) => ({
+            ...prev,
+            [day]: Math.max((prev[day] || 0) - 3, 0),
+        }));
+    };
 
-  // Desktop pagination
-  const goForward = day =>
-    setEventIndexes(p => ({
-      ...p,
-      [day]: Math.min((p[day]||0) + maxEventsPerDay, (events[day]?.length||0) - 1)
-    }));
-  const goBack = day =>
-    setEventIndexes(p => ({
-      ...p,
-      [day]: Math.max((p[day]||0) - maxEventsPerDay, 0)
-    }));
+    const changeMonth = (offset) => {
+        setEventIndexes({});
+        const newDate = new Date(currentYear, currentMonth + offset);
+        setCurrentMonth(newDate.getMonth());
+        setCurrentYear(newDate.getFullYear());
+    };
 
-  // Mobile renders
-  const renderMobileWeek = () => {
-    const start = mobileWeekStart;
-    const end = Math.min(start + 6, numDays);
-    return Array.from({ length: end - start + 1 }, (_, i) => {
-      const day = start + i;
-      const list = events[day] || [];
-      const weekday = days[new Date(currentYear, currentMonth, day).getDay()];
-      return (
-        <div className="mobile-day-section" key={day}>
-          <div
-            className="mobile-day-header"
-            onClick={() => { setMobileSelectedDay(day); setMobileView('day'); }}
-          >{`${weekday} ${month} ${day}`}</div>
-          {list.length > 0 ? list.map((evt, idx) => (
-            <div
-              key={idx}
-              className="mobile-event-block"
-              style={{ borderLeft: `4px solid ${eventTypes[evt.activityType.toLowerCase()]?.color}` }}
-              onClick={() => setSelectedEvent(evt)}
-            >
-              <div className="mobile-event-time">{evt.calendarTimeOfDay || 'All day'}</div>
-              <div className="mobile-event-title">{evt.activityName}</div>
-            </div>
-          )) : <div className="mobile-no-events">No events</div>}
-        </div>
-      );
-    });
-  };
+    const dayRefs = useRef({}); // Move useRef to the top level of the component
 
-  const renderMobileDay = () => {
-    const day = mobileSelectedDay;
-    const list = events[day] || [];
-    const weekday = days[new Date(currentYear, currentMonth, day).getDay()];
-    return (
-      <div className="mobile-day-section">
-        <div className="mobile-day-header back-to-week" onClick={() => setMobileView('week')}>
-          ← Week view
-        </div>
-        <div className="mobile-day-header">{`${weekday} ${month} ${day}`}</div>
-        <div className="mobile-day-controls">
-          <Button size="small" onClick={prevDay} disabled={day <= 1}>Prev Day</Button>
-          <Button size="small" onClick={nextDay} disabled={day >= numDays}>Next Day</Button>
-        </div>
-        {list.length > 0 ? list.map((evt, idx) => (
-          <div
-            key={idx}
-            className="mobile-event-block"
-            style={{ borderLeft: `4px solid ${eventTypes[evt.activityType.toLowerCase()]?.color}` }}
-            onClick={() => setSelectedEvent(evt)}
-          >
-            <div className="mobile-event-time">{evt.calendarTimeOfDay || 'All day'}</div>
-            <div className="mobile-event-title">{evt.activityName}</div>
-          </div>
-        )) : <div className="mobile-no-events">No events</div>}
-      </div>
-    );
-  };
 
-  // Event popup
-  const EventPopup = ({ event, onClose }) => {
-    if (!event) return null;
-    return (
-      <div className="popup-overlay" onClick={onClose}>
-        <div className="popup-content" onClick={e => e.stopPropagation()}>
-          <h2>{event.activityName}</h2>
-          <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
-          <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
-          <button onClick={onClose}>Close</button>
-        </div>
-      </div>
-    );
-  };
-
-  // Render
-  if (isMobile) {
-    return (
-      <div className="calendar-container mobile">
-        <div className="month-header">
-          <div className="logo">CSS</div>
-          <div className="month-controls">
-            <div className="month-name">{month} {currentYear}</div>
-            <Button style={redButtonStyle} onClick={() => changeMonth(-1)}>‹</Button>
-            <Button style={redButtonStyle} onClick={() => changeMonth(1)}>›</Button>
-          </div>
-        </div>
-        <div className="mobile-view-toggle">
-          <Button
-            size="small"
-            variant={mobileView === 'week' ? 'contained' : 'outlined'}
-            onClick={() => setMobileView('week')}>
-            Week
-          </Button>
-          <Button
-            size="small"
-            variant={mobileView === 'day' ? 'contained' : 'outlined'}
-            onClick={() => setMobileView('day')}>
-            Day
-          </Button>
-        </div>
-        {mobileView === 'week' && (
-          <div className="mobile-week-controls">
-            <Button size="small" onClick={prevWeek} disabled={mobileWeekStart <= 1}>Prev Week</Button>
-            <Button size="small" onClick={nextWeek} disabled={mobileWeekStart + 7 > numDays}>Next Week</Button>
-          </div>
-        )}
-        {mobileView === 'week' ? renderMobileWeek() : renderMobileDay()}
-        {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
-      </div>
-    );
-  }
-
-  // Desktop grid
-  const renderDays = () => {
-    const squares = [];
-    for (let i = 0; i < firstDayOffset; i++) {
-      squares.push(<div className="day-square empty" key={`e${i}`} />);
-    }
-    for (let d = 1; d <= numDays; d++) {
-      const idx   = eventIndexes[d] || 0;
-      const list  = events[d] || [];
-      const slice = list.slice(idx, idx + maxEventsPerDay);
-      squares.push(
-        <div className="day-square" key={d}>
-          <div className="day-number">{d}</div>
-          {slice.map((evt,i) => {
-            const t = eventTypes[evt.activityType.toLowerCase()] || {};
-            return (
-              <div
-                key={i}
-                className="event-label"
-                style={{ backgroundColor: t.color }}
-                onClick={() => setSelectedEvent(evt)}>
-                {evt.activityName || t.label}
-              </div>
+    const renderDays = () => {
+        let daySquares = [];
+    
+        // Add empty squares for days before the first day of the month
+        for (let i = 0; i < firstDayOffset; i++) {
+            daySquares.push(<div className="day-square empty" key={'empty-' + i}></div>);
+        }
+    
+        // Render days with events
+        for (let i = 1; i <= numDays; i++) {
+            const visibleIndex = eventIndexes[i] || 0; // Starting index of visible events
+            const eventList = events[i] || []; // Events for the current day
+            const visibleEvents = eventList.slice(visibleIndex, visibleIndex + 3); // Show 3 events at a time
+    
+            daySquares.push(
+                <div
+                    className="day-square"
+                    key={i}
+                    ref={(el) => (dayRefs.current[i] = el)} // Store the ref for this day
+                >
+                    <div className="day-number">{i}</div>
+    
+                    {/* Render visible events */}
+                    {visibleEvents.map((event, index) => {
+                        const eventType = eventTypes[event.activityType.toLowerCase()] || {};
+    
+                        return (
+                            <Button
+                                key={index}
+                                variant="contained"
+                                sx={{
+                                    backgroundColor: eventType.color,
+                                    color: 'white',
+                                    fontSize: '0.8rem',
+                                    padding: '4px 8px',
+                                    margin: '2px 0',
+                                    textTransform: 'none',
+                                    display: 'inline-block', // Required for ellipsis
+                                    whiteSpace: 'nowrap', // Prevent text wrapping
+                                    overflow: 'hidden', // Hide overflowing text
+                                    textOverflow: 'ellipsis', // Add ellipsis for overflowing text
+                                    maxWidth: '75%', // Ensure the text fits within the button
+                                    '&:hover': {
+                                        backgroundColor: eventType.color,
+                                        opacity: 0.9,
+                                    },
+                                }}
+                                onClick={() => setSelectedEvent(event)}
+                                className="event-text"
+                            >
+                                {event.activityName || eventType.label}
+                            </Button>
+                        );
+                    })}
+    
+                    {/* Add navigation buttons if there are more events */}
+                    {eventList.length > 3 && (
+                        <div className="event-pagination">
+                            {visibleIndex > 0 && (
+                                <Button
+                                    variant="text"
+                                    onClick={() => goBack(i)}
+                                    sx={{
+                                        fontSize: '1.2rem',
+                                        color: 'black',
+                                        minWidth: '30px',
+                                        padding: '0',
+                                    }}
+                                >
+                                    ⬅
+                                </Button>
+                            )}
+                            {visibleIndex + 3 < eventList.length && (
+                                <Button
+                                    variant="text"
+                                    onClick={() => goForward(i)}
+                                    sx={{
+                                        fontSize: '1.2rem',
+                                        color: 'black',
+                                        minWidth: '30px',
+                                        padding: '0',
+                                    }}
+                                >
+                                    ➡
+                                </Button>
+                            )}
+                        </div>
+                    )}
+                </div>
             );
-          })}
-          {list.length > maxEventsPerDay && (
-            <div className="event-pagination">
-              {idx > 0 && <button onClick={() => goBack(d)}>⬅</button>}
-              {idx + maxEventsPerDay < list.length && <button onClick={() => goForward(d)}>➡</button>}
+        }
+    
+        return daySquares;
+    };
+
+    const DeleteConfirmationModal = ({ onConfirm, onCancel }) => {
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h2>Are you sure you want to delete this event?</h2>
+                    <div className="modal-buttons">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={onConfirm}
+                            sx={{
+                                backgroundColor: 'red',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#b71c1c',
+                                },
+                                marginRight: '10px',
+                            }}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={onCancel}
+                            sx={{
+                                backgroundColor: 'gray',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#555',
+                                },
+                            }}
+                        >
+                            No
+                        </Button>
+                    </div>
+                </div>
             </div>
-          )}
-        </div>
-      );
-    }
-    return squares;
-  };
+        );
+    };
 
-  return (
-    <div className="calendar-container">
-      <div className="month-header">
-        <div className="logo">CSS</div>
-        <div className="month-controls">
-          <div className="month-name">{month} {currentYear}</div>
-          <Button style={redButtonStyle} onClick={() => changeMonth(-1)}>‹</Button>
-          <Button style={redButtonStyle} onClick={() => changeMonth(1)}>›</Button>
-        </div>
-      </div>
+    const EventPopup = ({ event, onClose }) => {
+        if (!event) return null;
+    
+        const eventType = event.activityType.toLowerCase();
+        const eventColor = eventTypes[eventType]?.color || 'gray'; // Default to gray if no color is found
+    
+        return (
+            <div className="popup-overlay" onClick={onClose}>
+                <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                    <h2>{event.activityName}</h2>
+                    <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
+                    <p><strong>Frequency:</strong> {event.calendarFrequency || 'One-time'}</p>
+                    <p><strong>Day of Week:</strong> {event.calendarDayOfWeek || 'N/A'}</p>
+                    <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
+    
+                    <Button
+                        variant="contained"
+                        onClick={onClose}
+                        sx={{
+                            backgroundColor: eventColor,
+                            color: 'white',
+                            textTransform: 'none',
+                            '&:hover': {
+                                backgroundColor: eventColor,
+                                opacity: 0.9,
+                            },
+                            marginTop: '20px',
+                        }}
+                    >
+                        Close
+                    </Button>
+                </div>
+            </div>
+        );
+    };
 
-      <div className="event-key">
-        {Object.values(eventTypes).map((e,i) => (
-          <div key={i} className="event-key-item" style={{ backgroundColor: e.color }}>
-            <span className="event-key-color" style={{ backgroundColor: e.color }}/>
-            {e.label}
-          </div>
-        ))}
-      </div>
+    const [filters, setFilters] = useState({
+        sports: false,
+        meetings: false,
+        events: false,
+    });
 
-      <div className="days-grid">
-        {days.map((d,i) => <div key={i} className="day-name">{d}</div>)}
-        {renderDays()}
-      </div>
-      {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
-    </div>
-  );
+    const [searchText, setSearchText] = useState('');  
+
+    const SearchModal = ({ onClose, onApply, filters, setFilters, searchText, setSearchText }) => {
+        const handleCheckboxChange = (e) => {
+            const { name, checked } = e.target;
+            setFilters((prev) => ({
+                ...prev,
+                [name]: checked,
+            }));
+        };
+    
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h2>Filter Events</h2>
+    
+                    {/* Text Input for Search */}
+                    <div className="modal-section">
+                        <TextField
+                            id="searchText"
+                            label="Enter a name..."
+                            variant="outlined"
+                            value={searchText} // Use the searchText prop
+                            onChange={(e) => setSearchText(e.target.value)} // Update the parent state
+                            placeholder="Type to search..."
+                            fullWidth
+                            sx={{
+                                marginTop: '10px',
+                                marginBottom: '20px',
+                            }}
+                        />
+                    </div>
+    
+                    {/* Material-UI Checkboxes for Filters */}
+                    <div className="modal-section">
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="sports"
+                                    checked={filters.sports}
+                                    onChange={handleCheckboxChange}
+                                    sx={{
+                                        color: 'green',
+                                        '&.Mui-checked': {
+                                            color: 'green',
+                                        },
+                                    }}
+                                />
+                            }
+                            label="School Sports"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="meetings"
+                                    checked={filters.meetings}
+                                    onChange={handleCheckboxChange}
+                                    sx={{
+                                        color: 'red',
+                                        '&.Mui-checked': {
+                                            color: 'red',
+                                        },
+                                    }}
+                                />
+                            }
+                            label="Club Meetings"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="events"
+                                    checked={filters.events}
+                                    onChange={handleCheckboxChange}
+                                    sx={{
+                                        color: 'blue',
+                                        '&.Mui-checked': {
+                                            color: 'blue',
+                                        },
+                                    }}
+                                />
+                            }
+                            label="School Events"
+                        />
+                    </div>
+    
+                    {/* Action Buttons */}
+                    <div className="modal-buttons">
+                        <Button
+                            variant="contained"
+                            onClick={() => onApply(searchText, filters)} // Pass searchText and filters to the parent
+                            sx={{
+                                backgroundColor: 'green',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#2ecc71',
+                                },
+                                marginRight: '10px',
+                            }}
+                        >
+                            Apply
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={onClose}
+                            sx={{
+                                backgroundColor: 'gray',
+                                color: 'white',
+                                textTransform: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#555',
+                                },
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const applyFilters = (searchText, filters) => {
+        const filteredEvents = {};
+    
+        // Loop through all events and apply filters
+        Object.keys(allEvents).forEach((day) => {
+            const dayEvents = allEvents[day].filter((event) => {
+                const matchesSearchText = event.activityName.toLowerCase().includes(searchText.toLowerCase());
+                const matchesFilter =
+                    (filters.sports && event.activityType.toLowerCase() === 'school sports') ||
+                    (filters.meetings && event.activityType.toLowerCase() === 'club meetings') ||
+                    (filters.events && event.activityType.toLowerCase() === 'school event');
+    
+                // If no filters are selected, show all events that match the search text
+                return matchesSearchText && (matchesFilter || (!filters.sports && !filters.meetings && !filters.events));
+            });
+    
+            if (dayEvents.length > 0) {
+                filteredEvents[day] = dayEvents;
+            }
+        });
+    
+        setEvents(filteredEvents); // Update the events state with filtered events
+    };
+
+    return (
+        <>
+
+        
+
+            <div className="calendar-container">
+                <div className="month-header">
+                     {/* Add the logo image and make it clickable */}
+                     <Link to="/"> {/* Navigate back to the home page */}
+                        <img src={Logo} alt="Logo" className="logo" />
+                    </Link>
+                    <div className="month-controls">
+            <div className="month-name">{month} {currentYear}</div>
+            <Button style={redButtonStyle} onClick={() => changeMonth(-1)}>&lt;</Button>
+            <Button style={redButtonStyle} onClick={() => changeMonth(1)}>&gt;</Button>
+
+                {/* Search Button */}
+                <Button
+                    variant="contained"
+                    sx={{
+                        backgroundColor: 'gray',
+                        color: 'white',
+                        marginLeft: 'auto', // Push the button to the far right
+                        textTransform: 'none',
+                        '&:hover': {
+                            backgroundColor: '#555',
+                        },
+                    }}
+                    startIcon={<SearchIcon />}
+                    onClick={() => setShowSearchModal(true)} // Show the modal
+                    >
+                    Filter
+                </Button>
+            </div>
+                </div>
+
+                <div className="event-key">
+                 {Object.values(eventTypes).map((event, index) => (
+        <Chip
+            key={index}
+            label={event.label} // Use the label from the event type
+            sx={{
+                backgroundColor: event.color,  
+                color: 'white',  
+                fontWeight: 'bold',
+                margin: '5px',
+            }}
+            />
+            ))}
+                </div>
+
+                <div className="days-grid">
+                    {days.map((day, index) => (
+                        <div className="day-name" key={index}>{day}</div>
+                    ))}
+                    {renderDays()}
+                </div>
+
+                {selectedEvent && <EventPopup event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+            </div>
+        
+            {showSearchModal && (
+            <SearchModal
+            filters={filters}
+            setFilters={setFilters}
+            searchText={searchText}
+            setSearchText={setSearchText}
+            onClose={() => setShowSearchModal(false)} // Close the modal
+            onApply={(searchText, filters) => {
+                applyFilters(searchText, filters); // Apply the filters
+                setShowSearchModal(false); // Close the modal after applying filters
+            }}
+        />
+        )}
+        
+        </>
+
+        
+
+    );
 }
 
 export default Calendar;
