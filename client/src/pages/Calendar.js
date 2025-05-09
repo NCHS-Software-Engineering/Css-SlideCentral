@@ -72,8 +72,8 @@ function Calendar() {
                 const targetYear = currentYear;
     
                 data.forEach((event) => {
-                    const start = new Date(event.slideshowStartDate || event.activityDate);
-                    const end = new Date(event.slideshowEndDate || event.activityDate);
+                    const start = new Date(event.activityDate);
+                    const end = new Date(event.activityDate);
                     const frequency = event.calendarFrequency?.toLowerCase();
                     const targetDayOfWeek = event.calendarDayOfWeek?.toLowerCase();
                     const startDay = start.getDate();
@@ -292,8 +292,6 @@ function Calendar() {
                 <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                     <h2>{event.activityName}</h2>
                     <p><strong>Time:</strong> {event.calendarTimeOfDay || 'TBD'}</p>
-                    <p><strong>Frequency:</strong> {event.calendarFrequency || 'One-time'}</p>
-                    <p><strong>Day of Week:</strong> {event.calendarDayOfWeek || 'N/A'}</p>
                     <p><strong>Description:</strong> {event.activityDesc || 'No description available.'}</p>
     
                     <Button
