@@ -277,3 +277,54 @@
   justify-content: center;
   gap: 10px;
 }
+
+@media (max-width: 600px) {
+  .mobile-week-controls,
+  .mobile-day-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .mobile-view-toggle {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .mobile-day-section {
+    margin-bottom: 12px;
+  }
+  .mobile-day-header {
+    font-weight: bold;
+    padding: 6px 8px;
+    background: #eee;
+    cursor: pointer;
+  }
+  .back-to-week {
+    color: #007aff;
+    font-size: 0.9rem;
+  }
+  .mobile-event-block {
+    display: flex;
+    flex-direction: column;
+    margin: 4px 0 0 0;
+    padding: 6px 8px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  .mobile-event-time {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  .mobile-event-title {
+    font-size: 1rem;
+    margin-top: 2px;
+  }
+  .mobile-no-events {
+    padding: 6px 8px;
+    color: #999;
+    font-style: italic;
+  }
+}
