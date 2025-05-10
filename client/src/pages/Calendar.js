@@ -570,33 +570,95 @@ function Calendar() {
   if (isMobile) {
     return (
       <div className="calendar-container mobile">
-        <div className="month-header">
-          <Link to="/">
-            <img src={Logo} alt="Logo" className="logo" />
-          </Link>
-          <div className="month-controls">
-            <div className="month-name">{month} {currentYear}</div>
-            <Button sx={redButtonStyle} onClick={() => changeMonth(-1)}>&lt;</Button>
-            <Button sx={redButtonStyle} onClick={() => changeMonth(1)}>&gt;</Button>
-            
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: 'gray',
-                color: 'white',
-                marginLeft: 'auto',
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#555',
-                },
-              }}
-              startIcon={<SearchIcon />}
-              onClick={() => setShowSearchModal(true)}
-            >
-              Filter
-            </Button>
-          </div>
-        </div>
+<div
+  className="month-header"
+  style={{
+    display: 'flex',
+    flexWrap: 'wrap', // Allow wrapping for smaller screens
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '10px',
+    padding: '10px', // Add padding to prevent content from touching edges
+    overflowX: 'hidden', // Prevent horizontal scrolling
+    width: '100%', // Ensure the container fits within the viewport
+    boxSizing: 'border-box', // Include padding in width calculation
+  }}
+>
+  <Link to="/" style={{ flex: '0 0 auto' }}>
+    <img
+      src={Logo}
+      alt="Logo"
+      className="logo"
+      style={{
+        maxWidth: '100px',
+        height: 'auto',
+      }}
+    />
+  </Link>
+  <div
+    className="month-controls"
+    style={{
+      display: 'flex',
+      flexWrap: 'wrap', // Allow wrapping for child elements
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '10px',
+      flex: '1 1 auto', // Allow the controls to grow and shrink
+    }}
+  >
+    <div
+      className="month-name"
+      style={{
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        flex: '1 1 100%', // Take full width on smaller screens
+      }}
+    >
+      {month} {currentYear}
+    </div>
+    <Button
+      sx={{
+        ...redButtonStyle,
+        fontSize: '0.8rem',
+        padding: '5px 10px',
+        minWidth: '40px',
+      }}
+      onClick={() => changeMonth(-1)}
+    >
+      &lt;
+    </Button>
+    <Button
+      sx={{
+        ...redButtonStyle,
+        fontSize: '0.8rem',
+        padding: '5px 10px',
+        minWidth: '40px',
+      }}
+      onClick={() => changeMonth(1)}
+    >
+      &gt;
+    </Button>
+    <Button
+      variant="contained"
+      sx={{
+        backgroundColor: 'gray',
+        color: 'white',
+        textTransform: 'none',
+        fontSize: '0.8rem',
+        padding: '5px 10px',
+        '&:hover': {
+          backgroundColor: '#555',
+        },
+        flex: '1 1 auto', // Allow the button to grow and shrink
+      }}
+      startIcon={<SearchIcon />}
+      onClick={() => setShowSearchModal(true)}
+    >
+      Filter
+    </Button>
+  </div>
+</div>
 
         <div className="mobile-view-toggle">
           <Button

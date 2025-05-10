@@ -279,6 +279,8 @@
 }
 
 @media (max-width: 600px) {
+  
+
   .mobile-week-controls,
   .mobile-day-controls {
     display: flex;
