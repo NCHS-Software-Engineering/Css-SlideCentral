@@ -145,25 +145,26 @@ function EditActivities() {
             </div>
           </div>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Activity Date:</label>
-            <input
-              type="date"
-              name="activityDate"
-              style={styles.input}
-              value={formData.activityDate}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Activity Name:</label>
-            <input
-              type="text"
-              name="activityName"
-              style={styles.input}
-              value={formData.activityName}
-              onChange={handleChange}
-            />
-          </div>
+  <label htmlFor="activityName" style={styles.label}>Activity Name:</label>
+  <input
+    type="text"
+    id="activityName"
+    name="activityName"
+    style={styles.input}
+    value={formData.activityName}
+    onChange={handleChange}
+  />
+</div>
+<div style={styles.fieldGroup}>
+  <label htmlFor="activityDesc" style={styles.label}>Description:</label>
+  <textarea
+    id="activityDesc"
+    name="activityDesc"
+    style={{ ...styles.input, height: 60 }}
+    value={formData.activityDesc}
+    onChange={handleChange}
+  />
+</div>
           <div style={styles.fieldGroup}>
             <label style={styles.label}>Description:</label>
             <textarea
@@ -321,7 +322,7 @@ const styles = {
   },
   submitButton: {
     padding: '8px 12px',
-    backgroundColor: '#f44336',
+    backgroundColor: '#d0382d',
     color: '#fff',
     border: 'none',
     borderRadius: 4,

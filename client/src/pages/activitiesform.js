@@ -302,7 +302,7 @@ const styles = {
   },
   uploadButton: {
     padding: '6px 10px',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#39853c',
     color: '#fff',
     borderRadius: '4px',
     cursor: 'pointer',
@@ -324,7 +324,7 @@ const styles = {
   },
   submitButton: {
     padding: '8px 12px',
-    backgroundColor: '#f44336',
+    backgroundColor: '#d0382d',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',

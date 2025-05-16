@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 
 const redButtonStyle = {
-  backgroundColor: 'red',
+  backgroundColor: '#d93632',
   color: '#fff',
   textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
@@ -75,9 +75,9 @@ const SearchModal = ({ onClose, onApply, filters, setFilters, searchText, setSea
                 checked={filters.meetings}
                 onChange={handleCheckboxChange}
                 sx={{
-                  color: 'red',
+                  color: '#d0382d ',
                   '&.Mui-checked': {
-                    color: 'red',
+                    color: '#d0382d',
                   },
                 }}
               />
@@ -178,7 +178,7 @@ function Calendar() {
 
   const eventTypes = {
     'school sports': { color: 'green', label: 'School Sports' },
-    'club meetings': { color: 'red', label: 'Club Meeting' },
+    'club meetings': { color: '#d0382d', label: 'Club Meeting' },
     'school events': { color: 'blue', label: 'School Event' },
   };
 

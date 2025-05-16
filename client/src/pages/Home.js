@@ -14,14 +14,14 @@ const fadeIn = keyframes`
 
 // Red button style
 const redButtonStyle = {
-  backgroundColor: 'red',
+  backgroundColor: '#d93632',
   color: '#fff',
   textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
   whiteSpace: 'nowrap',
   fontSize: { xs: '0.875rem', md: '0.75rem' },
   '&:hover': {
-    backgroundColor: '#b71c1c',
+    backgroundColor: '#d93632',
     transform: 'scale(1.05)',
   },
 };
