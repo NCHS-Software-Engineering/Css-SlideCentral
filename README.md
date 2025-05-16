@@ -16,7 +16,6 @@ To make this work you need to download the latest versions of [Visual Studio Cod
 * @mui/system
 * @mui/x-date-pickers
 * @react-oauth/google
-* 
 * react-router-dom
 * react-scripts
 
