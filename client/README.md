@@ -2,6 +2,9 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### About CSS + SlideCentral
+CSS + SlideCentral is a software project that aims to streamline the process of activity and event management at Central. Instead of trying to find out the schedules of other clubs individually and seeing what conflicts with what, our application centralizes this process. Every single activity is put into a calendar, which then can be filtered out. We also have a projectable slideshow that displays various slides over a given period. These have the potential to be displayed on the monitors around the school. Upon launching CSS + SlideCentral, 
+
 ## Available Scripts
 
 In the project directory, you can run:
