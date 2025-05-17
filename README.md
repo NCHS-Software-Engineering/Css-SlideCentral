@@ -16,7 +16,7 @@ To make this work you need to download the latest versions of [Visual Studio Cod
 * @mui/system
 * @mui/x-date-pickers
 * @react-oauth/google
-* 
+* @mui/icons-material
 * react-router-dom
 * react-scripts
 
@@ -26,8 +26,8 @@ Dependencies must be installed with npm syntax
 
 1. Open Visual Studio Code and clone the repository on a local computer.
 2. Open the repository when prompted.
-3. Split your terminal into three separate terminals for running the admin, client, and server respectively.
-4. Run `cd client` and `cd server` in each terminal respectively to change directory.
+3. Split your terminal into two separate terminals for running the server and client respectively.
+4. Run  `cd server` and `cd client` in each terminal respectively to change directory.
 5. Run `npm update` in the client terminal to update all dependencies.
 6. Once the installation is complete, run `node server.js` in the server and run `npm start` in the client to start the application.
 
@@ -35,7 +35,7 @@ Dependencies must be installed with npm syntax
 
 Once the application is running, it will direct you to the Home Page. Here, you can access various functions if you log in with your google account
 
-NOTE: YOU NEED TO LOG IN WITH YOUR SCHOOL GOOGLE ACCOUNT TO ACCESS THE RESPECTIVE FEATURES
+NOTE: YOU NEED TO LOG IN WITH YOUR SCHOOL GOOGLE ACCOUNT TO ACCESS ALL FEATURES
 
 ### Login Installation
 
