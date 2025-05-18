@@ -7,6 +7,13 @@ import Logo from '../images/homePageLogo.png';
 function DevelopersPage() {
     return(
         <>
+     <Helmet>
+    <title>Developers</title>
+    <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn who developed this app" />
+  <meta name="author" content="Isaac Liu" />
+   </Helmet>
         {/* ✅ SKIP LINK */}
     <a href="#main" className="skip-link">Skip to main content</a>
 

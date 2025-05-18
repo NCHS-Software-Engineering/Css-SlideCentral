@@ -40,6 +40,14 @@ function SlideshowPage() {
 
   return (
     <>
+
+<Helmet>
+    <title>Activity Slideshow</title>
+    <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Access school events with a slideshow" />
+  <meta name="author" content="Isaac Liu" />
+   </Helmet>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
 
       <Button

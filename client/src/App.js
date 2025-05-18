@@ -17,6 +17,8 @@ import EditActivities from './pages/EditActivities.js';
 import DevelopersPage from './pages/DevelopersPage.js';
 function App() {
   return (
+    <>
+    
     <Router>
       <Routes>
 
@@ -36,7 +38,7 @@ function App() {
       
     </Router>
 
-
+    </>
   );
 }
 

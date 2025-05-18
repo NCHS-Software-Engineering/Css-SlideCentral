@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { Helmet } from "react-helmet";
 function ActivitiesForm({ originalStartDate = '' }) {
   const navigate = useNavigate();
 
@@ -87,6 +87,14 @@ function ActivitiesForm({ originalStartDate = '' }) {
     : styles.formGrid;
 
   return (
+    <>
+    <Helmet>
+    <title>Activity Form</title>
+    <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Enter a school event for NCHS" />
+  <meta name="author" content="Michael Antipov" />
+   </Helmet>
     <div style={styles.container}>
       <h2 style={styles.header}>Enter Activity</h2>
       <form onSubmit={handleSubmit} style={formLayout}>
@@ -239,6 +247,7 @@ function ActivitiesForm({ originalStartDate = '' }) {
 
       </form>
     </div>
+    </>
   );
 }
 
