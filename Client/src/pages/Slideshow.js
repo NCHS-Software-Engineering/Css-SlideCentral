@@ -48,7 +48,7 @@ function SlideshowPage() {
         className="logo"
         sx={{ padding: 0, minWidth: "auto" }}
       >
-        <img src={Logo} width="150" height="150" alt="Logo" style={{ display: 'block', margin: '0 auto' }} />
+        <img src={Logo} width="150" height="150" alt="CSS SlideCentral logo" style={{ display: 'block', margin: '0 auto' }} />
       </Button>
 
       <h1 className="page-title">Slideshow</h1>

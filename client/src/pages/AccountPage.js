@@ -43,7 +43,7 @@ return(
     className="logo"
     sx={{ padding: 0, minWidth: "auto" }}
   >
-    <img src={Logo} width="150" height="150" alt="Logo" />
+    <img src={Logo} width="150" height="150" alt="CSS SlideCentral logo" />
   </Button>
 
 

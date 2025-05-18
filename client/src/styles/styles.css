@@ -343,7 +343,7 @@ ul {
     }
 
     .year {
-      color: #777;
+      color: #555;
       font-size: 1em;
       margin-bottom: 20px;
     }
@@ -353,3 +353,27 @@ ul {
       color: #555;
       line-height: 1.5em;
     }
+
+    /* skip link */
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      z-index: 1000;
+      background-color: #000;
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .skip-link:focus {
+      left: 10px;
+      top: 10px;
+      width: auto;
+      height: auto;
+    }
+    

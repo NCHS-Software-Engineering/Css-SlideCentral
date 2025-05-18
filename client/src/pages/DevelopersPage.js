@@ -7,21 +7,25 @@ import Logo from '../images/homePageLogo.png';
 function DevelopersPage() {
     return(
         <>
+        {/* ✅ SKIP LINK */}
+    <a href="#main" className="skip-link">Skip to main content</a>
+
+
         <Button
         component={Link}
         to="/"
         className="logo"
         sx={{ padding: 0, minWidth: "auto" }}
       >
-        <img src={Logo} width="150" height="150" alt="Logo" style={{ display: 'block', margin: '0 auto' }} />
+        <img src={Logo} width="150" height="150" alt="CSS SlideCentral logo" style={{ display: 'block', margin: '0 auto' }} />
       </Button>
 
-    <div class="container">
+      <div id="main" className="container">
     <h1 class="page-title">Meet the Developers</h1>
     <div class="grid">
       
       <div class="card">
-        <div class="name">Isaac Liu</div>
+      <h2 class="name">Isaac Liu</h2>
         <div class="year">Class of 2026</div>
         <div class="bio">
         Project manager and QA lead. Coordinated team tasks and led the interface design and React integration for CSS/SlideCentral. Developed the general structure and vison of the app, Login interface and domains, Slideshow, Tutorial, and FAQ. Currently a senior at NCHS.
@@ -29,7 +33,7 @@ function DevelopersPage() {
       </div>
 
       <div class="card">
-        <div class="name">Arnav Vedavyas</div>
+      <h2 class="name">Arnav Vedavyas</h2>
         <div class="year">Class of 2025</div>
         <div class="bio">
         Frontend developer and primary supervisor. Developed the computer and mobile versions of the software and the activity entry form. Currently attending University of Illinois (Urbana-Champaign) as a [something] major.
@@ -38,7 +42,7 @@ function DevelopersPage() {
 
       <div class="card">
        
-        <div class="name">Jinan Parves</div>
+      <h2 class="name">Jinan Parves</h2>
         <div class="year">Class of 2026</div>
         <div class="bio">
           Worked on full-stack development. Managed API connections and ensured data flow between frontend and backend.
@@ -47,7 +51,7 @@ function DevelopersPage() {
 
       <div class="card">
         
-        <div class="name">Michael Antipov</div>
+      <h2 class="name">Michael Antipov</h2>
         <div class="year">Class of 2026</div>
         <div class="bio">
         Backend engineer who built and optimized the Node.js + MySQL backend.
