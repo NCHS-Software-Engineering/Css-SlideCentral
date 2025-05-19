@@ -30,13 +30,7 @@ const SearchModal = ({ onClose, onApply, filters, setFilters, searchText, setSea
 
   return (
     <>
-    <Helmet>
-    <title>Calendar</title>
-    <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Access all events at NCHS with a calendar" />
-  <meta name="author" content="Jinan Parves" />
-   </Helmet>
+
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>Filter Events</h2>

@@ -15,7 +15,7 @@ import ActivitiesForm from './pages/activitiesform'; // <-- Import your new comp
 import AccountPage  from './pages/AccountPage.js';
 import SlideshowPage from './pages/Slideshow.js';
 import EditActivities from './pages/EditActivities.js';
-import DevelopersPage from './pages/DevelopersPage.js';
+
 function App() {
   return (
     <>

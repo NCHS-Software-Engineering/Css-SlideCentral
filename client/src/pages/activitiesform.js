@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from "react-helmet";
 function ActivitiesForm({ originalStartDate = '' }) {
   const navigate = useNavigate();
 
@@ -88,13 +87,7 @@ function ActivitiesForm({ originalStartDate = '' }) {
 
   return (
     <>
-    <Helmet>
-    <title>Activity Form</title>
-    <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Enter a school event for NCHS" />
-  <meta name="author" content="Michael Antipov" />
-   </Helmet>
+  
     <div style={styles.container}>
       <h2 style={styles.header}>Enter Activity</h2>
       <form onSubmit={handleSubmit} style={formLayout}>
@@ -121,15 +114,16 @@ function ActivitiesForm({ originalStartDate = '' }) {
             </div>
           </div>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Activity Date:</label>
-            <input
-              type="date"
-              value={activityDate}
-              onChange={e => setActivityDate(e.target.value)}
-              style={styles.input}
-            />
-          </div>
+        <div style={styles.fieldGroup}>
+        <label htmlFor="activityDate" style={styles.label}>Activity Date:</label>
+        <input
+          type="date"
+          id="activityDate"
+          value={activityDate}
+          onChange={e => setActivityDate(e.target.value)}
+          style={styles.input}
+        />
+      </div>
 
           <div style={styles.fieldGroup}>
             <label style={styles.label}>Activity Name:</label>
@@ -158,9 +152,10 @@ function ActivitiesForm({ originalStartDate = '' }) {
           <h3 style={styles.sectionHeader}>Slideshow Settings</h3>
 
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Slideshow Start Date:</label>
+            <label htmlFor="slideshowStartDate" style={styles.label}>Slideshow Start Date:</label>
             <input
               type="date"
+              id="slideshowStartDate"
               value={slideshowStartDate}
               onChange={e => setSlideshowStartDate(e.target.value)}
               style={styles.input}
@@ -168,9 +163,10 @@ function ActivitiesForm({ originalStartDate = '' }) {
           </div>
 
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Slideshow End Date:</label>
+            <label htmlFor="slideshowEndDate" style={styles.label}>Slideshow End Date:</label>
             <input
               type="date"
+              id="slideshowEndDate"
               value={slideshowEndDate}
               onChange={e => setSlideshowEndDate(e.target.value)}
               style={styles.input}
