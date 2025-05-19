@@ -15,8 +15,11 @@ import ActivitiesForm from './pages/activitiesform'; // <-- Import your new comp
 import AccountPage  from './pages/AccountPage.js';
 import SlideshowPage from './pages/Slideshow.js';
 import EditActivities from './pages/EditActivities.js';
+import DevelopersPage from './pages/DevelopersPage.js';
 function App() {
   return (
+    <>
+    
     <Router>
       <Routes>
 
@@ -24,7 +27,7 @@ function App() {
       <Route path="/faq" element={<FAQ />} />  {/* route to FAQ page */}
       <Route exact path="/Slideshow" element={<SlideshowPage />}/>
   <Route exact path="/WidgetPage" element={<WidgetPage />} /> {/* route to widget page */}
-
+  <Route path="/developers" element={<DevelopersPage />} /> 
   <Route path="/account" element={<AccountPage />} />
         <Route path="/" element={<Home />} />
         {/* Add the new ActivitiesForm route */}
@@ -38,7 +41,7 @@ function App() {
       
     </Router>
 
-
+    </>
   );
 }
 

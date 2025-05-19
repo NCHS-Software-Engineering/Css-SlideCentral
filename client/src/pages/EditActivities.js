@@ -102,6 +102,14 @@ function EditActivities() {
   };
 
   return (
+    <>
+     <Helmet>
+    <title>Edit Activities</title>
+    <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Edit your submitted school events for NCHS" />
+  <meta name="author" content="Michael Antipov" />
+   </Helmet>
     <div style={styles.container}>
       <h2 style={styles.header}>Edit Activity</h2>
 
@@ -267,6 +275,7 @@ function EditActivities() {
         </div>
       </form>
     </div>
+    </>
   );
 }
 

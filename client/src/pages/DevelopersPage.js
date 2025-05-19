@@ -48,6 +48,8 @@ function DevelopersPage() {
       </Container>
     </>
   );
+
+
 }
 
 export default DevelopersPage;

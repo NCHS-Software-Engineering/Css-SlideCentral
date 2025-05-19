@@ -5,7 +5,7 @@ import { Box, Grid, Button, Typography, Container } from '@mui/material';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
 import Logo from '../images/homePageLogo.png';
-
+import '../styles/styles.css';
 // Fade-in animation
 const fadeIn = keyframes`
   from { opacity: 0; }
@@ -77,6 +77,14 @@ const Home = () => {
   }, []);
 
   return (
+    <>
+     <Helmet>
+    <title>Home</title>
+    <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn web development with tutorials and tips." />
+  <meta name="author" content="Isaac Liu" />
+   </Helmet>
     <Box
       sx={{
         minHeight: '100vh',
@@ -84,8 +92,10 @@ const Home = () => {
         animation: `${fadeIn} 0.7s ease-in-out`,
       }}
     >
+      <a href="#main" className="skip-link">Skip to main content</a>
+
       {/* TOP NAV */}
-      <Box sx={{ background: 'linear-gradient(to bottom, #777, #ddd)', p: 2 }}>
+      <Box sx={{ background: 'linear-gradient(to bottom, #444, #ccc)', p: 2 }}>
         <Container maxWidth="lg">
           <Grid container spacing={2} alignItems="center" justifyContent="center">
 
@@ -103,7 +113,7 @@ const Home = () => {
                 }}
               >
                 {/* Admin only */}
-                {role === 'Admin' && (
+                {/*{role === 'Admin' && (*/}
                   <>
                     <Button
                       component={Link}
@@ -124,10 +134,10 @@ const Home = () => {
                       Edit Activities
                     </Button>
                   </>
-                )}
+                {/*{)}*/}
 
                 {/* Logged in only */}
-                {LOGGED_IN && (
+                {/*{LOGGED_IN && (*/}
 
                   <Button
                     component={Link}
@@ -137,7 +147,7 @@ const Home = () => {
                   >
                     Slideshow
                   </Button>
-                )}
+                {/*)}*/}
 
                 {/* Always visible */}
                 <Button
@@ -184,7 +194,7 @@ const Home = () => {
                   </Button>
                 )}
 
-                {LOGGED_IN && (
+                {/*{LOGGED_IN && (*/}
                   <Button
                     component={Link}
                     to="/account"
@@ -193,9 +203,9 @@ const Home = () => {
                   >
                     My Account
                   </Button>
-                )}
+                {/*)}*/}
 
-                {(role === 'Teacher' || role === 'Admin') && (
+                {/*{(role === 'Teacher' || role === 'Admin') && (*/}
                   <>
                     <Button variant="contained" sx={redButtonStyle}>
                       CSS Preview
@@ -204,9 +214,9 @@ const Home = () => {
                       Preview Edit
                     </Button>
                   </>
-                )}
+                {/*)}*/}
 
-                {LOGGED_IN && (
+                {/*{LOGGED_IN && (*/}
                   <Button
                     component={Link}
                     to="/calendar"
@@ -215,7 +225,7 @@ const Home = () => {
                   >
                     Calendar
                   </Button>
-                )}
+                {/*)}*/}
               </Box>
             </Grid>
 
@@ -224,16 +234,18 @@ const Home = () => {
       </Box>
 
       {/* MAIN CONTENT */}
-      <Container maxWidth="md" sx={{ py: 6 }}>
+      <Container id="main" maxWidth="md" sx={{ py: 6 }}>
+
         <Grid container spacing={4} alignItems="center">
           {/* TEXT */}
           <Grid item xs={12} md={8}>
-            <Typography
-              variant="h5"
-              textAlign="center"
-              gutterBottom
-              sx={{ fontWeight: 'bold' }}
-            >
+          <Typography
+  variant="h5"
+  component="h1"
+  textAlign="center"
+  gutterBottom
+  sx={{ fontWeight: 'bold' }}
+>
               CSS/Slide Central is an application that can be used by teachers and activity sponsors to display information around the school.
             </Typography>
             <Typography variant="body1" textAlign="center" paragraph>
@@ -281,6 +293,7 @@ const Home = () => {
         </Grid>
       </Container>
     </Box>
+    </>
   );
 };
 

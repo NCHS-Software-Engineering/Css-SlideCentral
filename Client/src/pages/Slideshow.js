@@ -40,6 +40,14 @@ function SlideshowPage() {
 
   return (
     <>
+
+<Helmet>
+    <title>Activity Slideshow</title>
+    <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Access school events with a slideshow" />
+  <meta name="author" content="Isaac Liu" />
+   </Helmet>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
 
       <Button
@@ -48,7 +56,7 @@ function SlideshowPage() {
         className="logo"
         sx={{ padding: 0, minWidth: "auto" }}
       >
-        <img src={Logo} width="150" height="150" alt="Logo" style={{ display: 'block', margin: '0 auto' }} />
+        <img src={Logo} width="150" height="150" alt="CSS SlideCentral logo" style={{ display: 'block', margin: '0 auto' }} />
       </Button>
 
       <h1 className="page-title">Slideshow</h1>
