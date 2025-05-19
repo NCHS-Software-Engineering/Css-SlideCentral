@@ -12,11 +12,10 @@ To make this work you need to download the latest versions of [Visual Studio Cod
 
 ## Dependencies
 * @mui/material
-* @mui/joy
-* @mui/system
-* @mui/x-date-pickers
 * @react-oauth/google
 * @mui/icons-material
+* @mui/icons-material/Delete
+* @mui/icons-material/Search
 * react-router-dom
 * react-scripts
 
