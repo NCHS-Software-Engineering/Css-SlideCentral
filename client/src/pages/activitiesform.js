@@ -191,35 +191,38 @@ function ActivitiesForm({ originalStartDate = '' }) {
         <div style={styles.section}>
           <h3 style={styles.sectionHeader}>Calendar Settings</h3>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Day of the Week:</label>
-            <select
-              value={calendarDayOfWeek}
-              onChange={e => setCalendarDayOfWeek(e.target.value)}
-              style={styles.input}
-            >
-              <option value="">--Select Day--</option>
-              {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-                .map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
-          </div>
+            <div style={styles.fieldGroup}>
+              <label htmlFor="calendarDayOfWeek" style={styles.label}>Day of the Week:</label>
+              <select
+                id="calendarDayOfWeek"
+                value={calendarDayOfWeek}
+                onChange={e => setCalendarDayOfWeek(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Day--</option>
+                {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+                  .map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Frequency:</label>
-            <select
-              value={calendarFrequency}
-              onChange={e => setCalendarFrequency(e.target.value)}
-              style={styles.input}
-            >
-              <option value="">--Select Frequency--</option>
-              {['One-Time','Weekly','Biweekly','Monthly']
-                .map(f => <option key={f} value={f}>{f}</option>)}
-            </select>
-          </div>
+            <div style={styles.fieldGroup}>
+              <label htmlFor="calendarFrequency" style={styles.label}>Frequency:</label>
+              <select
+                id="calendarFrequency"
+                value={calendarFrequency}
+                onChange={e => setCalendarFrequency(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Frequency--</option>
+                {['One-Time','Weekly','Biweekly','Monthly']
+                  .map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </div>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Time of Day:</label>
+         <div style={styles.fieldGroup}>
+            <label htmlFor="calendarTimeOfDay" style={styles.label}>Time of Day:</label>
             <select
+              id="calendarTimeOfDay"
               value={calendarTimeOfDay}
               onChange={e => setCalendarTimeOfDay(e.target.value)}
               style={styles.input}
