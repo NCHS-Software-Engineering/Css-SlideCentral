@@ -1,74 +1,70 @@
-import '../styles/styles.css';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; 
-import { Button } from '@mui/material';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Box, Grid, Button, Typography, Container, Paper, IconButton } from '@mui/material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import Logo from '../images/homePageLogo.png';
-// specific details need to be changed once CSS is fixed
+
+const developers = [
+  { name: "Arnav Vedavyas", gradYear: 2025 },
+  { name: "Isaac Liu", gradYear: 2026 },
+  { name: "Jinan Parves", gradYear: 2026 },
+  { name: "Michael Antipov", gradYear: 2026 }
+];
+
 function DevelopersPage() {
-    return(
-        <>
-     <Helmet>
-    <title>Developers</title>
-    <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Learn who developed this app" />
-  <meta name="author" content="Isaac Liu" />
-   </Helmet>
-        {/* ✅ SKIP LINK */}
-    <a href="#main" className="skip-link">Skip to main content</a>
-
-
-        <Button
-        component={Link}
-        to="/"
-        className="logo"
-        sx={{ padding: 0, minWidth: "auto" }}
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          padding: "0 20px",
+          gap: "230px",
+        }}
       >
-        <img src={Logo} width="150" height="150" alt="CSS SlideCentral logo" style={{ display: 'block', margin: '0 auto' }} />
-      </Button>
-
-      <div id="main" className="container">
-    <h1 class="page-title">Meet the Developers</h1>
-    <div class="grid">
-      
-      <div class="card">
-      <h2 class="name">Isaac Liu</h2>
-        <div class="year">Class of 2026</div>
-        <div class="bio">
-        Project manager and QA lead. Coordinated team tasks and led the interface design and React integration for CSS/SlideCentral. Developed the general structure and vison of the app, Login interface and domains, Slideshow, Tutorial, and FAQ. Currently a senior at NCHS.
-        </div>
+        {/* Logo Home Button */}
+        <Button
+          component={Link}
+          to="/"
+          className="logo"
+          sx={{ padding: 0, minWidth: "auto" }}
+        >
+          <img src={Logo} width="150" height="150" alt="Logo" />
+        </Button>
+        <h1 className="page-title" style={{ margin: 0 }}>Meet the developers</h1>
       </div>
 
-      <div class="card">
-      <h2 class="name">Arnav Vedavyas</h2>
-        <div class="year">Class of 2025</div>
-        <div class="bio">
-        Frontend developer and primary supervisor. Developed the computer and mobile versions of the software and the activity entry form. Currently attending University of Illinois (Urbana-Champaign) as a [something] major.
-        </div>
-      </div>
+      <Container maxWidth="md" sx={{ mt: 8 }}>
+        <Grid container spacing={4} justifyContent="center">
+          {developers.map((dev, idx) => (
+            <Grid item xs={12} sm={6} md={3} key={idx}>
+              <Paper elevation={4} sx={{ p: 3, textAlign: 'center', backgroundColor: '#b71c1c', color: 'white', borderRadius: 2 }}>
+                <Typography variant="h6">{dev.name}</Typography>
+                <Typography variant="subtitle1">Class of {dev.gradYear}</Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 4 }}>
+            <IconButton>
+              <FacebookIcon fontSize="large" sx={{ color: '#b71c1c' }} />
+            </IconButton>
+            <IconButton>
+              <TwitterIcon fontSize="large" sx={{ color: '#b71c1c' }} />
+            </IconButton>
+            <IconButton>
+              <InstagramIcon fontSize="large" sx={{ color: '#b71c1c' }} />
+            </IconButton>
+        </Box>
 
-      <div class="card">
-       
-      <h2 class="name">Jinan Parves</h2>
-        <div class="year">Class of 2026</div>
-        <div class="bio">
-          Worked on full-stack development. Managed API connections and ensured data flow between frontend and backend.
-        </div>
-      </div>
+      </Container>
+    </>
+  );
 
-      <div class="card">
-        
-      <h2 class="name">Michael Antipov</h2>
-        <div class="year">Class of 2026</div>
-        <div class="bio">
-        Backend engineer who built and optimized the Node.js + MySQL backend.
-        </div>
-      </div>
 
-    </div>
-  </div>
-  </>
-    );
 }
 
 export default DevelopersPage;

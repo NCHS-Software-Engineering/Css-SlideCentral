@@ -14,14 +14,14 @@ const fadeIn = keyframes`
 
 // Red button style
 const redButtonStyle = {
-  backgroundColor: '#b71c1c',
+  backgroundColor: '#d93632',
   color: '#fff',
   textTransform: 'none',
   transition: 'transform 0.3s, background-color 0.3s',
   whiteSpace: 'nowrap',
   fontSize: { xs: '0.875rem', md: '0.75rem' },
   '&:hover': {
-    backgroundColor: '#7f0000',
+    backgroundColor: '#d93632',
     transform: 'scale(1.05)',
   },
 };
@@ -78,13 +78,7 @@ const Home = () => {
 
   return (
     <>
-     <Helmet>
-    <title>Home</title>
-    <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Learn web development with tutorials and tips." />
-  <meta name="author" content="Isaac Liu" />
-   </Helmet>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" />
     <Box
       sx={{
         minHeight: '100vh',

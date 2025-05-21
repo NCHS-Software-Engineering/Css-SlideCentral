@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from "react-helmet";
 function ActivitiesForm({ originalStartDate = '' }) {
   const navigate = useNavigate();
 
@@ -88,13 +87,7 @@ function ActivitiesForm({ originalStartDate = '' }) {
 
   return (
     <>
-    <Helmet>
-    <title>Activity Form</title>
-    <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Enter a school event for NCHS" />
-  <meta name="author" content="Michael Antipov" />
-   </Helmet>
+  
     <div style={styles.container}>
       <h2 style={styles.header}>Enter Activity</h2>
       <form onSubmit={handleSubmit} style={formLayout}>
@@ -121,15 +114,16 @@ function ActivitiesForm({ originalStartDate = '' }) {
             </div>
           </div>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Activity Date:</label>
-            <input
-              type="date"
-              value={activityDate}
-              onChange={e => setActivityDate(e.target.value)}
-              style={styles.input}
-            />
-          </div>
+        <div style={styles.fieldGroup}>
+        <label htmlFor="activityDate" style={styles.label}>Activity Date:</label>
+        <input
+          type="date"
+          id="activityDate"
+          value={activityDate}
+          onChange={e => setActivityDate(e.target.value)}
+          style={styles.input}
+        />
+      </div>
 
           <div style={styles.fieldGroup}>
             <label style={styles.label}>Activity Name:</label>
@@ -158,9 +152,10 @@ function ActivitiesForm({ originalStartDate = '' }) {
           <h3 style={styles.sectionHeader}>Slideshow Settings</h3>
 
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Slideshow Start Date:</label>
+            <label htmlFor="slideshowStartDate" style={styles.label}>Slideshow Start Date:</label>
             <input
               type="date"
+              id="slideshowStartDate"
               value={slideshowStartDate}
               onChange={e => setSlideshowStartDate(e.target.value)}
               style={styles.input}
@@ -168,9 +163,10 @@ function ActivitiesForm({ originalStartDate = '' }) {
           </div>
 
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Slideshow End Date:</label>
+            <label htmlFor="slideshowEndDate" style={styles.label}>Slideshow End Date:</label>
             <input
               type="date"
+              id="slideshowEndDate"
               value={slideshowEndDate}
               onChange={e => setSlideshowEndDate(e.target.value)}
               style={styles.input}
@@ -195,35 +191,38 @@ function ActivitiesForm({ originalStartDate = '' }) {
         <div style={styles.section}>
           <h3 style={styles.sectionHeader}>Calendar Settings</h3>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Day of the Week:</label>
-            <select
-              value={calendarDayOfWeek}
-              onChange={e => setCalendarDayOfWeek(e.target.value)}
-              style={styles.input}
-            >
-              <option value="">--Select Day--</option>
-              {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-                .map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
-          </div>
+            <div style={styles.fieldGroup}>
+              <label htmlFor="calendarDayOfWeek" style={styles.label}>Day of the Week:</label>
+              <select
+                id="calendarDayOfWeek"
+                value={calendarDayOfWeek}
+                onChange={e => setCalendarDayOfWeek(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Day--</option>
+                {['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+                  .map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Frequency:</label>
-            <select
-              value={calendarFrequency}
-              onChange={e => setCalendarFrequency(e.target.value)}
-              style={styles.input}
-            >
-              <option value="">--Select Frequency--</option>
-              {['One-Time','Weekly','Biweekly','Monthly']
-                .map(f => <option key={f} value={f}>{f}</option>)}
-            </select>
-          </div>
+            <div style={styles.fieldGroup}>
+              <label htmlFor="calendarFrequency" style={styles.label}>Frequency:</label>
+              <select
+                id="calendarFrequency"
+                value={calendarFrequency}
+                onChange={e => setCalendarFrequency(e.target.value)}
+                style={styles.input}
+              >
+                <option value="">--Select Frequency--</option>
+                {['One-Time','Weekly','Biweekly','Monthly']
+                  .map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </div>
 
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Time of Day:</label>
+         <div style={styles.fieldGroup}>
+            <label htmlFor="calendarTimeOfDay" style={styles.label}>Time of Day:</label>
             <select
+              id="calendarTimeOfDay"
               value={calendarTimeOfDay}
               onChange={e => setCalendarTimeOfDay(e.target.value)}
               style={styles.input}
@@ -311,7 +310,7 @@ const styles = {
   },
   uploadButton: {
     padding: '6px 10px',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#39853c',
     color: '#fff',
     borderRadius: '4px',
     cursor: 'pointer',
@@ -333,7 +332,7 @@ const styles = {
   },
   submitButton: {
     padding: '8px 12px',
-    backgroundColor: '#f44336',
+    backgroundColor: '#d0382d',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',

@@ -103,13 +103,7 @@ function EditActivities() {
 
   return (
     <>
-     <Helmet>
-    <title>Edit Activities</title>
-    <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Edit your submitted school events for NCHS" />
-  <meta name="author" content="Michael Antipov" />
-   </Helmet>
+
     <div style={styles.container}>
       <h2 style={styles.header}>Edit Activity</h2>
 
@@ -153,19 +147,10 @@ function EditActivities() {
             </div>
           </div>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Activity Date:</label>
-            <input
-              type="date"
-              name="activityDate"
-              style={styles.input}
-              value={formData.activityDate}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Activity Name:</label>
+            <label htmlFor="activityName" style={styles.label}>Activity Name:</label>
             <input
               type="text"
+              id="activityName"
               name="activityName"
               style={styles.input}
               value={formData.activityName}
@@ -173,47 +158,61 @@ function EditActivities() {
             />
           </div>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Description:</label>
+            <label htmlFor="activityDesc" style={styles.label}>Description:</label>
             <textarea
+              id="activityDesc"
               name="activityDesc"
               style={{ ...styles.input, height: 60 }}
               value={formData.activityDesc}
               onChange={handleChange}
             />
           </div>
+          <div style={styles.fieldGroup}>
+            <label htmlFor="activityDesc" style={styles.label}>Description:</label>
+            <textarea
+              id="activityDesc"
+              name="activityDesc"
+              style={{ ...styles.input, height: 60 }}
+              value={formData.activityDesc}
+              onChange={handleChange}
+            />
+        </div>
         </div>
 
         {/* Slideshow Settings */}
         <div style={styles.section}>
           <h3 style={styles.sectionHeader}>Slideshow Settings</h3>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Start Date:</label>
-            <input
-              type="date"
-              name="slideshowStartDate"
-              style={styles.input}
-              value={formData.slideshowStartDate}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>End Date:</label>
-            <input
-              type="date"
-              name="slideshowEndDate"
-              style={styles.input}
-              value={formData.slideshowEndDate}
-              onChange={handleChange}
-            />
-          </div>
+          <label htmlFor="slideshowStartDate" style={styles.label}>Start Date:</label>
+          <input
+            type="date"
+            id="slideshowStartDate"
+            name="slideshowStartDate"
+            style={styles.input}
+            value={formData.slideshowStartDate}
+            onChange={handleChange}
+          />
+        </div>
+         <div style={styles.fieldGroup}>
+          <label htmlFor="slideshowEndDate" style={styles.label}>End Date:</label>
+          <input
+            type="date"
+            id="slideshowEndDate"
+            name="slideshowEndDate"
+            style={styles.input}
+            value={formData.slideshowEndDate}
+            onChange={handleChange}
+          />
+        </div>
         </div>
 
         {/* Calendar Settings */}
         <div style={styles.section}>
           <h3 style={styles.sectionHeader}>Calendar Settings</h3>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Day of Week:</label>
+            <label htmlFor="calendarDayOfWeek" style={styles.label}>Day of Week:</label>
             <select
+              id="calendarDayOfWeek"
               name="calendarDayOfWeek"
               style={styles.input}
               value={formData.calendarDayOfWeek}
@@ -225,21 +224,23 @@ function EditActivities() {
             </select>
           </div>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Frequency:</label>
-            <select
-              name="calendarFrequency"
-              style={styles.input}
-              value={formData.calendarFrequency}
-              onChange={handleChange}
-            >
-              <option value="">--</option>
-              {['One-Time','Weekly','Biweekly','Monthly']
-                .map(f => <option key={f} value={f}>{f}</option>)}
-            </select>
-          </div>
+          <label htmlFor="calendarFrequency" style={styles.label}>Frequency:</label>
+          <select
+            id="calendarFrequency"
+            name="calendarFrequency"
+            style={styles.input}
+            value={formData.calendarFrequency}
+            onChange={handleChange}
+          >
+            <option value="">--</option>
+            {['One-Time','Weekly','Biweekly','Monthly']
+              .map(f => <option key={f} value={f}>{f}</option>)}
+          </select>
+        </div>
           <div style={styles.fieldGroup}>
-            <label style={styles.label}>Time of Day:</label>
+            <label htmlFor="calendarTimeOfDay" style={styles.label}>Time of Day:</label>
             <select
+              id="calendarTimeOfDay"
               name="calendarTimeOfDay"
               style={styles.input}
               value={formData.calendarTimeOfDay}
@@ -330,7 +331,7 @@ const styles = {
   },
   submitButton: {
     padding: '8px 12px',
-    backgroundColor: '#f44336',
+    backgroundColor: '#d0382d',
     color: '#fff',
     border: 'none',
     borderRadius: 4,

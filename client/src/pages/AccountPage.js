@@ -1,8 +1,6 @@
 import {React, useEffect, useState} from 'react';
 import { Link } from 'react-router-dom'; 
 import { Box, Grid, Button, Typography, Container } from '@mui/material';
-import { Helmet } from "react-helmet";
-import { keyframes } from '@emotion/react'
 import Logo from '../images/homePageLogo.png'
 
 function AccountPage() {
@@ -27,13 +25,6 @@ function AccountPage() {
 
 return(
     <>
-   <Helmet>
-   <title>My Account</title>
-   <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Access your account for CSS-SlideCentral" />
-  <meta name="author" content="Isaac Liu" />
-   </Helmet>
     
     
     <div
@@ -48,7 +39,7 @@ return(
   {/* Logo Home Button*/}
   <Button
     component={Link}
-    to="/"
+    to="/"  
     className="logo"
     sx={{ padding: 0, minWidth: "auto" }}
   >
