@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Grid, Button, Typography, Container, Paper } from '@mui/material';
+import { Box, Grid, Button, Typography, Container, Paper, IconButton } from '@mui/material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import Logo from '../images/homePageLogo.png';
 
 const developers = [
@@ -45,6 +48,18 @@ function DevelopersPage() {
             </Grid>
           ))}
         </Grid>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 4 }}>
+            <IconButton>
+              <FacebookIcon fontSize="large" sx={{ color: '#b71c1c' }} />
+            </IconButton>
+            <IconButton>
+              <TwitterIcon fontSize="large" sx={{ color: '#b71c1c' }} />
+            </IconButton>
+            <IconButton>
+              <InstagramIcon fontSize="large" sx={{ color: '#b71c1c' }} />
+            </IconButton>
+        </Box>
+
       </Container>
     </>
   );
