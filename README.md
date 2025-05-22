@@ -81,20 +81,22 @@ You will need Google Auth secrets from the server .env from Dr. Miller to access
 The application uses a SQL database for data storage of the schedules, activities, and Google Authentication IDs.
 
 ## SQL Schema
-+---------+        1           ∞    +-------------+
-| users   |------------------------>| activities  |
-+---------+                         +-------------+
-| id (PK) |                         | id (PK)      |
-| googleId|                         | userId (FK)  |
-| name    |                         | activityType |
-| email   |                         | activityDate |
-| role    |                         | slideshowStartDate |
-                                    | slideshowEndDate   |
-                                    | activityName       |
-                                    | activityDesc       |
-                                    | calendarDayOfWeek  |
-                                    | calendarFrequency  |
-                                    | calendarTimeOfDay  |
+┌────────────┐       1        ∞       ┌────────────────────────────┐
+│   users    │───────────────────────▶│        activities           │
+├────────────┤                       ├────────────────────────────┤
+│ id (PK)    │                       │ id (PK)                    │
+│ googleId   │                       │ userId (FK)                │
+│ name       │                       │ activityType               │
+│ email      │                       │ activityDate               │
+│ role       │                       │ slideshowStartDate         │
+└────────────┘                       │ slideshowEndDate           │
+                                     │ activityName               │
+                                     │ activityDesc               │
+                                     │ calendarDayOfWeek          │
+                                     │ calendarFrequency          │
+                                     │ calendarTimeOfDay          │
+                                     └────────────────────────────┘
+
 
 All sql values can be inputted in the activity form                                
 * activityType can be 3 different kinds of events (School Sports, Club Meetings, School Events)
