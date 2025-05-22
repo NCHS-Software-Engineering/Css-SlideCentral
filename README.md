@@ -97,7 +97,7 @@ The application uses a SQL database for data storage of the schedules, activitie
                                     | calendarTimeOfDay  |
 
 All sql values can be inputted in the activity form                                
-* activityType can be 3 different kinds of events (
+* activityType can be 3 different kinds of events (School Sports, Club Meetings, School Events)
 * activityDate is the date of the activity
 * slideshowStartDate and slideshowEndDate are the dates that will be displayed in the slideshow
 * activityName is the title of the activity being submitted
