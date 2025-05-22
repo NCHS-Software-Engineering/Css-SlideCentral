@@ -98,6 +98,7 @@ The application uses a SQL database for data storage of the schedules, activitie
                                      └────────────────────────────┘
 
 
+
 All sql values can be inputted in the activity form                                
 * activityType can be 3 different kinds of events (School Sports, Club Meetings, School Events)
 * activityDate is the date of the activity
