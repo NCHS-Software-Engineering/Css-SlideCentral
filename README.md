@@ -1,6 +1,6 @@
 # Css-SlideCentral
 
-The CSS/SlideCentral is a dynamic web application designed to allow school staff to enter in activities and events at the school, while allowing students to discover events relevant to their interests. This app aims to provide an easier solution for students and teachers alike to view school activities, and for club sponsors to upload their upcoming activities to garner a larger amount of participation. The application centeralizes event visility and replaces the fragmented methods of club communication within NCHS.
+The CSS/SlideCentral is a dynamic web application designed to allow school staff to enter in activities and events at the school, while allowing students to discover events relevant to their interests. This app aims to provide an easier solution for students and teachers alike to view school activities, and for club sponsors to upload their upcoming activities to garner a larger amount of participation. The application centralizes event visibility and replaces the fragmented methods of club communication within NCHS.
 
 ## Getting Started
 
@@ -24,7 +24,8 @@ To make this work you need to download the latest versions of [Visual Studio Cod
 * mysql2
 * dotenv
 * cors
-Dependencies must be installed in the general and client directory with npm syntax
+  
+Dependencies must be installed in both the server and client directories using npm install
 
 ### Installation
 
@@ -81,6 +82,8 @@ You will need Google Auth secrets from the server .env from Dr. Miller to access
 The application uses a SQL database for data storage of the schedules, activities, and Google Authentication IDs.
 
 ## SQL Schema
+### Entity-Relationship Diagram
+
 ![image](https://github.com/user-attachments/assets/5da10b68-615c-4db8-a8f9-c3cc40ed73b6)
 
 
@@ -104,12 +107,12 @@ You will need database secrets from the server .env from Dr. Miller to access th
 
 - Login fails for non-school Google accounts
 - Mobile version not yet implemented
-- CSS is not yet implemented
+- CSS software is not yet implemented
 - The activity form is repetitive so you need to input the EXACT same day for each input
 
-## Product Packlog
+## Product Backlog
 
-Remaining user stories can be found in the trello: https://trello.com/b/iuZKsvux/css-slidecentral
+All unimplemented and pending user stories are  in the trello: https://trello.com/b/iuZKsvux/css-slidecentral
 
 ## Contributing
 
