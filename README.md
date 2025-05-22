@@ -81,21 +81,8 @@ You will need Google Auth secrets from the server .env from Dr. Miller to access
 The application uses a SQL database for data storage of the schedules, activities, and Google Authentication IDs.
 
 ## SQL Schema
-┌────────────┐       1        ∞       ┌────────────────────────────┐
-│   users    │───────────────────────▶│        activities           │
-├────────────┤                       ├────────────────────────────┤
-│ id (PK)    │                       │ id (PK)                    │
-│ googleId   │                       │ userId (FK)                │
-│ name       │                       │ activityType               │
-│ email      │                       │ activityDate               │
-│ role       │                       │ slideshowStartDate         │
-└────────────┘                       │ slideshowEndDate           │
-                                     │ activityName               │
-                                     │ activityDesc               │
-                                     │ calendarDayOfWeek          │
-                                     │ calendarFrequency          │
-                                     │ calendarTimeOfDay          │
-                                     └────────────────────────────┘
+![image](https://github.com/user-attachments/assets/5da10b68-615c-4db8-a8f9-c3cc40ed73b6)
+
 
 
 
