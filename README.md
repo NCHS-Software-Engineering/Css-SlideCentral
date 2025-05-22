@@ -81,6 +81,30 @@ You will need Google Auth secrets from the server .env from Dr. Miller to access
 The application uses a SQL database for data storage of the schedules, activities, and Google Authentication IDs.
 
 ## SQL Schema
++---------+        1           ∞    +-------------+
+| users   |------------------------>| activities  |
++---------+                         +-------------+
+| id (PK) |                         | id (PK)      |
+| googleId|                         | userId (FK)  |
+| name    |                         | activityType |
+| email   |                         | activityDate |
+| role    |                         | slideshowStartDate |
+                                    | slideshowEndDate   |
+                                    | activityName       |
+                                    | activityDesc       |
+                                    | calendarDayOfWeek  |
+                                    | calendarFrequency  |
+                                    | calendarTimeOfDay  |
+
+All sql values can be inputted in the activity form                                
+* activityType can be 3 different kinds of events (
+* activityDate is the date of the activity
+* slideshowStartDate and slideshowEndDate are the dates that will be displayed in the slideshow
+* activityName is the title of the activity being submitted
+* activityDesc is a brief description of the activity or event
+* calendarDayOfWeek is the day(s) the event takes place
+* calendarFrequency is how frequently the event takes place (daily, weekly, biweekly, etc)
+* calendarTimeOfDay is when the event takes place (morning, afternoon)
 
 ### Database Installation
 
@@ -90,7 +114,12 @@ You will need database secrets from the server .env from Dr. Miller to access th
 
 - Login fails for non-school Google accounts
 - Mobile version not yet implemented
+- CSS is not yet implemented
+- The activity form is repetitive so you need to input the EXACT same day for each input
 
+## Product Packlog
+
+Remaining user stories can be found in the trello: https://trello.com/b/iuZKsvux/css-slidecentral
 
 ## Contributing
 
