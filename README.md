@@ -1,6 +1,6 @@
 # Css-SlideCentral
 
-The CSS/SlideCentral is a dynamic web application designed to allow teachers to enter in activities and events at the school to be displayed for students with various interests. This app aims to provide an easier solution for students and teachers alike to view school activities, and for club sponsors to upload their upcoming activities to garner a larger amount of participation. The application centers all the school activities around a hub, contrast to the various methods of communication we have in 2025.
+The CSS/SlideCentral is a dynamic web application designed to allow school staff to enter in activities and events at the school, while allowing students to discover events relevant to their interests. This app aims to provide an easier solution for students and teachers alike to view school activities, and for club sponsors to upload their upcoming activities to garner a larger amount of participation. The application centeralizes event visility and replaces the fragmented methods of club communication within NCHS.
 
 ## Getting Started
 
@@ -10,7 +10,7 @@ These instructions will guide you on how to get the project up and running on yo
 
 To make this work you need to download the latest versions of [Visual Studio Code](https://code.visualstudio.com/download), [Git](https://git-scm.com/downloads), and [Node.js](https://nodejs.org/en) if you do not have it downloaded already.
 
-## Dependencies
+## Client Dependencies
 * @mui/material
 * @react-oauth/google
 * @mui/icons-material
@@ -19,7 +19,12 @@ To make this work you need to download the latest versions of [Visual Studio Cod
 * react-router-dom
 * react-scripts
 
-Dependencies must be installed with npm syntax
+## Server Dependencies
+* express
+* mysql2
+* dotenv
+* cors
+Dependencies must be installed in the general and client directory with npm syntax
 
 ### Installation
 
@@ -40,7 +45,7 @@ Dependencies must be installed with npm syntax
      You can find this information from Dr. Miller.
 7. Run  `cd server` and `cd client` in each terminal respectively to change directory.
 8. Run `npm update` in the client terminal to update all dependencies.
-9. Once the installation is complete, run `node server.js` in the server and run `npm start` in the client to start the application.
+9. Once the installation is complete, run `node server.js` in the server and run `npm start` in the client to start the application. The app should open at http://localhost:3000
 
 ## Architecture Overview
 
@@ -58,10 +63,13 @@ NOTE: YOU NEED TO LOG IN WITH YOUR SCHOOL GOOGLE ACCOUNT TO ACCESS ALL FEATURES
 ### Supported Platforms
 - Windows 10/11
 - macOS Monterey or later
+- Raspberry Pi Raspberry Pi OS 11+
 
 ### Node.js Version
 - Node.js v18.x or later
 
+### npm Version
+- npm version 9.x or later
 
 ### Login Installation
 
